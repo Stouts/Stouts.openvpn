@@ -1,0 +1,5 @@
+---
+
+- name: Install requirements (Debian)
+  apt: name={{item}}
+  with_items: [openvpn, udev, openssl]

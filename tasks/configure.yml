@@ -1,0 +1,15 @@
+---
+
+- name: Extract easy-rsa files
+  unarchive: src=easy-rsa.tar.gz dest={{openvpn_etcdir}}
+
+- template: src=rsa.sh.j2 dest={{openvpn_etcdir}}/rsa.sh mode=700
+
+- name: Generate Server CA
+  command: "{{openvpn_etcdir}}/rsa.sh"
+  args:
+    creates: "{{ openvpn_keydir }}"
+
+- name: Configure server
+  template: src=server.conf.j2 dest={{openvpn_etcdir}}/server.conf
+  notify: [openvpn restart]

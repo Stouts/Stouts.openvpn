@@ -1,0 +1,24 @@
+---
+
+openvpn_enabled: yes                            # The role is enabled
+
+openvpn_etcdir: /etc/openvpn
+openvpn_keydir: "{{openvpn_etcdir}}/keys"
+
+# Default settings (See OpenVPN documentation)
+openvpn_port: 1194
+openvpn_proto: udp
+openvpn_dev: tun
+openvpn_server: 10.8.0.0 255.255.255.0
+openvpn_max_clients: 100
+openvpn_log: /var/log/openvpn.log                   # Log's directory
+
+openvpn_key_country: US
+openvpn_key_province: CA
+openvpn_key_city: SanFrancisco
+openvpn_key_org: Fort-Funston
+openvpn_key_email: me@myhost.mydomain
+openvpn_key_size: 1024
+
+openvpn_clients: [ horneds ]
+openvpn_clients_revoke: []

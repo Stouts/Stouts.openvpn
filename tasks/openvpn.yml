@@ -1,0 +1,12 @@
+---
+
+- include: install.deb.yml
+  when: ansible_os_family == 'Debian'
+
+- include: install.yum.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: configure.yml
+
+- name: Ensure OpenVPN is started
+  service: name=openvpn state=started enabled=yes
