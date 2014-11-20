@@ -16,6 +16,8 @@ script:
   # First run
   - ansible-playbook -i inventory test.yml --connection=local --sudo
 
+  - sudo cat /var/log/openvpn.log
+
   # Second run Idempotence test
   - >
     ansible-playbook -i inventory test.yml --connection=local --sudo
