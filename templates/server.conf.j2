@@ -112,7 +112,7 @@ group nogroup
 
 {% if openvpn_use_pam %}
 client-cert-not-required
-plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so openvpn
+plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
 {% endif %}
 
 {% for option in openvpn_server_options %}

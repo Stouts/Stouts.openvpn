@@ -1,5 +1,7 @@
 ---
 
+- include_vars: "{{ansible_distribution}}.{{ansible_distribution_release}}.yml"
+
 - include: install.deb.yml
   when: ansible_os_family == 'Debian'
 
