@@ -3,3 +3,8 @@
 - name: Install requirements (Debian)
   apt: name={{item}}
   with_items: [openvpn, udev, openssl]
+
+- name: Install dependencies (Debian)
+  apt: name={{item}}
+  when: openvpn_use_pam_users
+  with_items: [libpam-pwdfile, python-passlib]
