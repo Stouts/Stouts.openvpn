@@ -27,3 +27,4 @@ script:
 
   - ps -ef | grep openvpn | grep -v grep || exit 1
 
+openvpn_dev: tap
