@@ -48,7 +48,11 @@ dh {{openvpn_keydir}}/dh1024.pem
 # made available to clients. Each client will be able to reach the server on
 # 10.8.0.1. Comment this line out if you are ethernet bridging. See the man
 # page for more info.
+{% if openvpn_server %}
 server {{ openvpn_server }}
+{% else %}
+;server 10.8.0.0
+{% endif %}
 
 # Maintain a record of client <-> virtual IP address associations in this file.
 # If OpenVPN goes down or is restarted, reconnecting clients can be assigned
@@ -108,6 +112,10 @@ user {{openvpn_user}}
 group {{openvpn_group}}
 {% else -%}
 group nogroup
+{% endif %}
+
+{% if openvpn_client_to_client %}
+client-to-client
 {% endif %}
 
 {% if openvpn_use_pam %}
