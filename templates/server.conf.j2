@@ -41,7 +41,7 @@ key {{openvpn_keydir}}/server.key  # This file should be kept secret
 
 # Diffie hellman parameters. Generate your own with: openssl dhparam -out
 # dh1024.pem 1024 Substitute 2048 for 1024 if you are using 2048 bit keys.
-dh {{openvpn_keydir}}/dh1024.pem
+dh {{openvpn_keydir}}/dh{{openvpn_key_size}}.pem
 
 # Configure server mode and supply a VPN subnet for OpenVPN to draw client
 # addresses from. The server will take 10.8.0.1 for itself, the rest will be
