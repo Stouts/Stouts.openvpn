@@ -8,3 +8,7 @@
   apt: name={{item}}
   when: openvpn_use_pam_users
   with_items: [libpam-pwdfile, python-passlib]
+
+- name: Install LDAP dependencies (Debian)
+  apt: name=openvpn-auth-ldap
+  when: openvpn_use_ldap

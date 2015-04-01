@@ -59,7 +59,7 @@ comp-lzo
 # Set log file verbosity.
 verb {{openvpn_verb}}
 
-{% if openvpn_use_pam %}
+{% if openvpn_use_pam or openvpn_use_ldap %}
 auth-user-pass
 {% endif %}
 

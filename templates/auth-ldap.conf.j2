@@ -1,0 +1,49 @@
+<LDAP>
+  # LDAP server URL
+  URL   ldap://{{ openvpn_ldap_server }}
+
+  # Bind DN (If your LDAP server doesn't support anonymous binds)
+  # e.g. cn=administrator,cn=users,dc=ctc,dc=local
+  BindDN    {{ openvpn_ldap_bind_dn }}
+
+  # Bind Password
+  Password  {{ openvpn_ldap_bind_password }}
+
+  # Network timeout (in seconds)
+  Timeout   15
+
+  # Enable Start TLS
+  TLSEnable {{ openvpn_ldap_tlsenable }}
+
+  # Follow LDAP Referrals (anonymously)
+  FollowReferrals {{ openvpn_ldap_follow_referrals }}
+
+  # TLS CA Certificate File
+  TLSCACertFile /etc/ssl/ca-cert.pem
+
+  # TLS CA Certificate Directory
+  TLSCACertDir  /etc/ssl/certs
+
+  # Client Certificate and key
+  # If TLS client authentication is required
+  TLSCertFile /etc/ssl/client-cert.pem
+  TLSKeyFile  /etc/ssl/client-key.pem
+
+  # Cipher Suite
+  # The defaults are usually fine here
+  # TLSCipherSuite  ALL:!ADH:@STRENGTH
+</LDAP>
+
+<Authorization>
+  # e.g. "dc=ctc,dc=local"
+  BaseDN    {{ openvpn_ldap_base_dn }}
+  # e.g. "sAMAccountName=%u"
+  SearchFilter  {{ openvpn_ldap_search_filter }}
+  RequireGroup  true
+  <Group>
+    BaseDN    {{ openvpn_ldap_base_dn }}
+    # e.g. "cn=OpenVPNUsers"
+    SearchFilter  {{ openvpn_ldap_group_search_filter }}
+    MemberAttribute Member
+  </Group>
+</Authorization>
