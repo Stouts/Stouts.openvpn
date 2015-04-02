@@ -30,6 +30,10 @@
   htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
   with_items: openvpn_use_pam_users
 
+- name: Setup LDAP
+  template: src=auth-ldap.conf.j2 dest=/etc/openvpn/auth-ldap.conf
+  when: openvpn_use_ldap
+
 - name: Configure server
   template: src=server.conf.j2 dest={{openvpn_etcdir}}/server.conf
   notify: [openvpn restart]

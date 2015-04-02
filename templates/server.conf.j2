@@ -123,6 +123,10 @@ client-cert-not-required
 plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
 {% endif %}
 
+{% if openvpn_use_ldap %}
+plugin {{ openvpn_use_ldap_plugin | default(openvpn_use_ldap_plugin_distribution) }} "/etc/openvpn/auth-ldap.conf"
+{% endif %}
+
 {% for option in openvpn_server_options %}
 {{option}}
 {% endfor %}

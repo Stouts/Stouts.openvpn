@@ -63,6 +63,20 @@ openvpn_use_pam_users: []                         # If empty use system users
                                                   # otherwise use users from the option
                                                   # openvpn_use_pam_users:
                                                   # - { name: user, password: password }
+                                                  
+# Use LDAP authentication (default is disabled)
+openvpn_use_ldap: no
+openvpn_ldap_tlsenable: 'no'
+openvpn_ldap_follow_referrals: 'no'
+
+# To use LDAP you must configure the following vars with real:
+openvpn_ldap_server: ldap.mycompany.net
+openvpn_ldap_bind_dn: 'user@mycompany.net'
+openvpn_ldap_bind_password: password
+openvpn_ldap_base_dn: ou=CorpAccounts,dc=mycompany,dc=net
+openvpn_ldap_search_filter: '"sAMAccountName=%u"'
+openvpn_ldap_group_search_filter: '"cn=OpenVPNUsers"'
+
 ```
 
 #### Usage
