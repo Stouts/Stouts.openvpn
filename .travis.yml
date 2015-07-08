@@ -25,6 +25,6 @@ script:
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 
-  - ps -ef | grep openvpn | grep -v grep || exit 1
+  - ps -ef | grep [o]penvpn || exit 1
 
 openvpn_dev: tap
