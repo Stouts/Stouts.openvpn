@@ -16,6 +16,12 @@
   args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: openvpn_clients
 
+- name: Revoke Clients keys
+  command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
+  args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
+  with_items: openvpn_clients_revoke
+
+
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
   with_items: openvpn_clients
