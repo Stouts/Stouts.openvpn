@@ -1,4 +1,6 @@
 ---
+- name: Ensure openvpn key dir has the right permission
+  file: path={{openvpn_keydir}} state=directory mode=0700 owner={{openvpn_user}}
 
 - name: Extract easy-rsa files
   unarchive: src=easy-rsa.tar.gz dest={{openvpn_etcdir}}
