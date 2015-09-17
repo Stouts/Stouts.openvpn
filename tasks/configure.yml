@@ -23,6 +23,9 @@
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: openvpn_clients_revoke
 
+- name: Check if crl.pem exists
+  stat: path={{openvpn_keydir}}/crl.pem
+  register: crl_pem_file
 
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
