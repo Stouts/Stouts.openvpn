@@ -131,6 +131,6 @@ plugin {{ openvpn_use_ldap_plugin | default(openvpn_use_ldap_plugin_distribution
 {{option}}
 {% endfor %}
 
-{% if openvpn_clients_revoke|length > 0 %}
+{% if openvpn_clients_revoke|length > 0  or crl_pem_file.stat.exists %}
 crl-verify {{openvpn_keydir}}/crl.pem
 {% endif %}
