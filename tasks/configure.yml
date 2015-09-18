@@ -21,6 +21,12 @@
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: openvpn_clients_revoke
 
+- name: Create client configuration directory if requested
+  file: >
+    path={{openvpn_client_config_dir}}
+    mode=755
+    state=directory
+  when: openvpn_client_config_dir is defined
 
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn

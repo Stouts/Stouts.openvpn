@@ -43,6 +43,16 @@ key {{openvpn_keydir}}/server.key  # This file should be kept secret
 # dh1024.pem 1024 Substitute 2048 for 1024 if you are using 2048 bit keys.
 dh {{openvpn_keydir}}/dh{{openvpn_key_size}}.pem
 
+# Client configuration directory.
+{% if openvpn_client_config_dir is defined -%}
+client-config-dir {{ openvpn_client_config_dir }}
+{% endif %}
+
+# Which VPN topology to use? (net30, subnet, p2p)
+{% if openvpn_topology is defined -%}
+topology {{ openvpn_topology }}
+{% endif %}
+
 # Configure server mode and supply a VPN subnet for OpenVPN to draw client
 # addresses from. The server will take 10.8.0.1 for itself, the rest will be
 # made available to clients. Each client will be able to reach the server on
