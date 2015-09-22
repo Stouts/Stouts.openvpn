@@ -4,6 +4,7 @@ openvpn_enabled: yes                                # The role is enabled
 
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{openvpn_etcdir}}/keys"
+openvpn_pack_pass: "$ecured_vpn"
 
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address
