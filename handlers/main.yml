@@ -4,6 +4,11 @@
   service: name=openvpn state=restarted
 
 - name: openvpn pack clients
-  command: tar cvzf {{openvpn_keydir}}/{{item.item}}.tar.gz -C {{openvpn_keydir}} {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt
+  command: zip -j --password $ecured_vpn {{openvpn_keydir}}/{{item.item}} {{openvpn_keydir}}/{{item.item}}.crt {{openvpn_keydir}}/{{item.item}}.ovpn {{openvpn_keydir}}/{{item.item}}.key {{openvpn_keydir}}/ca.crt
+  when: item.changed
+  with_items: openvpn_clients_changed.results
+
+- name: openvpn copy pack clients
+  fetch: src={{openvpn_keydir}}/{{item.item}}.zip dest=vpn_keys/{{item.item}}.zip flat=yes
   when: item.changed
   with_items: openvpn_clients_changed.results

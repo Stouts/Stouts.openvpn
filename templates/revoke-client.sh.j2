@@ -11,4 +11,6 @@ $EASY_RSA/revoke-full $@
 
 export CLIENT=$1
 
-rm -rf $KEY_DIR/$CLIENT*
+rm -f $KEY_DIR/$CLIENT.*
+
+cp $KEY_DIR/crl.pem {{openvpn_etcdir}}/

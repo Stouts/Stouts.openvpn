@@ -1,6 +1,4 @@
 ---
-- name: Ensure openvpn key dir has the right permission
-  file: path={{openvpn_keydir}} state=directory mode=0700 owner={{openvpn_user}}
 
 - name: Extract easy-rsa files
   unarchive: src=easy-rsa.tar.gz dest={{openvpn_etcdir}}
@@ -13,38 +11,34 @@
   command: "{{openvpn_etcdir}}/build-server.sh"
   args: { creates: "{{ openvpn_keydir }}" }
 
+- name: Revoke Clients
+  command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
+  args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
+  with_items: openvpn_clients_revoke
+
+- name: Revoke Users
+  lineinfile: dest=/etc/openvpn/users regexp='^{{item}}:' state=absent
+  with_items: openvpn_use_pam_users_revoke
+  tags: rev_user
+
 - name: Generate Clients keys
   command: "{{openvpn_etcdir}}/build-client.sh {{item}}"
   args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: openvpn_clients
 
-- name: Revoke Clients keys
-  command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
-  args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
-  with_items: openvpn_clients_revoke
-
-- name: Create client configuration directory if requested
-  file: >
-    path={{openvpn_client_config_dir}}
-    mode=755
-    state=directory
-  when: openvpn_client_config_dir is defined
-
-- name: Check if crl.pem exists
-  stat: path={{openvpn_keydir}}/crl.pem
-  register: crl_pem_file
-
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
   with_items: openvpn_clients
-  notify: openvpn pack clients
+  notify: 
+    - openvpn pack clients
+    - openvpn copy pack clients
   register: openvpn_clients_changed
 
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
   when: openvpn_use_pam
 
-- name: Configure users
+- name: Configure PAM users
   htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
   with_items: openvpn_use_pam_users
 

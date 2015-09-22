@@ -19,6 +19,10 @@ $EASY_RSA/pkitool --initca && \
 $EASY_RSA/pkitool --server server && \
 $OPENSSL dhparam -out ${KEY_DIR}/dh${KEY_SIZE}.pem ${KEY_SIZE}
 
+# Need to have revoken certificate to activate revoke cheking in the server.conf
+$EASY_RSA/pkitool test
+{{openvpn_etcdir}}/revoke-client.sh test
+
 {% for client in openvpn_clients %}
 $EASY_RSA/pkitool {{ client }}
 {% endfor %}
