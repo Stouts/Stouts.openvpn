@@ -49,7 +49,7 @@ openvpn_clients_revoke: []                        # Revoke clients certificates
 # Use PAM authentication
 openvpn_use_pam: yes
 openvpn_disable_cert: no
-#openvpn_use_pam_users: []                         # If empty use system users
+openvpn_use_pam_users: []                         # If empty use system users
                                                   # otherwise use users from the option
                                                   # openvpn_use_pam_users:
                                                   # - { name: user, password: password }
