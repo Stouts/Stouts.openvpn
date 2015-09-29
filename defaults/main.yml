@@ -4,7 +4,7 @@ openvpn_enabled: yes                                # The role is enabled
 
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{openvpn_etcdir}}/keys"
-openvpn_pack_pass: "$ecured_vpn"
+openvpn_cert_pass: "$ecured_vpn"
 
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address
@@ -48,7 +48,7 @@ openvpn_clients: [client]                         # Make clients certificate
 openvpn_clients_revoke: []                        # Revoke clients certificates
 
 # Use PAM authentication
-openvpn_use_pam: yes
+openvpn_use_pam: no
 openvpn_disable_cert: no
 openvpn_use_pam_users: []                         # If empty use system users
                                                   # otherwise use users from the option
