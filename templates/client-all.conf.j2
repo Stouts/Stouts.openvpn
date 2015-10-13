@@ -72,9 +72,4 @@ auth-user-pass
 {{option}}
 {% endfor %}
 
-{% if openvpn_host_secondary -%}
-remote {{openvpn_host_secondary}} {{openvpn_port}}
-remote-random
-{% endif %}
-
 redirect-gateway def1
