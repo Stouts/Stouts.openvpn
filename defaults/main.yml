@@ -4,7 +4,7 @@ openvpn_enabled: yes                                # The role is enabled
 
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{openvpn_etcdir}}/keys"
-openvpn_cert_pass: "$ecured_vpn"
+openvpn_cert_pass: ""
 
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address
@@ -28,7 +28,7 @@ openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
 openvpn_client_to_client: yes
-openvpn_server_options: [duplicate-cn]              # Additional server options
+openvpn_server_options: []              # Additional server options
                                                     # openvpn_server_options:
                                                     # - dev-node MyTap
                                                     # - client-to-client
