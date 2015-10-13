@@ -4,14 +4,14 @@
   unarchive: src=easy-rsa.tar.gz dest={{openvpn_etcdir}}
 
 - name: Pull build-server.sh from s3
-  command: aws s3 cp   "{{s3_conf_path}}/openvpn-conf-dir/build-server.sh"  "{{openvpn_etcdir}}/build-server.sh"
-  when: first_run == 'no'
+  command: aws s3 cp   "{{openvpn_s3_conf_path}}/openvpn-conf-dir/build-server.sh"  "{{openvpn_etcdir}}/build-server.sh"
+  when: openvpn_first_run == 'no'
 
 - name: Set mode for build-server.sh
   file: >
     path="{{openvpn_etcdir}}/build-server.sh"
     mode=700
-  when: first_run == 'no'
+  when: openvpn_first_run == 'no'
 
 - name: Generate scripts
   template: src={{item}}.j2 dest={{openvpn_etcdir}}/{{item}} mode=0700
@@ -23,11 +23,11 @@
   file: >
     path={{openvpn_keydir}}
     state=directory
-  when: first_run == 'no'
+  when: openvpn_first_run == 'no'
 
 - name: Pull openvpn etc keys dir from s3
-  command: aws s3 sync "{{s3_conf_path}}/keys/"  {{openvpn_etcdir}}/keys/
-  when: first_run == 'no'
+  command: aws s3 sync "{{openvpn_s3_conf_path}}/keys/"  {{openvpn_etcdir}}/keys/
+  when: openvpn_first_run == 'no'
 
 - name: Generate Server keys
   command: "{{openvpn_etcdir}}/build-server.sh"

@@ -14,7 +14,7 @@
   with_items: openvpn_clients_changed.results
 
 - name: upload openvpn keys dir to s3
-  command: aws s3 sync --delete "{{openvpn_etcdir}}/keys/"  "{{s3_conf_path}}/keys/"
+  command: aws s3 sync --delete "{{openvpn_etcdir}}/keys/"  "{{openvpn_s3_conf_path}}/keys/"
 
 - name: upload build-server.sh to s3
-  command: aws s3 cp "{{openvpn_etcdir}}/build-server.sh"  "{{s3_conf_path}}/openvpn-conf-dir/"
+  command: aws s3 cp "{{openvpn_etcdir}}/build-server.sh"  "{{openvpn_s3_conf_path}}/openvpn-conf-dir/"

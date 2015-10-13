@@ -1,6 +1,6 @@
 ---
-first_run: 'no'                                     # Set to yes on first run to create initial configuration files. Set to no to pull configuration from s3
-s3_conf_path: 's3://bucket/stacks/vpn'              # S3 bucket plus path to store configuration files
+openvpn_first_run: 'no'                             # Set to yes on first run to create initial configuration files. Set to no to pull configuration from s3
+openvpn_s3_conf_path: 's3://bucket/stacks/vpn'      # S3 bucket plus path to store configuration files
 openvpn_enabled: yes                                # The role is enabled
 
 openvpn_etcdir: /etc/openvpn
