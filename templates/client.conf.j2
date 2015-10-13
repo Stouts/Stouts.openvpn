@@ -20,6 +20,11 @@ proto {{ openvpn_proto }}
 # to load balance between the servers.
 remote {{openvpn_host}} {{openvpn_port}}
 
+{% if openvpn_host_secondary -%}
+remote {{openvpn_host_secondary}} {{openvpn_port}}
+remote-random
+{% endif %}
+
 # Keep trying indefinitely to resolve the host name of the OpenVPN server.
 # Very useful on machines which are not permanently connected to the internet
 # such as laptops.

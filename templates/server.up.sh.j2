@@ -10,7 +10,7 @@
 
 {% if openvpn_server %}
 /sbin/iptables -t nat -F POSTROUTING
-/sbin/iptables -t nat -A POSTROUTING -s {{openvpn_server}}/{{openvpn_server_netmask}} -o eth0 -j MASQUERADE
+/sbin/iptables -t nat -A POSTROUTING -s {{openvpn_server.split(' ')[0] }}/{{openvpn_server.split(' ')[1] }} -o eth0 -j MASQUERADE
 {% endif %}
 
 
