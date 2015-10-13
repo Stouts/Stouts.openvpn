@@ -3,40 +3,81 @@
 - name: Extract easy-rsa files
   unarchive: src=easy-rsa.tar.gz dest={{openvpn_etcdir}}
 
+- name: Pull build-server.sh from s3
+  command: aws s3 cp   "{{s3_conf_path}}/openvpn-conf-dir/build-server.sh"  "{{openvpn_etcdir}}/build-server.sh"
+  when: first_run == 'no'
+
+- name: Set mode for build-server.sh
+  file: >
+    path="{{openvpn_etcdir}}/build-server.sh"
+    mode=700
+  when: first_run == 'no'
+
 - name: Generate scripts
   template: src={{item}}.j2 dest={{openvpn_etcdir}}/{{item}} mode=0700
   with_items: [vars, build-server.sh, build-client.sh, revoke-client.sh]
+  notify: upload build-server.sh to s3
+  when: vpn_role == 'primary'
+
+- name: Ensure openvpn_keydir
+  file: >
+    path={{openvpn_keydir}}
+    state=directory
+  when: first_run == 'no'
+
+- name: Pull openvpn etc keys dir from s3
+  command: aws s3 sync "{{s3_conf_path}}/keys/"  {{openvpn_etcdir}}/keys/
+  when: first_run == 'no'
 
 - name: Generate Server keys
   command: "{{openvpn_etcdir}}/build-server.sh"
+  notify: upload openvpn keys dir to s3
   args: { creates: "{{ openvpn_keydir }}" }
+  when: vpn_role == 'primary'
 
 - name: Generate Clients keys
   command: "{{openvpn_etcdir}}/build-client.sh {{item}}"
   args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: openvpn_clients
+  notify: upload openvpn keys dir to s3
+  when: vpn_role == 'primary'
 
 - name: Revoke Clients keys
   command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: openvpn_clients_revoke
+  notify: upload openvpn keys dir to s3
+  when: vpn_role == 'primary'
 
 - name: Create client configuration directory if requested
   file: >
     path={{openvpn_client_config_dir}}
     mode=755
     state=directory
-  when: openvpn_client_config_dir is defined
+  when: openvpn_client_config_dir
 
 - name: Check if crl.pem exists
   stat: path={{openvpn_keydir}}/crl.pem
   register: crl_pem_file
 
+
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
   with_items: openvpn_clients
-  notify: openvpn pack clients
   register: openvpn_clients_changed
+  notify:
+    - openvpn pack clients
+    - upload openvpn keys dir to s3
+  when: vpn_role == 'primary'
+
+- name: Generate Clients configuration for gateway routing
+  template: src=client-all.conf.j2 dest={{openvpn_keydir}}/{{item}}-all.ovpn
+  with_items: openvpn_clients
+  register: openvpn_clients_changed
+  notify:
+    - openvpn pack clients with client-all.ovpn
+    - upload openvpn keys dir to s3
+  when: vpn_role == 'primary' and openvpn_client_create_gateway_config
 
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
@@ -56,3 +97,11 @@
 
 - name: Ensure openvpn key dir has the right permission
   file: path={{openvpn_keydir}} state=directory mode=0700 owner={{openvpn_user}}
+
+- name: Create /etc/openvpn/server.up.d/
+  file: path={{openvpn_etcdir}} state=directory mode=0700 owner={{openvpn_user}}
+
+- name: Create server.up.sh
+  template: src=server.up.sh.j2 dest={{openvpn_etcdir}}/server.up.sh mode=755
+  notify:
+   - openvpn restart
