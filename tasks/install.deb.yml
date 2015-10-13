@@ -4,6 +4,16 @@
   apt: name={{item}}
   with_items: [openvpn, udev, openssl]
 
+- name: Install apt extras
+  apt: name="{{item}}" update_cache=yes cache_valid_time=3600
+  with_items:
+    - python-pip
+
+- name: Install pip extras
+  pip: name="{{item}}"
+  with_items:
+    - awscli
+
 - name: Install dependencies (Debian)
   apt: name={{item}}
   when: openvpn_use_pam_users|default(false)

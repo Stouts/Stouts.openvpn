@@ -1,5 +1,6 @@
 ---
-
+openvpn_first_run: 'no'                             # Set to yes on first run to create initial configuration files. Set to no to pull configuration from s3
+openvpn_s3_conf_path: 's3://bucket/stacks/vpn'      # S3 bucket plus path to store configuration files
 openvpn_enabled: yes                                # The role is enabled
 
 openvpn_etcdir: /etc/openvpn
@@ -7,6 +8,8 @@ openvpn_keydir: "{{openvpn_etcdir}}/keys"
 
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address
+openvpn_host_secondary: []                          # If set, will add a secondary host to the client configuration files
+
 openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
@@ -22,6 +25,7 @@ openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
 openvpn_client_to_client: yes
+openvpn_create_server_up: 'no'                      # Add server.up.sh and server.up.d/
 openvpn_server_options: []                          # Additional server options
                                                     # openvpn_server_options:
                                                     # - dev-node MyTap
@@ -30,6 +34,8 @@ openvpn_client_options: []                          # Additional client options
                                                     # openvpn_client_options:
                                                     # - dev-node MyTap
                                                     # - client-to-client
+
+openvpn_client_create_gateway_config: 'no'          # creates an additional $client-all.opvn for routing a client's outbound traffic through the VPN server
 
 openvpn_key_country: US
 openvpn_key_province: CA
