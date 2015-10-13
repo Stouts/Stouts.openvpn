@@ -14,14 +14,14 @@
   when: openvpn_first_run == 'no'
 
 - name: Generate scripts
-  template: src={{item}}.j2 dest={{openvpn_etcdir}}/{{item}} mode=0700
+  template: src="{{item}}.j2" dest="{{openvpn_etcdir}}/{{item}}" mode=0700
   with_items: [vars, build-server.sh, build-client.sh, revoke-client.sh]
   notify: upload build-server.sh to s3
   when: vpn_role == 'primary'
 
 - name: Ensure openvpn_keydir
   file: >
-    path={{openvpn_keydir}}
+    path="{{openvpn_keydir}}"
     state=directory
   when: openvpn_first_run == 'no'
 
@@ -54,7 +54,7 @@
     path={{openvpn_client_config_dir}}
     mode=755
     state=directory
-  when: openvpn_client_config_dir
+  when: openvpn_client_config_dir is defined
 
 - name: Check if crl.pem exists
   stat: path={{openvpn_keydir}}/crl.pem
@@ -71,7 +71,7 @@
   when: vpn_role == 'primary'
 
 - name: Generate Clients configuration for gateway routing
-  template: src=client-all.conf.j2 dest={{openvpn_keydir}}/{{item}}-all.ovpn
+  template: src=client-all.conf.j2 dest="{{openvpn_keydir}}/{{item}}-all.ovpn"
   with_items: openvpn_clients
   register: openvpn_clients_changed
   notify:
@@ -99,9 +99,9 @@
   file: path={{openvpn_keydir}} state=directory mode=0700 owner={{openvpn_user}}
 
 - name: Create /etc/openvpn/server.up.d/
-  file: path={{openvpn_etcdir}} state=directory mode=0700 owner={{openvpn_user}}
+  file: path="{{openvpn_etcdir}}" state=directory mode=0700 owner="{{openvpn_user}}"
 
 - name: Create server.up.sh
-  template: src=server.up.sh.j2 dest={{openvpn_etcdir}}/server.up.sh mode=755
+  template: src=server.up.sh.j2 dest="{{openvpn_etcdir}}/server.up.sh" mode=755
   notify:
    - openvpn restart
