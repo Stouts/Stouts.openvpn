@@ -1,6 +1,7 @@
 ---
 
 openvpn_enabled: yes                                # The role is enabled
+openvpn_generate_keys: no
 
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{openvpn_etcdir}}/keys"
