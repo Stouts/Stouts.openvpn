@@ -9,14 +9,43 @@
 
 - name: Generate Server keys
   command: "{{openvpn_etcdir}}/build-server.sh"
-  args: { creates: "{{ openvpn_keydir }}" }
+  args: { creates: "{{ openvpn_keydir }}/server.key" }
+  notify: [openvpn restart]
+  when: openvpn_generate_keys
 
 - name: Generate Clients keys
-  command: "{{openvpn_etcdir}}/build-client.sh {{item}}"
-  args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
+  command: "{{openvpn_etcdir}}/build-client.sh {{item.name}}"
+  args: { creates: "{{ openvpn_keydir }}/{{item.name}}.crt" }
   with_items: openvpn_clients
+  when: openvpn_generate_keys
 
-- name: Revoke Clients keys
+- name: Convert Clients cert/key to p12
+  command: "openssl pkcs12 -export -out {{openvpn_keydir}}/{{item.name}}.p12 -inkey {{openvpn_keydir}}/{{item.name}}.key -in {{openvpn_keydir}}/{{item.name}}.crt -certfile {{openvpn_keydir}}/ca.crt -password pass:{{item.password}}"
+  args: { creates: "{{ openvpn_keydir }}/{{item.name}}.p12" }
+  with_items: openvpn_clients
+  notify: 
+    - openvpn pack clients
+    - openvpn copy pack clients
+  register: pfx
+  when: openvpn_generate_keys
+
+- name: Ensure openvpn key dir has the right permission
+  file: path={{openvpn_keydir}} state=directory mode=0700 owner={{openvpn_user}}
+
+- name: Server keys and certs are copied
+  copy: src="../../../../../../VPN keys/server/{{ item }}" 
+        dest={{openvpn_keydir}}/{{ item }}
+        owner=root group=root mode=0600
+  with_items: [ "ca.crt","server.crt","server.key","dh1024.pem" ]
+  when: not openvpn_generate_keys
+
+- name: Get client certificate fingerprint
+  shell: "openssl pkcs12 -in {{openvpn_keydir}}/{{item.item.name}}.p12 -nodes -passin pass:{{item.item.password}} | openssl x509 -noout -fingerprint | cut -d= -f2 | sed 's/:/ /g'"
+  with_items: pfx.results
+  when: item.changed and openvpn_generate_keys
+  register: cert_fp
+
+- name: Revoke Clients
   command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: openvpn_clients_revoke
@@ -28,21 +57,30 @@
     state=directory
   when: openvpn_client_config_dir is defined
 
+- name: Revoke Users
+  lineinfile: dest=/etc/openvpn/users regexp='^{{item}}:' state=absent
+  with_items: openvpn_use_pam_users_revoke
+  tags: rev_user
+
 - name: Check if crl.pem exists
   stat: path={{openvpn_keydir}}/crl.pem
   register: crl_pem_file
 
+- name: Check crl.pem ACL
+  file: path={{openvpn_keydir}}/crl.pem
+        owner={{ openvpn_user }} mode=400
+  when: crl_pem_file.stat.exists
+
 - name: Generate Clients configurations
-  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
-  with_items: openvpn_clients
-  notify: openvpn pack clients
-  register: openvpn_clients_changed
+  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item.item.item.name}}.ovpn
+  with_items: cert_fp.results
+  when: item.changed and openvpn_generate_keys
 
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
   when: openvpn_use_pam
 
-- name: Configure users
+- name: Configure PAM users
   htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
   with_items: openvpn_use_pam_users
 

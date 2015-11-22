@@ -4,6 +4,11 @@
   service: name=openvpn state=restarted
 
 - name: openvpn pack clients
-  command: tar cvzf {{openvpn_keydir}}/{{item.item}}.tar.gz -C {{openvpn_keydir}} {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt
+  command: zip -j {{openvpn_keydir}}/{{item.item.name}} {{openvpn_keydir}}/{{item.item.name}}.p12 {{openvpn_keydir}}/{{item.item.name}}.ovpn {{openvpn_keydir}}/ca.crt
   when: item.changed
-  with_items: openvpn_clients_changed.results
+  with_items: pfx.results
+
+- name: openvpn copy pack clients
+  fetch: src={{openvpn_keydir}}/{{item.item.name}}.zip dest=vpn_keys/{{item.item.name}}.zip flat=yes
+  when: item.changed
+  with_items: pfx.results

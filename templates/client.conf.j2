@@ -36,8 +36,7 @@ persist-tun
 # use a separate .crt/.key file pair for each client.  A single ca file can be
 # used for all clients.
 ca ca.crt
-cert {{client}}.crt
-key {{client}}.key
+cryptoapicert "THUMB:{{ item.stdout }}"
 
 # Verify server certificate by checking that the certicate has the nsCertType
 # field set to "server".  This is an important precaution to protect against a

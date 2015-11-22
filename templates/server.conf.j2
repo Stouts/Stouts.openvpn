@@ -129,12 +129,15 @@ client-to-client
 {% endif %}
 
 {% if openvpn_use_pam %}
-client-cert-not-required
 plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
 {% endif %}
 
 {% if openvpn_use_ldap %}
 plugin {{ openvpn_use_ldap_plugin | default(openvpn_use_ldap_plugin_distribution) }} "/etc/openvpn/auth-ldap.conf"
+{% endif %}
+
+{% if openvpn_disable_cert %}
+client-cert-not-required
 {% endif %}
 
 {% for option in openvpn_server_options %}
@@ -144,3 +147,11 @@ plugin {{ openvpn_use_ldap_plugin | default(openvpn_use_ldap_plugin_distribution
 {% if openvpn_clients_revoke|length > 0  or crl_pem_file.stat.exists %}
 crl-verify {{openvpn_keydir}}/crl.pem
 {% endif %}
+
+{% for net in openvpn_push_nets %}
+push "route {{net}}"
+{% endfor %}
+
+{% for dns in openvpn_dns %}
+push "dhcp-option DNS {{dns}}"
+{% endfor %}
