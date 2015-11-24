@@ -64,19 +64,29 @@
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
   with_items: openvpn_clients
-  register: openvpn_clients_changed
+  register: results
   notify:
     - openvpn pack clients
     - upload openvpn keys dir to s3
   when: vpn_role == 'primary'
 
+- set_fact:
+    openvpn_clients_changed: "{{results}}"
+  when: vpn_role == 'primary'
+
+# register stores the variable even if the task is skipped, and this is
+# the intended behaviour. https://groups.google.com/d/msg/ansible-project/N5q5Zx0de4Y/BsuJo2U9uD4J
 - name: Generate Clients configuration for gateway routing
   template: src=client-all.conf.j2 dest="{{openvpn_keydir}}/{{item}}-all.ovpn"
   with_items: openvpn_clients
-  register: openvpn_clients_changed
+  register: results
   notify:
     - openvpn pack clients with client-all.ovpn
     - upload openvpn keys dir to s3
+  when: vpn_role == 'primary' and openvpn_client_create_gateway_config
+
+- set_fact:
+    openvpn_clients_changed: "{{results}}"
   when: vpn_role == 'primary' and openvpn_client_create_gateway_config
 
 - name: Setup PAM
