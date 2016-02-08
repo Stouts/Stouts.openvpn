@@ -13,8 +13,8 @@ openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
 openvpn_server: 10.8.0.0 255.255.255.0              # Set empty for skip
-openvpn_push_nets: []
-openvpn_dns: []
+#openvpn_push_nets: []
+#openvpn_dns: []
 openvpn_topology: subnet                            # Recommended topology but
                                                     # brake compatibility with old Windows
                                                     # net30 - legacy topology
@@ -23,6 +23,7 @@ openvpn_log: /var/log/openvpn.log                   # Log's directory
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: yes                               # Enable compression
+openvpn_float: yes                                  # Allow remote peer to change its IP address and/or port number
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_user: nobody

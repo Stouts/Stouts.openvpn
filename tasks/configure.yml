@@ -91,3 +91,10 @@
 - name: Configure server
   template: src=server.conf.j2 dest={{openvpn_etcdir}}/server.conf
   notify: [openvpn restart]
+
+- name: UFW allow limited OpenVPN
+  ufw: rule=limit port=openvpn
+  tags: 
+    - ufw
+    - openvpn
+    - ufw_openvpn

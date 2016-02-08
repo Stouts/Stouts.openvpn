@@ -128,6 +128,10 @@ group nogroup
 client-to-client
 {% endif %}
 
+{% if openvpn_float %}
+float
+{% endif %}
+
 {% if openvpn_use_pam %}
 plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
 {% endif %}
@@ -148,10 +152,21 @@ client-cert-not-required
 crl-verify {{openvpn_keydir}}/crl.pem
 {% endif %}
 
-{% for net in openvpn_push_nets %}
-push "route {{net}}"
+{% for key, value in interfaces.iteritems() | sort %}
+{% if key != 'eth1' %}
+#push "route {{ value.ip4_address | ipaddr('network') }} {{ value.ip4_address | ipaddr('netmask') }}"
+{% endif %}
+{% endfor %}
+{% for network in dc_networks %}
+push "route {{ network | ipaddr('network') }} {{ network | ipaddr('netmask') }}"
+{% endfor %}
+# route traffic to ELK server
+push "route 183.90.170.94 255.255.255.255"
+
+{% for item in dns_servers_consul %}
+push "dhcp-option DNS {{ item }}"
 {% endfor %}
 
-{% for dns in openvpn_dns %}
-push "dhcp-option DNS {{dns}}"
-{% endfor %}
+push "dhcp-option SEARCH {{ domain }}"
+push "dhcp-option SEARCH consul"
+push "dhcp-option DOMAIN consul"
