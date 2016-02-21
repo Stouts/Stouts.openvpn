@@ -50,6 +50,14 @@
   template: src=auth-ldap.conf.j2 dest=/etc/openvpn/auth-ldap.conf
   when: openvpn_use_ldap
 
+- name: Setup simple authentication
+  template:
+    src: auth-client.sh.j2
+    dest: "{{openvpn_etcdir}}/auth-client.sh"
+    mode: 0755
+  when: openvpn_simple_auth and openvpn_simple_auth_password
+  notify: [openvpn restart]
+
 - name: Configure server
   template: src=server.conf.j2 dest={{openvpn_etcdir}}/server.conf
   notify: [openvpn restart]

@@ -77,6 +77,10 @@ openvpn_ldap_base_dn: ou=CorpAccounts,dc=mycompany,dc=net
 openvpn_ldap_search_filter: '"sAMAccountName=%u"'
 openvpn_ldap_group_search_filter: '"cn=OpenVPNUsers"'
 
+# Use simple authentication (default is disabled)
+openvpn_simple_auth: yes
+openvpn_simple_auth_password: password
+
 ```
 
 #### Usage

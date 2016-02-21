@@ -137,6 +137,11 @@ plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} o
 plugin {{ openvpn_use_ldap_plugin | default(openvpn_use_ldap_plugin_distribution) }} "/etc/openvpn/auth-ldap.conf"
 {% endif %}
 
+{% if openvpn_simple_auth and openvpn_simple_auth_password %}
+auth-user-pass-verify auth-client.sh via-env
+script-security 3 execve
+{% endif %}
+
 {% for option in openvpn_server_options %}
 {{option}}
 {% endfor %}
