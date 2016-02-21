@@ -76,3 +76,7 @@ openvpn_monitoring_clients_critical: 10
 openvpn_status_file_path: "{{ openvpn_etcdir }}/{{ openvpn_status }}"
 openvpn_enable_collect_user_count: true
 openvpn_enable_collect_individual_users: true 
+
+# Use simple authentication (default is disabled)
+openvpn_simple_auth: no
+openvpn_simple_auth_password: ""
