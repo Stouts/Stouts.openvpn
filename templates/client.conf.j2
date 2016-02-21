@@ -16,6 +16,9 @@ dev {{ openvpn_dev }}
 # server.
 proto {{ openvpn_proto }}
 
+# Encrypt packets with cipher algorithm
+cipher {{ openvpn_cipher }}
+
 # The hostname/IP and port of the server. You can have multiple remote entries
 # to load balance between the servers.
 remote {{openvpn_host}} {{openvpn_port}}

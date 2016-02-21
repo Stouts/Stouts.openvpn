@@ -33,6 +33,7 @@ openvpn_log: /var/log/openvpn.log                   # Log's directory
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: yes                               # Enable compression
+openvpn_cipher: BF-CBC                              # Encryption algorithm
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_user: nobody
@@ -63,7 +64,7 @@ openvpn_use_pam_users: []                         # If empty use system users
                                                   # otherwise use users from the option
                                                   # openvpn_use_pam_users:
                                                   # - { name: user, password: password }
-                                                  
+
 # Use LDAP authentication (default is disabled)
 openvpn_use_ldap: no
 openvpn_ldap_tlsenable: 'no'
