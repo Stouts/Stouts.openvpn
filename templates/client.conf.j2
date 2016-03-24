@@ -38,28 +38,9 @@ persist-tun
 # SSL/TLS parms. See the server config file for more description.  It's best to
 # use a separate .crt/.key file pair for each client.  A single ca file can be
 # used for all clients.
-{% if openvpn_unified_client_profiles %}
-<ca>
-{{ openvpn_ca_file_contents }}
-</ca>
-<cert>
-{{ openvpn_client_cert_output |default([{'item':client,'stdout':''}])|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
-</cert>
-<key>
-{{ openvpn_client_keys_output |default([{'item':client,'stdout':''}])|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
-</key>
-{% if openvpn_tls_auth %}
-key-direction 1
-<tls-auth>
-{{ openvpn_tls_auth_file_contents | default('') }}
-</tls-auth>
-{% endif %}
-
-{% else %}
-ca ca.crt
-cert {{client}}.crt
-key {{client}}.key
-{% endif %}
+#ca ca.crt
+#cert {{client.1}}.crt
+#key {{client.1}}.key
 
 # Verify server certificate by checking that the certicate has the nsCertType
 # field set to "server".  This is an important precaution to protect against a
@@ -93,3 +74,13 @@ auth-user-pass
 {% for option in openvpn_client_options %}
 {{option}}
 {% endfor %}
+
+<ca>
+{{ openvpn_ca_cert['stdout'] }}
+</ca>
+<cert>
+{{ openvpn_client_certs.results[client.0]['stdout'] }}
+</cert>
+<key>
+{{ openvpn_client_keys.results[client.0]['stdout'] }}
+</key>
