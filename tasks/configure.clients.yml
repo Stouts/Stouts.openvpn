@@ -1,0 +1,35 @@
+---
+
+- name: Generate Clients keys
+  command: "{{ openvpn_etcdir }}/build-client.sh {{ item }}"
+  args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
+  with_items: openvpn_clients
+
+- name: Revoke Clients keys
+  command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
+  args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
+  with_items: openvpn_clients_revoke
+
+- name: Gather CA cert
+  command: cat {{ openvpn_keydir }}/ca.crt
+  register: openvpn_ca_cert
+
+- name: Gather client certs
+  command: cat {{ openvpn_keydir }}/{{ item }}.crt
+  with_items: openvpn_clients
+  register: openvpn_client_certs
+
+- name: Gather client keys
+  command: cat {{ openvpn_keydir }}/{{ item }}.key
+  with_items: openvpn_clients
+  register: openvpn_client_keys
+
+- name: Generate Clients configurations
+  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item.1}}.ovpn force=yes
+  with_indexed_items: openvpn_clients
+  notify: openvpn pack clients
+  register: openvpn_clients_changed
+
+- name: Configure users
+  htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
+  with_items: openvpn_use_pam_users
