@@ -38,7 +38,7 @@ openvpn_key_org: Fort-Funston
 openvpn_key_email: me@myhost.mydomain
 openvpn_key_size: 1024
 
-openvpn_clients: [client]                         # Make clients certificate
+openvpn_clients: []                               # Make clients certificate
 openvpn_clients_revoke: []                        # Revoke clients certificates
 
 # Use PAM authentication

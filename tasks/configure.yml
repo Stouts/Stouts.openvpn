@@ -11,16 +11,6 @@
   command: "{{openvpn_etcdir}}/build-server.sh"
   args: { creates: "{{ openvpn_keydir }}" }
 
-- name: Generate Clients keys
-  command: "{{openvpn_etcdir}}/build-client.sh {{item}}"
-  args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
-  with_items: openvpn_clients
-
-- name: Revoke Clients keys
-  command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
-  args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
-  with_items: openvpn_clients_revoke
-
 - name: Create client configuration directory if requested
   file: >
     path={{openvpn_client_config_dir}}
@@ -32,33 +22,9 @@
   stat: path={{openvpn_keydir}}/crl.pem
   register: crl_pem_file
 
-- name: Gather CA cert
-  command: cat {{ openvpn_keydir }}/ca.crt
-  register: openvpn_ca_cert
-
-- name: Gather client certs
-  command: cat {{ openvpn_keydir }}/{{ item }}.crt
-  with_items: openvpn_clients
-  register: openvpn_client_certs
-
-- name: Gather client keys
-  command: cat {{ openvpn_keydir }}/{{ item }}.key
-  with_items: openvpn_clients
-  register: openvpn_client_keys
-
-- name: Generate Clients configurations
-  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item.1}}.ovpn force=yes
-  with_indexed_items: openvpn_clients
-  notify: openvpn pack clients
-  register: openvpn_clients_changed
-
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
   when: openvpn_use_pam
-
-- name: Configure users
-  htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
-  with_items: openvpn_use_pam_users
 
 - name: Setup LDAP
   template: src=auth-ldap.conf.j2 dest=/etc/openvpn/auth-ldap.conf
