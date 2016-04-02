@@ -13,14 +13,15 @@ dev {{ openvpn_dev }}
 
 # Are we connecting to a TCP or UDP server?  Use the same setting as on the
 # server.
-proto {{ openvpn_proto }}
+# proto {{ openvpn_proto }}
 
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
 
 # The hostname/IP and port of the server. You can have multiple remote entries
 # to load balance between the servers.
-remote {{openvpn_host}} {{openvpn_port}}
+remote {{openvpn_host}} {{openvpn_port}} udp
+remote {{openvpn_host}} {{openvpn_port}} tcp
 
 # Keep trying indefinitely to resolve the host name of the OpenVPN server.
 # Very useful on machines which are not permanently connected to the internet
