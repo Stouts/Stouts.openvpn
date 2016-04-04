@@ -58,17 +58,20 @@
   stat: path={{openvpn_keydir}}/crl.pem
   register: crl_pem_file
 
+- name: Generate Clients configurations
+  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
+  with_items: "{{ openvpn_clients }}"
+  notify: openvpn pack clients
+  register: openvpn_clients_changed
+
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
   when: openvpn_use_pam
 
-<<<<<<< HEAD
 - name: Configure users
   htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
   with_items: "{{ openvpn_use_pam_users }}"
 
-=======
->>>>>>> 2720890... make client management separate
 - name: Setup LDAP
   template: src=auth-ldap.conf.j2 dest=/etc/openvpn/auth-ldap.conf
   when: openvpn_use_ldap
