@@ -14,12 +14,12 @@
 - name: Generate Clients keys
   command: "{{openvpn_etcdir}}/build-client.sh {{item}}"
   args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
-  with_items: openvpn_clients
+  with_items: "{{ openvpn_clients }}"
 
 - name: Revoke Clients keys
   command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
-  with_items: openvpn_clients_revoke
+  with_items: "{{ openvpn_clients_revoke }}"
 
 - name: Create client configuration directory if requested
   file: >
@@ -34,7 +34,7 @@
 
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
-  with_items: openvpn_clients
+  with_items: "{{ openvpn_clients }}"
   notify: openvpn pack clients
   register: openvpn_clients_changed
 
@@ -44,7 +44,7 @@
 
 - name: Configure users
   htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
-  with_items: openvpn_use_pam_users
+  with_items: "{{ openvpn_use_pam_users }}"
 
 - name: Setup LDAP
   template: src=auth-ldap.conf.j2 dest=/etc/openvpn/auth-ldap.conf
