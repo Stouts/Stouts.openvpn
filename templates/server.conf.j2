@@ -168,5 +168,6 @@ push "dhcp-option DNS {{ item }}"
 {% endfor %}
 
 push "dhcp-option SEARCH {{ domain }}"
+push "dhcp-option SEARCH {{ dc }}.{{ domain }}"
 push "dhcp-option SEARCH consul"
 push "dhcp-option DOMAIN consul"
