@@ -167,7 +167,9 @@ push "route 183.90.170.94 255.255.255.255"
 push "dhcp-option DNS {{ item }}"
 {% endfor %}
 
+push "dhcp-option DOMAIN cs.consul"
 push "dhcp-option SEARCH {{ domain }}"
-push "dhcp-option SEARCH {{ dc }}.{{ domain }}"
 push "dhcp-option SEARCH consul"
-push "dhcp-option DOMAIN consul"
+push "dhcp-option SEARCH cs.consul"
+push "dhcp-option SEARCH node.cs.consul"
+push "dhcp-option SEARCH service.cs.consul"
