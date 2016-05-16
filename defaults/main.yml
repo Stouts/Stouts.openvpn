@@ -20,7 +20,7 @@ openvpn_topology: subnet                            # Recommended topology but
                                                     # net30 - legacy topology
 openvpn_max_clients: 100
 openvpn_log: /var/log/openvpn.log                   # Log's directory
-openvpn_keepalive: "10 120"
+openvpn_keepalive: "10 30"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: yes                               # Enable compression
 openvpn_float: yes                                  # Allow remote peer to change its IP address and/or port number
