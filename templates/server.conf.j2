@@ -160,12 +160,11 @@ crl-verify {{openvpn_keydir}}/crl.pem
 {% for network in dc_networks %}
 push "route {{ network | ipaddr('network') }} {{ network | ipaddr('netmask') }}"
 {% endfor %}
-# route traffic to ELK server
-push "route 183.90.170.94 255.255.255.255"
 
-{% for item in dns_servers_consul %}
-push "dhcp-option DNS {{ item }}"
-{% endfor %}
+#{% for item in dns_servers_consul %}
+#push "dhcp-option DNS {{ item }}"
+#{% endfor %}
+push "dhcp-option DNS 10.1.3.10"
 
 push "dhcp-option DOMAIN cs.consul"
 push "dhcp-option SEARCH {{ domain }}"
