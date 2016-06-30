@@ -16,3 +16,7 @@
 
 - name: Ensure OpenVPN is started
   service: name=openvpn state=started enabled=yes
+
+- include: monitoring.yml
+  tags:
+    - monitoring

@@ -52,3 +52,8 @@ openvpn_use_pam_users: []                         # If empty use system users
 openvpn_use_ldap: no
 openvpn_ldap_tlsenable: 'no'
 openvpn_ldap_follow_referrals: 'no'
+
+# Monitoring
+openvpn_nagios_plugin_dir: "{{ openvpn_etcdir }}/nagios-plugins"
+openvpn_monitoring_clients_warning: 5
+openvpn_monitoring_clients_critical: 10

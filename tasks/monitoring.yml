@@ -1,0 +1,58 @@
+- name: Centralize VPN Logs
+  watch_logs:
+    name: openvpn
+    file_paths:
+      - "{{ openvpn_log }}"
+
+- name: Create directory for nagios plugins
+  file:
+    state: directory
+    dest: "{{ openvpn_etcdir }}/nagios-plugins"
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Place openvpn check plugins
+  copy:
+    src: "{{ item }}"
+    dest: "{{ openvpn_nagios_plugin_dir }}/{{ item }}"
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - check_openvpn
+    - check_openvpn_clients.pl
+
+- name: Make status file readable for service checks
+  file:
+    path: "{{ openvpn_etcdir }}/{{ openvpn_status }}"
+    mode: 0644
+
+- name: Register consul service for openvpn
+  consul_service:
+    name: vpn-infra
+    port: "{{ openvpn_port }}"
+    checks:
+      - name: service check
+        type: script
+        script: service openvpn status || exit 2
+
+      - name: process check
+        type: script
+        script: >
+          /usr/lib/nagios/plugins/check_procs
+          -C openvpn -c 1:1
+
+      - name: openvpn connection check
+        type: script
+        script: >
+          {{ openvpn_nagios_plugin_dir }}/check_openvpn
+          -p 1194 localhost
+
+      - name: openvpn client connections check
+        type: script
+        script: >
+          {{ openvpn_nagios_plugin_dir }}/check_openvpn_clients.pl
+          -S {{ openvpn_etcdir }}/{{ openvpn_status }}
+          -w {{ openvpn_monitoring_clients_warning }}
+          -c {{ openvpn_monitoring_clients_critical }}
