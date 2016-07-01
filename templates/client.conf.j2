@@ -36,6 +36,9 @@ persist-tun
 # use a separate .crt/.key file pair for each client.  A single ca file can be
 # used for all clients.
 ca ca.crt
+# It works cool for Windows certificate store
+# For Linux need to use this:
+# pkcs12 certname.p12
 cryptoapicert "THUMB:{{ item.stdout }}"
 
 # Verify server certificate by checking that the certicate has the nsCertType
@@ -65,3 +68,10 @@ auth-user-pass
 {% for option in openvpn_client_options %}
 {{option}}
 {% endfor %}
+
+# This updates the resolvconf with dns settings
+# uncomment it for Linux clients
+#script-security 2
+#setenv PATH /usr/bin
+#up /etc/openvpn/update-resolv-conf
+#down /etc/openvpn/update-resolv-conf
