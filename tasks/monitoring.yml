@@ -25,7 +25,7 @@
 
 - name: Make status file readable for service checks
   file:
-    path: "{{ openvpn_etcdir }}/{{ openvpn_status }}"
+    path: "{{ openvpn_status_file_path }}"
     mode: 0644
 
 - name: Register consul service for openvpn
@@ -54,6 +54,15 @@
         type: script
         script: >
           {{ openvpn_nagios_plugin_dir }}/check_openvpn_clients.pl
-          -S {{ openvpn_etcdir }}/{{ openvpn_status }}
+          -S {{ openvpn_status_file_path }}
           -w {{ openvpn_monitoring_clients_warning }}
           -c {{ openvpn_monitoring_clients_critical }}
+
+- name: Add Openvpn plugin to collectd
+  template:
+    src: collectd-openvpn.conf.j2
+    dest: /etc/collectd/collectd.conf.d/openvpn.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart collectd

@@ -1,0 +1,6 @@
+LoadPlugin openvpn
+<Plugin openvpn>
+    StatusFile "{{ openvpn_status_file_path }}"
+    CollectIndividualUsers {{ openvpn_enable_collect_individual_users }}
+    CollectUserCount {{ openvpn_enable_collect_user_count }}
+</Plugin>
