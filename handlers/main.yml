@@ -1,7 +1,7 @@
 ---
 
 - name: openvpn restart
-  service: name=openvpn state=restarted
+  service: name={{openvpn_service}} state=restarted
 
 - name: openvpn pack clients
   command: tar cvzf {{openvpn_keydir}}/{{item.item}}.tar.gz -C {{openvpn_keydir}} {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt
