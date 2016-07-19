@@ -10,7 +10,7 @@ openvpn_cert_pass: ""
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address
 openvpn_port: 1194
-openvpn_proto: udp
+openvpn_proto: tcp
 openvpn_dev: tun
 openvpn_server: 10.8.0.0 255.255.255.0              # Set empty for skip
 #openvpn_push_nets: []
