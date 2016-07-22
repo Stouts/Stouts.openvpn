@@ -51,6 +51,11 @@ key {{client}}.key
 # easy-rsa folder will do this.
 ns-cert-type server
 
+{% if openvpn_tls_auth -%}
+# Use a static pre-shared key (PSK)
+tls-auth {{openvpn_tls_key}} 1
+{% endif %}
+
 # Enable compression on the VPN link. Don't enable this unless it is also
 # enabled in the server config file.
 {% if openvpn_comp_lzo -%}
