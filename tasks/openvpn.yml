@@ -1,6 +1,11 @@
 ---
 
-- include_vars: "{{ansible_distribution}}.{{ansible_distribution_release}}.yml"
+- name: Include OS-specific variables.
+  include_vars: "{{item}}"
+  with_first_found:
+  - "{{ ansible_os_family }}-{{ ansible_lsb.codename }}.yml"
+  - "{{ ansible_os_family }}.yml"
+  - "Common-default.yml"
 
 - include: install.deb.yml
   when: ansible_os_family == 'Debian'

@@ -1,4 +1,5 @@
 ---
-# Stouts.openvpn does not support Ubuntu 16.04 (ffs!). So this config is here until it is supported
 openvpn_use_pam_plugin_distribution: /usr/lib/openvpn/openvpn-plugin-auth-pam.so
 openvpn_use_ldap_plugin_distribution: /usr/lib/openvpn/openvpn-auth-ldap.so
+
+openvpn_service: openvpn
