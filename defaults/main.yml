@@ -5,6 +5,9 @@ openvpn_enabled: yes                                # The role is enabled
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{openvpn_etcdir}}/keys"
 
+# Installation settings
+openvpn_use_system_easyrsa: false                   # Install EasyRSA from system packages
+
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address
 openvpn_port: 1194
