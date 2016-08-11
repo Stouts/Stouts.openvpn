@@ -21,7 +21,13 @@ cipher {{ openvpn_cipher }}
 
 # The hostname/IP and port of the server. You can have multiple remote entries
 # to load balance between the servers.
+{% if openvpn_host is string -%}
 remote {{openvpn_host}} {{openvpn_port}}
+{% else -%}
+{% for host in openvpn_host %}
+remote {{host}} {{openvpn_port}}
+{% endfor %}
+{% endif %}
 
 # Keep trying indefinitely to resolve the host name of the OpenVPN server.
 # Very useful on machines which are not permanently connected to the internet
