@@ -39,6 +39,9 @@ openvpn_client_options: []                          # Additional client options
                                                     # - dev-node MyTap
                                                     # - client-to-client
 
+openvpn_skip_keys: false                            # Skip key generation completely.
+                                                    # Enable if keys will copied from somewher else.
+
 openvpn_key_country: US
 openvpn_key_province: CA
 openvpn_key_city: SanFrancisco
