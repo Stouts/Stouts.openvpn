@@ -11,14 +11,16 @@
       paths: vars
 
 - include: install.deb.yml
-  when: ansible_os_family == 'Debian'
+  when: not openvpn_only_keys and ansible_os_family == 'Debian'
 
 - include: install.yum.yml
-  when: ansible_os_family == 'RedHat'
+  when: not openvpn_only_keys and ansible_os_family == 'RedHat'
 
 - include: configure.yml
 
 - include: setup-bridge.yml
+  when: not openvpn_only_keys
 
 - name: Ensure OpenVPN is started
   service: name={{openvpn_service}} state=started enabled=yes
+  when: not openvpn_only_keys

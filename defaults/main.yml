@@ -41,6 +41,7 @@ openvpn_client_options: []                          # Additional client options
 
 openvpn_skip_keys: false                            # Skip key generation completely.
                                                     # Enable if keys will copied from somewher else.
+openvpn_only_keys: false                            # Skip everything but key generation
 
 openvpn_key_country: US
 openvpn_key_province: CA
