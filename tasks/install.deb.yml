@@ -1,27 +1,32 @@
 ---
 
-- name: Add OpenVPN repo GPG key
+- name: Add OpenVPN repo GPG key (Debian)
   apt_key:
     id: E158C569
     url: https://swupdate.openvpn.net/repos/repo-public.gpg
   when: openvpn_use_external_repo
 
-- name: Add OpenVPN repo sources
+- name: Add OpenVPN repo sources (Debian)
   apt_repository:
     filename: openvpn
     repo: deb http://swupdate.openvpn.net/apt {{ ansible_lsb.codename }} main
   when: openvpn_use_external_repo
+  register: openvpn_repo_action
 
 - name: Install requirements (Debian)
   apt: name={{item}}
   with_items: [openvpn, udev, openssl, zip]
+
+- name: Update OpenVPN (Debian)
+  apt: name=openvpn state=latest
+  when: openvpn_use_external_repo and openvpn_repo_action.changed
 
 - name: Install dependencies (Debian)
   apt: name={{item}}
   when: openvpn_use_pam_users|default(false)
   with_items: [libpam-pwdfile, python-passlib]
 
-- name: Install easy-rsa package
+- name: Install easy-rsa package (Debian)
   apt: name=easy-rsa
   when: openvpn_use_system_easyrsa
 
