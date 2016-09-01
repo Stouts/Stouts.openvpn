@@ -60,11 +60,13 @@
       creates: "{{ openvpn_keydir }}/dh{{ openvpn_key_size }}.pem"
 
   - name: Generate tls-auth key
-    command: openvpn --genkey --secret "{{ openvpn_tls_key }}"
-    args:
-      chdir: "{{ openvpn_keydir }}"
-      creates: "{{ openvpn_keydir }}/{{ openvpn_tls_key }}"
-    when: openvpn_tls_auth
+    template:
+      src: tls_auth_key.j2
+      dest: "{{ openvpn_keydir }}/{{ openvpn_tls_key }}"
+      force: no
+      mode: 0600
+    vars:
+      key_bits: 2048
 
   - name: Generate Clients keys
     shell: . "{{ openvpn_etcdir }}/vars" && "$EASY_RSA/pkitool" "{{ item }}"
