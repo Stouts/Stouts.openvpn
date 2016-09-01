@@ -13,11 +13,11 @@
   when: openvpn_use_external_repo
 
 - name: Install requirements (Debian)
-  apt: name={{item}} force=yes
+  apt: name={{item}}
   with_items: [openvpn, udev, openssl, zip]
 
 - name: Install dependencies (Debian)
-  apt: name={{item}} force=yes
+  apt: name={{item}}
   when: openvpn_use_pam_users|default(false)
   with_items: [libpam-pwdfile, python-passlib]
 
