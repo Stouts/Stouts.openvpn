@@ -20,7 +20,7 @@
     template:
       src: "vars.j2"
       dest: "{{ openvpn_etcdir }}/vars"
-      mode: 0700
+      mode: 0600
   
   - name: Create key directory
     file:
@@ -31,14 +31,14 @@
   - name: Create key index file
     copy:
       dest: "{{ openvpn_keydir }}/index.txt"
-      mode: 0700
+      mode: 0600
       content: ""
       force: no
   
   - name: Create serial file
     copy:
       dest: "{{ openvpn_keydir }}/serial"
-      mode: 0700
+      mode: 0600
       content: "01"
       force: no
 
