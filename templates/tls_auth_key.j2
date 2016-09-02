@@ -3,7 +3,7 @@
 #
 -----BEGIN OpenVPN Static key V1-----
 {% set rand_data = lookup('pipe', 'openssl rand -hex {}'.format(key_bits // 8)) %}
-{% for i in range(key_bits // 128) %}
-{{ rand_data[i:i+16] }}
+{% for i in range(0, rand_data|length, 32) %}
+{{ rand_data[i:i+32] }}
 {% endfor %}
 -----END OpenVPN Static key V1-----
