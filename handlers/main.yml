@@ -1,7 +1,8 @@
 ---
 
 - name: openvpn restart
-  service: name={{openvpn_service}} state=restarted
+  service: name={{openvpn_service}} state=reloaded
+  when: not openvpn_only_keys
 
 - name: openvpn pack clients
   command: zip -j {{openvpn_keydir}}/{{item.item}}.zip {{openvpn_keydir}}/{{item.item}}.crt {{openvpn_keydir}}/{{item.item}}.key {{openvpn_keydir}}/{{item.item}}.ovpn {{openvpn_keydir}}/ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}

@@ -21,7 +21,7 @@
       src: "vars.j2"
       dest: "{{ openvpn_etcdir }}/vars"
       mode: 0600
-  
+
   - name: Create key directory
     file:
       path: "{{ openvpn_keydir }}"
@@ -34,30 +34,35 @@
       mode: 0600
       content: ""
       force: no
-  
+    notify: openvpn restart
+
   - name: Create serial file
     copy:
       dest: "{{ openvpn_keydir }}/serial"
       mode: 0600
       content: "01"
       force: no
+    notify: openvpn restart
 
   - name: Initialize CA
     shell: . "{{ openvpn_etcdir }}/vars" && "$EASY_RSA/pkitool" --initca
     args:
       chdir: "{{ openvpn_keydir }}"
       creates: "{{ openvpn_keydir }}/ca.crt"
-  
+    notify: openvpn restart
+
   - name: Create server certificate
     shell: . "{{openvpn_etcdir}}/vars" && "$EASY_RSA/pkitool" --server server
     args:
       chdir: "{{ openvpn_keydir }}"
       creates: "{{ openvpn_keydir }}/server.crt"
-      
+    notify: openvpn restart
+
   - name: Create DH parameters
     command: openssl dhparam -out '{{ openvpn_keydir }}/dh{{ openvpn_key_size }}.pem' {{ openvpn_key_size }}
     args:
       creates: "{{ openvpn_keydir }}/dh{{ openvpn_key_size }}.pem"
+    notify: openvpn restart
 
   - name: Generate tls-auth key
     template:
@@ -67,6 +72,7 @@
       mode: 0600
     vars:
       key_bits: 2048
+    notify: openvpn restart
 
   - name: Generate Clients keys
     shell: . "{{ openvpn_etcdir }}/vars" && "$EASY_RSA/pkitool" "{{ item }}"
@@ -74,6 +80,7 @@
       chdir: "{{ openvpn_keydir }}"
       creates: "{{ openvpn_keydir }}/{{ item }}.crt"
     with_items: "{{ openvpn_clients }}"
+    notify: openvpn restart
 
   - name: Revoke Clients keys
     shell: >
@@ -81,9 +88,10 @@
       "$EASY_RSA/revoke-full" "{{ item }}" && \
       rm -f '{{ openvpn_keydir }}/{{ item }}'{.crt,.csr,.key,.openvpn,.tar.gz}
     args:
-      chdir: "{{ openvpn_keydir }}" 
+      chdir: "{{ openvpn_keydir }}"
       removes: "{{ openvpn_keydir }}/{{ item }}.crt"
     with_items: "{{ openvpn_clients_revoke }}"
+    notify: openvpn restart
 
   - name: Create client configuration directory if requested
     file:
@@ -122,11 +130,11 @@
       dest: "{{openvpn_etcdir}}/auth-client.sh"
       mode: 0755
     when: openvpn_simple_auth and openvpn_simple_auth_password
-    notify: [openvpn restart]
+    notify: openvpn restart
 
   - name: Configure server
     template: src=server.conf.j2 dest={{openvpn_etcdir}}/server.conf
-    notify: [openvpn restart]
+    notify: openvpn restart
 
   - name: Ensure openvpn key dir has the right permission
     file: path={{openvpn_keydir}} state=directory mode=0700 owner={{openvpn_user}}
