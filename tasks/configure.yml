@@ -49,7 +49,8 @@
     args:
       chdir: "{{ openvpn_keydir }}"
       creates: "{{ openvpn_keydir }}/ca.crt"
-    notify: openvpn restart
+    register: openvpn_ca_init_result
+    notify: [openvpn pack clients, openvpn restart]
 
   - name: Create server certificate
     shell: . "{{openvpn_etcdir}}/vars" && "$EASY_RSA/pkitool" --server server
@@ -72,7 +73,8 @@
       mode: 0600
     vars:
       key_bits: 2048
-    notify: openvpn restart
+    register: openvpn_tls_key_result
+    notify: [openvpn pack clients, openvpn restart]
 
   - name: Generate Clients keys
     shell: . "{{ openvpn_etcdir }}/vars" && "$EASY_RSA/pkitool" "{{ item }}"

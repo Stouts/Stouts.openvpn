@@ -6,5 +6,6 @@
 
 - name: openvpn pack clients
   command: zip -j {{openvpn_keydir}}/{{item.item}}.zip {{openvpn_keydir}}/{{item.item}}.crt {{openvpn_keydir}}/{{item.item}}.key {{openvpn_keydir}}/{{item.item}}.ovpn {{openvpn_keydir}}/ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
-  when: item.changed
-  with_items: "{{openvpn_clients_changed.results}}"
+  with_items: >
+    {{ openvpn_clients if (openvpn_ca_init_result.changed or openvpn_tls_key_result.changed)
+       else openvpn_clients_changed.results|selectattr('changed')|map(attribute='item')|list }}
