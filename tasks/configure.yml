@@ -2,7 +2,11 @@
 
 - block:
   - name: Extract easy-rsa files
-    unarchive: src=easy-rsa.tar.gz dest="{{ openvpn_etcdir }}"
+    unarchive:
+      src: easy-rsa.tar.gz
+      dest: "{{ openvpn_etcdir }}"
+      mode: u=rwX,go=rX
+      keep_newer: yes
     when: not openvpn_use_system_easyrsa
 
   - name: Check if easy-rsa 2.x is available from the system
@@ -18,7 +22,7 @@
 
   - name: Generate vars file
     template:
-      src: "vars.j2"
+      src: vars.j2
       dest: "{{ openvpn_etcdir }}/vars"
       mode: 0600
 
