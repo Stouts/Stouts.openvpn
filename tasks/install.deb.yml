@@ -1,5 +1,17 @@
 ---
 
+- name: Add OpenVPN repo GPG key
+  apt_key:
+    id: E158C569
+    url: https://swupdate.openvpn.net/repos/repo-public.gpg
+  when: openvpn_use_external_repo
+
+- name: Add OpenVPN repo sources
+  apt_repository:
+    filename: openvpn
+    repo: deb http://swupdate.openvpn.net/apt {{ ansible_lsb.codename }} main
+  when: openvpn_use_external_repo
+
 - name: Install requirements (Debian)
   apt: name={{item}} force=yes
   with_items: [openvpn, udev, openssl]
