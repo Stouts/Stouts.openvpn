@@ -21,6 +21,10 @@
   when: openvpn_use_pam_users|default(false)
   with_items: [libpam-pwdfile, python-passlib]
 
+- name: Install easy-rsa package
+  apt: name=easy-rsa
+  when: openvpn_use_system_easyrsa
+
 - name: Install LDAP dependencies (Debian)
   apt: name=openvpn-auth-ldap force=yes
   when: openvpn_use_ldap

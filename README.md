@@ -24,6 +24,7 @@ openvpn_keydir: "{{openvpn_etcdir}}/keys"
 
 # Installation settings
 openvpn_use_external_repo: false                    # Enable upstream OpenVPN repository
+openvpn_use_system_easyrsa: false                   # Install EasyRSA from system packages
 
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address

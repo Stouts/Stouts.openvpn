@@ -2,6 +2,18 @@
 
 - name: Extract easy-rsa files
   unarchive: src=easy-rsa.tar.gz dest={{openvpn_etcdir}}
+  when: not openvpn_use_system_easyrsa
+
+- name: Check if easy-rsa 2.x is available from the system
+  stat: path=/usr/share/easy-rsa/build-ca
+  register: openvpn_easyrsa_check
+  when: openvpn_use_system_easyrsa
+
+- fail:
+    msg: >
+      EasyRSA 2.x is not present in /usr/share/easy-rsa.
+      Ensure the easy-rsa package is installed or disable the `openvpn_use_system_easyrsa` option.
+  when: openvpn_use_system_easyrsa and not openvpn_easyrsa_check.stat.exists
 
 - name: Generate scripts
   template: src={{item}}.j2 dest={{openvpn_etcdir}}/{{item}} mode=0700
