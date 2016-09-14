@@ -13,7 +13,7 @@ auto br-{{ openvpn_dev }}
 iface br-{{ openvpn_dev }} inet static
        bridge_ports {{ openvpn_dev }}
        bridge_stp off
-       address 10.27.253.1
-       netmask 255.255.255.0
-       network 10.27.253.0
-       broadcast 10.27.253.255
+       address {{openvpn_bridge.address}}
+       netmask {{openvpn_bridge.netmask}}
+       network {{openvpn_bridge.network}}
+       broadcast {{openvpn_bridge.broadcast}}
