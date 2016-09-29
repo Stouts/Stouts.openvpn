@@ -73,6 +73,6 @@ openvpn_monitoring_clients_warning: 5
 openvpn_monitoring_clients_critical: 10
 
 # Collectd openvpn plugin configuration
-openvpn_status_file_path: {{ openvpn_etcdir }}/{{ openvpn_status }}
+openvpn_status_file_path: "{{ openvpn_etcdir }}/{{ openvpn_status }}"
 openvpn_enable_collect_user_count: true
 openvpn_enable_collect_individual_users: true 
