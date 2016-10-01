@@ -5,7 +5,9 @@
   when: not openvpn_only_keys
 
 - name: openvpn pack clients
-  command: zip -j {{openvpn_keydir}}/{{item.item}}.zip {{openvpn_keydir}}/{{item.item}}.crt {{openvpn_keydir}}/{{item.item}}.key {{openvpn_keydir}}/{{item.item}}.ovpn {{openvpn_keydir}}/ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
+  command: zip -j {{item.item}}.zip {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
+  args:
+    chdir: "{{ openvpn_keydir }}"
   with_items: >
     {{ openvpn_clients if (openvpn_ca_init_result.changed or openvpn_tls_key_result.changed)
        else openvpn_clients_changed.results|selectattr('changed')|map(attribute='item')|list }}
