@@ -91,8 +91,7 @@
   - name: Revoke Clients keys
     shell: >
       . "{{ openvpn_etcdir }}/vars" && \
-      "$EASY_RSA/revoke-full" "{{ item }}" && \
-      rm -f '{{ openvpn_keydir }}/{{ item }}'{.crt,.csr,.key,.openvpn,.tar.gz}
+      "$EASY_RSA/revoke-full" "{{ item }}"
     args:
       chdir: "{{ openvpn_keydir }}"
       removes: "{{ openvpn_keydir }}/{{ item }}.crt"
