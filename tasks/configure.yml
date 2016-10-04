@@ -106,10 +106,18 @@
     when: openvpn_client_config_dir is defined
 
   - name: Generate Clients configurations
-    template: src=client.conf.j2 dest="{{ openvpn_keydir}}/{{ item }}.ovpn"
+    template: src=client.conf.j2 dest="{{ openvpn_keydir }}/{{ item }}.ovpn"
     with_items: "{{ openvpn_clients }}"
     notify: openvpn pack clients
     register: openvpn_clients_changed
+
+  - name: Check if any clients have not been packed
+    stat: path="{{ openvpn_keydir}}/{{ item }}.zip" get_checksum=no
+    with_items: "{{ openvpn_clients }}"
+    register: openvpn_clients_missing
+    changed_when: not openvpn_clients_missing.stat.exists
+    notify: openvpn pack clients
+
   when: not openvpn_skip_keys or openvpn_only_keys
 
 - block:
