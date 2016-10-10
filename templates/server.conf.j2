@@ -43,8 +43,8 @@ key {{openvpn_keydir}}/server.key  # This file should be kept secret
 # dh1024.pem 1024 Substitute 2048 for 1024 if you are using 2048 bit keys.
 dh {{openvpn_keydir}}/dh{{openvpn_key_size}}.pem
 
-# Client configuration directory.
 {% if openvpn_client_config_dir is defined -%}
+# Client configuration directory.
 client-config-dir {{ openvpn_client_config_dir }}
 {% endif %}
 
