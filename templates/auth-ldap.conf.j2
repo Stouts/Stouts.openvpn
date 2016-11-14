@@ -19,15 +19,16 @@
   FollowReferrals {{ openvpn_ldap_follow_referrals }}
 
   # TLS CA Certificate File
-  TLSCACertFile /etc/ssl/ca-cert.pem
+  TLSCACertFile {{ openvpn_ldap_tls_cacert }}
 
   # TLS CA Certificate Directory
   TLSCACertDir  /etc/ssl/certs
 
+  {% if openvpn_ldap_tls_use_clientcert != 'no' -%}
   # Client Certificate and key
   # If TLS client authentication is required
-  TLSCertFile /etc/ssl/client-cert.pem
-  TLSKeyFile  /etc/ssl/client-key.pem
+  TLSCertFile {{ openvpn_ldap_tls_clientcert }}
+  TLSKeyFile  {{ openvpn_ldap_tls_clientkey }}{% endif -%}
 
   # Cipher Suite
   # The defaults are usually fine here
