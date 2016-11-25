@@ -11,9 +11,12 @@ iface {{ openvpn_dev }} inet manual
 # Bridge
 auto br-{{ openvpn_dev }}
 iface br-{{ openvpn_dev }} inet static
-       bridge_ports {{ openvpn_dev }}
+       bridge_ports {{ openvpn_bridge.ports }}
        bridge_stp off
        address {{openvpn_bridge.address}}
        netmask {{openvpn_bridge.netmask}}
        network {{openvpn_bridge.network}}
        broadcast {{openvpn_bridge.broadcast}}
+       {% for line in openvpn_bridge.script -%}
+       {{ line }}
+       {% endfor %}
