@@ -90,13 +90,21 @@
 
   - name: Revoke Clients keys
     shell: >
-      . "{{ openvpn_etcdir }}/vars" && \
-      "$EASY_RSA/revoke-full" "{{ item }}"
+      openssl verify -CAfile <(cat ca.crt crl.pem) -crl_check "{{ item }}.crt" | grep revoked && exit 20;
+      . "{{ openvpn_etcdir }}/vars" && "$EASY_RSA/revoke-full" "{{ item }}"
     args:
+      executable: /bin/bash
       chdir: "{{ openvpn_keydir }}"
-      removes: "{{ openvpn_keydir }}/{{ item }}.crt"
+    register: openvpn_revoke_cmd
+    failed_when: openvpn_revoke_cmd.rc != 20 and 'revoked' not in openvpn_revoke_cmd.stdout
+    changed_when: openvpn_revoke_cmd.rc != 20
     with_items: "{{ openvpn_clients_revoke }}"
-    notify: openvpn restart
+
+  - name: Clear revocation leftovers
+    file:
+      path: "{{ openvpn_keydir }}/revoke-test.pem"
+      state: absent
+    changed_when: False
 
   - name: Create client configuration directory if requested
     file:
