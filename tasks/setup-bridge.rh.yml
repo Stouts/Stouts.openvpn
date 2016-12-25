@@ -1,0 +1,9 @@
+---
+
+- name: Setup bridge
+  when: openvpn_bridge
+  template:
+    src: bridge-interface.rh.j2
+    dest: "/etc/sysconfig/network-scripts/ifcfg-br-{{ openvpn_dev }}"
+  register: bridge
+  tags: [bridge]

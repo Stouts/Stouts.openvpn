@@ -3,7 +3,7 @@
 - name: Setup bridge
   when: openvpn_bridge
   template:
-    src: bridge-interface.j2
+    src: bridge-interface.deb.j2
     dest: "/etc/network/interfaces.d/{{ openvpn_dev }}"
   register: bridge
   tags: [bridge]
