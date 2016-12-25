@@ -15,6 +15,11 @@ port {{ openvpn_port }}
 # TCP or UDP server?
 proto {{ openvpn_proto }}
 
+{% if openvpn_portshare is defined %}
+# Port sharing
+port-share 127.0.0.1 {{ openvpn_portshare }}
+{% endif %}
+
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
 
