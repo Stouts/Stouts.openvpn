@@ -46,6 +46,14 @@ key {{openvpn_keydir}}/server.key  # This file should be kept secret
 # dh1024.pem 1024 Substitute 2048 for 1024 if you are using 2048 bit keys.
 dh {{openvpn_keydir}}/dh{{openvpn_key_size}}.pem
 
+{% if ansible_os_family == 'RedHat' %}
+# Tap management through script
+up "/etc/openvpn/up.sh br-{{ openvpn_dev }}"
+down "/etc/openvpn/down.sh br-{{ openvpn_dev }}"
+script-security 2
+{% endif %}
+
+
 {% if openvpn_tls_auth -%}
 # Use a static pre-shared key (PSK)
 tls-auth {{ openvpn_keydir }}/{{ openvpn_tls_key }} 0
