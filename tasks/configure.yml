@@ -51,11 +51,28 @@
   stat: path={{openvpn_keydir}}/crl.pem
   register: crl_pem_file
 
-- name: Generate Clients configurations
-  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
+- name: Get CA certificate contents
+  set_fact:
+    ca_crt: "{{ lookup('file', '{{ openvpn_keydir }}/ca.crt') }}"
+
+- name: Get TLS-AUTH key
+  set_fact:
+    tls_key: "{{ lookup('file', '{{ openvpn_keydir }}/{{openvpn_tls_key}}') }}"
+  when: openvpn_tls_auth
+
+- name: Extract certificate only
+  command: sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' {{ openvpn_keydir }}/{{item}}.crt
+  register: sed_extract
   with_items: "{{ openvpn_clients }}"
-  notify: openvpn pack clients
-  register: openvpn_clients_changed
+
+- name: Get Client certificate contents
+  set_fact:
+    openvpn_client_data: "{{ openvpn_client_data|default([]) + [ {'client_name':item.item,'client_crt':item.stdout, 'client_key':lookup('file', '{{openvpn_keydir}}/{{item.item}}.key') }] }}"
+  with_items: "{{ sed_extract.results }}"
+
+- name: Generate Clients configurations
+  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item.client_name}}.ovpn
+  with_items: "{{ openvpn_client_data }}"
 
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn

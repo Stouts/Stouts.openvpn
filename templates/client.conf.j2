@@ -38,10 +38,15 @@ persist-tun
 # SSL/TLS parms. See the server config file for more description.  It's best to
 # use a separate .crt/.key file pair for each client.  A single ca file can be
 # used for all clients.
-ca ca.crt
-cert {{client}}.crt
-key {{client}}.key
-
+<ca>
+{{ca_crt}}
+</ca>
+<cert>
+{{client.client_crt}}
+</cert>
+<key>
+{{client.client_key}}
+</key>
 # Verify server certificate by checking that the certicate has the nsCertType
 # field set to "server".  This is an important precaution to protect against a
 # potential attack discussed here: http://openvpn.net/howto.html#mitm
@@ -52,8 +57,11 @@ key {{client}}.key
 ns-cert-type server
 
 {% if openvpn_tls_auth -%}
+key-direction 1
 # Use a static pre-shared key (PSK)
-tls-auth {{openvpn_tls_key}} 1
+<tls-auth>
+{{tls_key}}
+</tls-auth>
 {% endif %}
 
 # Enable compression on the VPN link. Don't enable this unless it is also
