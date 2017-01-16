@@ -1,0 +1,24 @@
+---
+- name: Read CA file.
+  command: cat {{ openvpn_etcdir }}/keys/ca.crt
+  no_log: true
+  register: openvpn_read_ca_file_results
+  changed_when: false
+
+- name: Set CA file contents as fact.
+  set_fact:
+    openvpn_ca_file_contents: "{{ openvpn_read_ca_file_results.stdout }}"
+
+- name: Read client cert files.
+  command: cat {{ openvpn_etcdir }}/keys/{{ item }}.crt
+  no_log: true
+  changed_when: false
+  register: openvpn_read_client_cert_files_results
+  with_items: "{{ openvpn_clients }}"
+
+- name: Read client key files.
+  command: cat {{ openvpn_etcdir }}/keys/{{ item }}.key
+  no_log: true
+  changed_when: false
+  register: openvpn_read_client_key_files_results
+  with_items: "{{ openvpn_clients }}"
