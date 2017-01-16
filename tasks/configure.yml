@@ -13,7 +13,10 @@
     msg: >
       EasyRSA 2.x is not present in /usr/share/easy-rsa.
       Ensure the easy-rsa package is installed or disable the `openvpn_use_system_easyrsa` option.
-  when: openvpn_use_system_easyrsa and not openvpn_easyrsa_check.stat.exists
+  when:
+     - not ansible_check_mode|d(False)
+     - openvpn_use_system_easyrsa
+     - not openvpn_easyrsa_check.stat.exists
 
 - name: Generate scripts
   template: src={{item}}.j2 dest={{openvpn_etcdir}}/{{item}} mode=0700
