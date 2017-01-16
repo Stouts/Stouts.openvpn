@@ -43,6 +43,9 @@
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: "{{ openvpn_clients_revoke }}"
 
+- include: read-client-files.yml
+  when: openvpn_unified_client_profiles
+
 - name: Create client configuration directory if requested
   file: >
     path={{openvpn_client_config_dir}}
