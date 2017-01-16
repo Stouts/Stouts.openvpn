@@ -64,3 +64,6 @@ openvpn_ldap_follow_referrals: 'no'
 # Use simple authentication (default is disabled)
 openvpn_simple_auth: no
 openvpn_simple_auth_password: ""
+
+# Whether to embed CA, cert, and key info inside client OVPN config file.
+openvpn_unified_client_profiles: no
