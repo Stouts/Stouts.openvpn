@@ -4,6 +4,6 @@
   service: name={{openvpn_service}} state=restarted
 
 - name: openvpn pack clients
-  command: zip -j {{openvpn_keydir}}/{{item.item}}.zip {{openvpn_keydir}}/{{item.item}}.crt {{openvpn_keydir}}/{{item.item}}.key {{openvpn_keydir}}/{{item.item}}.ovpn {{openvpn_keydir}}/ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
+  command: "{{ openvpn_etcdir }}/build-client-config.sh {{ item.item }}"
   when: item.changed
   with_items: "{{openvpn_clients_changed.results}}"

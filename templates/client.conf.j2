@@ -35,12 +35,14 @@ nobind
 persist-key
 persist-tun
 
+{% if not openvpn_integrated_client_configs|d(False) %}
 # SSL/TLS parms. See the server config file for more description.  It's best to
 # use a separate .crt/.key file pair for each client.  A single ca file can be
 # used for all clients.
 ca ca.crt
 cert {{client}}.crt
 key {{client}}.key
+{% endif %}
 
 # Verify server certificate by checking that the certicate has the nsCertType
 # field set to "server".  This is an important precaution to protect against a
@@ -51,7 +53,7 @@ key {{client}}.key
 # easy-rsa folder will do this.
 ns-cert-type server
 
-{% if openvpn_tls_auth -%}
+{% if openvpn_tls_auth and not openvpn_integrated_client_configs|d(False) -%}
 # Use a static pre-shared key (PSK)
 tls-auth {{openvpn_tls_key}} 1
 {% endif %}

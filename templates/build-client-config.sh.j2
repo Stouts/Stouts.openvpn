@@ -1,0 +1,33 @@
+#! /bin/sh
+#
+
+client="$1"
+
+{% if openvpn_integrated_client_configs|d(False) %}
+touch "{{openvpn_keydir}}/$client.conf"
+chmod 600 "{{openvpn_keydir}}/$client.conf"
+{
+   cat "{{openvpn_keydir}}/$client.ovpn"
+
+   echo '<ca>'
+   cat '{{openvpn_keydir}}/ca.crt'
+   echo '</ca>'
+
+   echo '<cert>'
+   cat "{{openvpn_keydir}}/$client.crt"
+   echo '</cert>'
+
+   echo '<key>'
+   cat "{{openvpn_keydir}}/$client.key"
+   echo '</key>'
+
+{% if openvpn_tls_auth %}
+   echo '<tls-auth>'
+   cat '{{openvpn_keydir}}/{{ openvpn_tls_key }}'
+   echo '</tls-auth>'
+{% endif %}
+} > "{{openvpn_keydir}}/$client.conf"
+{% else %}
+cp "{{openvpn_keydir}}/$client.ovpn" "{{openvpn_keydir}}/$client.conf"
+zip -j "{{openvpn_keydir}}/$client.zip" "{{openvpn_keydir}}/$client.crt" "{{openvpn_keydir}}/$client.key" "{{openvpn_keydir}}/$client.conf" '{{openvpn_keydir}}/ca.crt' {{openvpn_tls_key if openvpn_tls_auth else ''}}
+{% endif %}
