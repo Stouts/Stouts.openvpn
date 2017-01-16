@@ -38,9 +38,21 @@ persist-tun
 # SSL/TLS parms. See the server config file for more description.  It's best to
 # use a separate .crt/.key file pair for each client.  A single ca file can be
 # used for all clients.
+{% if openvpn_unified_client_profiles %}
+<ca>
+{{ openvpn_ca_file_contents }}
+</ca>
+<cert>
+{{ openvpn_read_client_cert_files_results.results|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}"
+</cert>
+<key>
+{{ openvpn_read_client_key_files_results.results|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}"
+</key>
+{% else %}
 ca ca.crt
 cert {{client}}.crt
 key {{client}}.key
+{% endif %}
 
 # Verify server certificate by checking that the certicate has the nsCertType
 # field set to "server".  This is an important precaution to protect against a
