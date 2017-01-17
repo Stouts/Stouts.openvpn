@@ -10,7 +10,7 @@
     openvpn_ca_file_contents: "{{ openvpn_read_ca_file_results.stdout }}"
 
 - name: Read client cert files.
-  command: cat {{ openvpn_etcdir }}/keys/{{ item }}.crt
+  command: sed -n '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' {{ openvpn_keydir }}/{{ item }}.crt
   no_log: true
   changed_when: false
   register: openvpn_read_client_cert_files_results
