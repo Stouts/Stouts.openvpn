@@ -46,6 +46,11 @@
 - include: read-client-files.yml
   when: openvpn_unified_client_profiles
 
+- set_fact:
+    openvpn_client_keys_output: {}
+    openvpn_client_cert_output: {}
+  when: not openvpn_unified_client_profiles
+
 - name: Create client configuration directory if requested
   file: >
     path={{openvpn_client_config_dir}}

@@ -31,3 +31,7 @@
   changed_when: false
   register: openvpn_read_client_key_files_results
   with_items: "{{ openvpn_clients }}"
+
+- set_fact:
+    openvpn_client_keys_output: "{{ openvpn_read_client_key_files_results.results }}"
+    openvpn_client_cert_output: "{{ openvpn_read_client_cert_files_results.results }}"
