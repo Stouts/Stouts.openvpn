@@ -43,12 +43,25 @@ persist-tun
 {{ openvpn_ca_file_contents }}
 </ca>
 <cert>
-{{ openvpn_read_client_cert_files_results.results|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
+{{ openvpn_client_cert_output |default([{'item':client,'stdout':''}])|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
 </cert>
 <key>
-{{ openvpn_read_client_key_files_results.results|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
+{{ openvpn_client_keys_output |default([{'item':client,'stdout':''}])|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
 </key>
+{% if openvpn_tls_auth %}
+key-direction 1
+<tls-auth>
+{{ openvpn_tls_auth_file_contents | default('') }}
+</tls-auth>
+{% endif %}
+
 {% else %}
+
+{% if openvpn_tls_auth %}
+# Use a static pre-shared key (PSK)
+tls-auth {{openvpn_tls_key}} 1
+{%- endif %}
+
 ca ca.crt
 cert {{client}}.crt
 key {{client}}.key
@@ -62,16 +75,6 @@ key {{client}}.key
 # the nsCertType field set to "server".  The build-key-server script in the
 # easy-rsa folder will do this.
 ns-cert-type server
-
-{% if openvpn_tls_auth and not openvpn_unified_client_profiles -%}
-# Use a static pre-shared key (PSK)
-tls-auth {{openvpn_tls_key}} 1
-{% else %}
-key-direction 1
-<tls-auth>
-{{ openvpn_tls_auth_file_contents }}
-</tls-auth>
-{% endif %}
 
 # Enable compression on the VPN link. Don't enable this unless it is also
 # enabled in the server config file.
