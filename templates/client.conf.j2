@@ -43,10 +43,10 @@ persist-tun
 {{ openvpn_ca_file_contents }}
 </ca>
 <cert>
-{{ openvpn_read_client_cert_files_results.results|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}"
+{{ openvpn_read_client_cert_files_results.results|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
 </cert>
 <key>
-{{ openvpn_read_client_key_files_results.results|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}"
+{{ openvpn_read_client_key_files_results.results|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
 </key>
 {% else %}
 ca ca.crt
