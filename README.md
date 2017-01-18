@@ -100,6 +100,10 @@ openvpn_bridge:
 openvpn_server_options:
     - "dev-type tap"
     - "tls-server"
+
+# Whether to embed CA, cert, and key info inside client OVPN config file.
+openvpn_unified_client_profiles: no
+
 ```
 
 #### Usage
@@ -125,6 +129,8 @@ Example:
 ```
 
 Install and copy client's configuration from `/etc/openvpn/keys/myvpn.tar.gz` file.
+If you set `openvpn_unified_client_profiles: yes`, then you only need to copy
+`/etc/openvpn/keys/myvpn.ovpn`, as all the config info will be inlined.
 
 #### License
 
