@@ -1,0 +1,35 @@
+---
+- name: Read CA file.
+  command: cat {{ openvpn_etcdir }}/keys/ca.crt
+  no_log: true
+  register: openvpn_read_ca_file_results
+  changed_when: false
+
+- name: Read TLS-auth key
+  slurp:
+    src: "{{ openvpn_keydir }}/{{ openvpn_tls_key }}"
+  no_log: true
+  register: openvpn_read_tlsauth_file_results
+  changed_when: false
+  when: openvpn_tls_auth
+
+- name: Read client cert files.
+  command: sed -n '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' {{ openvpn_keydir }}/{{ item }}.crt
+  no_log: true
+  changed_when: false
+  register: openvpn_read_client_cert_files_results
+  with_items: "{{ openvpn_clients }}"
+
+- name: Read client key files.
+  command: cat {{ openvpn_etcdir }}/keys/{{ item }}.key
+  no_log: true
+  changed_when: false
+  register: openvpn_read_client_key_files_results
+  with_items: "{{ openvpn_clients }}"
+
+- name: Set client cert and CA info as fact.
+  set_fact:
+    openvpn_ca_file_contents: "{{ openvpn_read_ca_file_results.stdout }}"
+    openvpn_client_cert_output: "{{ openvpn_read_client_cert_files_results.results }}"
+    openvpn_client_keys_output: "{{ openvpn_read_client_key_files_results.results }}"
+    openvpn_tls_auth_file_contents: "{{ openvpn_read_tlsauth_file_results['content'] | b64decode | default('') }}"
