@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [[ "$password" == "{{ openvpn_simple_auth_password }}" ]]; then
+	R="0"
+else
+	R="1"
+fi
+
+exit $R

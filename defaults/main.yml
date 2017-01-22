@@ -5,19 +5,27 @@ openvpn_enabled: yes                                # The role is enabled
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{openvpn_etcdir}}/keys"
 
+# Installation settings
+openvpn_use_external_repo: false                    # Enable upstream OpenVPN repository
+openvpn_use_system_easyrsa: false                   # Install EasyRSA from system packages
+
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address
 openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
 openvpn_server: 10.8.0.0 255.255.255.0              # Set empty for skip
+openvpn_bridge: {}
 openvpn_max_clients: 100
 openvpn_log: /var/log/openvpn.log                   # Log's directory
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: yes                               # Enable compression
+openvpn_cipher: BF-CBC                              # Encryption algorithm
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
+openvpn_tls_auth : False                            # Enable perfect forward secracyxy
+openvpn_tls_key  : "ta.key"
 openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
@@ -52,3 +60,10 @@ openvpn_use_pam_users: []                         # If empty use system users
 openvpn_use_ldap: no
 openvpn_ldap_tlsenable: 'no'
 openvpn_ldap_follow_referrals: 'no'
+
+# Use simple authentication (default is disabled)
+openvpn_simple_auth: no
+openvpn_simple_auth_password: ""
+
+# Whether to embed CA, cert, and key info inside client OVPN config file.
+openvpn_unified_client_profiles: no

@@ -1,9 +1,11 @@
 ---
 
 - name: openvpn restart
-  service: name=openvpn state=restarted
+  service: name={{openvpn_service}} state=restarted
 
 - name: openvpn pack clients
-  command: tar cvzf {{openvpn_keydir}}/{{item.item}}.tar.gz -C {{openvpn_keydir}} {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt
+  command: zip -j {{item.item}}.zip {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
   when: item.changed
-  with_items: openvpn_clients_changed.results
+  with_items: "{{openvpn_clients_changed.results}}"
+  args:
+    chdir: "{{ openvpn_keydir }}"
