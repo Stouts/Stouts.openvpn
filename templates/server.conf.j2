@@ -147,8 +147,12 @@ group nogroup
 client-to-client
 {% endif %}
 
-{% if openvpn_use_pam %}
+{% if openvpn_client_cert_not_required %}
 client-cert-not-required
+{% else %}
+username-as-common-name
+{% endif %}
+{% if openvpn_use_pam %}
 plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
 {% endif %}
 
