@@ -1,3 +1,15 @@
 ---
 
-- fail: msg="RedHat is not supported now"
+- name: Install requirements (Redhat)
+  package: name={{item}}
+  with_items: [udev, openssl, zip]
+
+- name: Ensure OpenVPN is installed (RedHat).
+  package:
+    name: "openvpn"
+    state: installed
+
+- name: Ensure Easy-rsa is installed (RedHat).
+  package:
+    name: "easy-rsa"
+    state: installed
