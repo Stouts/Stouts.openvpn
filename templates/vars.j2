@@ -2,7 +2,13 @@
 
 # easy-rsa parameter settings
 {% if openvpn_use_system_easyrsa %}
-export EASY_RSA=/usr/share/easy-rsa
+
+{% if ansible_os_family == 'RedHat' %}
+    export EASY_RSA=/usr/share/easy-rsa/2.0
+{% else %}
+	export EASY_RSA=/usr/share/easy-rsa
+{% endif %}
+
 {% else %}
 export EASY_RSA="{{ openvpn_etcdir }}/easy-rsa"
 {% endif %}
