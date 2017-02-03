@@ -31,6 +31,7 @@ openvpn_host: "{{inventory_hostname}}"              # The server address
 openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
+openvpn_server_dev: "{{ openvpn_dev }}"		    # Different dev for server (maybe more specific tun0)
 openvpn_server: 10.8.0.0 255.255.255.0
 openvpn_max_clients: 100
 openvpn_log: /var/log/openvpn.log                   # Log's directory
