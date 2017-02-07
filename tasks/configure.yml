@@ -53,8 +53,16 @@
     args:
       chdir: "{{ openvpn_keydir }}"
       creates: "{{ openvpn_keydir }}/ca.crt"
-    register: openvpn_ca_init_result
     notify: [openvpn pack clients, openvpn restart]
+
+  - name: Initialize revocation list
+    shell: >
+      . "{{ openvpn_etcdir }}/vars" &&
+      KEY_OU= KEY_CN= KEY_NAME= KEY_ALTNAMES= openssl ca -config "$KEY_CONFIG" -gencrl -out crl.pem
+    args:
+      chdir: "{{ openvpn_keydir }}"
+      creates: "{{ openvpn_keydir }}/crl.pem"
+    notify: openvpn restart
 
   - name: Create server certificate
     shell: . "{{openvpn_etcdir}}/vars" && "$EASY_RSA/pkitool" --server server
