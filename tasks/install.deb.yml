@@ -12,6 +12,9 @@
     repo: deb http://swupdate.openvpn.net/apt {{ ansible_lsb.codename }} main
   when: openvpn_use_external_repo
 
+- name: Perform Apt Update
+  apt: update_cache=true
+
 - name: Install requirements (Debian)
   apt: name={{item}} force=yes
   with_items: [openvpn, udev, openssl, zip]
