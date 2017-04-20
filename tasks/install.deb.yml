@@ -13,12 +13,22 @@
     state: present
   when: openvpn_use_external_repo
 
-- name: Add OpenVPN repo sources (Debian)
+- name: Remove old OpenVPN repo sources (Debian)
   apt_repository:
     filename: openvpn
     repo: deb http://swupdate.openvpn.net/apt {{ ansible_lsb.codename }} main
+    state: absent
   when: openvpn_use_external_repo
   register: openvpn_repo_action
+
+- name: Add new OpenVPN repo sources (Debian)
+  apt_repository:
+    filename: openvpn
+    repo: deb http://build.openvpn.net/debian/openvpn/release/2.3 {{ ansible_lsb.codename }} main
+    state: present
+  when: openvpn_use_external_repo
+  register: openvpn_repo_action
+
 
 - name: Install requirements (Debian)
   apt: name={{item}}
