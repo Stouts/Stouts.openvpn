@@ -1,9 +1,15 @@
 ---
 
+- name: Download OpenVPN GPG key
+  get_url:
+    url: https://swupdate.openvpn.net/repos/repo-public.gpg
+    dest: /tmp/openvpn.gpg
+  when: openvpn_use_external_repo
+
 - name: Add OpenVPN repo GPG key (Debian)
   apt_key:
-    id: 8E6DA8B4E158C569
-    keyserver: pgp.mit.edu
+    file: /tmp/openvpn.gpg
+    id: E158C569
     state: present
   when: openvpn_use_external_repo
 
