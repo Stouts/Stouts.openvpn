@@ -63,6 +63,19 @@
   notify: openvpn pack clients
   register: openvpn_clients_changed
 
+- name: Create system user
+  user:
+    name: "{{ openvpn_user }}"
+    shell: /usr/bin/nologin
+    system: 'yes'
+    state: present
+
+- name: Create system group
+  group:
+    name: "{{ openvpn_group }}"
+    system: 'yes'
+    state: present
+
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
   when: openvpn_use_pam
