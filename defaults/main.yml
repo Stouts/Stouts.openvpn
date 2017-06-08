@@ -67,3 +67,6 @@ openvpn_simple_auth_password: ""
 
 # Whether to embed CA, cert, and key info inside client OVPN config file.
 openvpn_unified_client_profiles: no
+
+# Whether to make the created zip and ovpn file accessible by the others (plus the ansible user).
+openvpn_allow_others_into_keydir: yes
