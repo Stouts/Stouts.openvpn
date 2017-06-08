@@ -104,6 +104,9 @@ openvpn_server_options:
 # Whether to embed CA, cert, and key info inside client OVPN config file.
 openvpn_unified_client_profiles: no
 
+# Download the created client credentials to the specified directory
+openvpn_download_clients: no
+openvpn_download_dir: "client_credentials"
 ```
 
 #### Usage
