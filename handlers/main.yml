@@ -3,9 +3,18 @@
 - name: openvpn restart
   service: name={{openvpn_service}} state=restarted
 
-- name: openvpn pack clients
+- name: Pack clients
   command: zip -j {{item.item}}.zip {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
   when: item.changed
   with_items: "{{openvpn_clients_changed.results}}"
   args:
     chdir: "{{ openvpn_keydir }}"
+  register: done_packing
+  listen: openvpn pack clients
+
+- name: Change client conf owner
+  file:
+    path: "{{ openvpn_keydir }}"
+    mode: "o+x"
+  when: done_packing and openvpn_allow_others_into_keydir
+  listen: openvpn pack clients

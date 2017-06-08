@@ -104,6 +104,10 @@ openvpn_server_options:
 # Whether to embed CA, cert, and key info inside client OVPN config file.
 openvpn_unified_client_profiles: no
 
+# Whether to make  make the openvpn_keydir executable by "others".
+# This is useful if you need to download the client credential with eg the
+# ansible user, since most probably the role will be run with 'become: true'.
+openvpn_allow_others_into_keydir: yes
 ```
 
 #### Usage
