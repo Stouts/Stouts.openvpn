@@ -1,0 +1,86 @@
+---
+
+# based on http://www.hashbangcode.com/blog/adding-iptables-rules-ansible
+- name: Read existing iptable rules
+  shell: iptables -L
+  register: iptables_rules
+  check_mode: no
+  changed_when: false
+
+- name: Read existing iptable rules (nat table)
+  shell: iptables -L -t nat
+  register: iptables_nat_rules
+  check_mode: no
+  changed_when: false
+
+- name: Allow connections to the OpenVPN server
+  iptables:
+    chain: INPUT
+    in_interface: "{{ openvpn_interface }}"
+    ctstate: NEW
+    protocol: udp
+    destination_port: "{{ openvpn_port }}"
+    jump: ACCEPT
+    comment: incoming_openvpn
+  register: rules
+  when: iptables_rules.stdout.find("incoming_openvpn") == -1
+
+- name: Allow forwarding from tun/tap to interface
+  iptables:
+    chain: FORWARD
+    in_interface: "{{ openvpn_dev }}+"
+    out_interface: "{{ openvpn_interface }}"
+    jump: ACCEPT
+    comment: forward_tun_tap
+  register: rules
+  when: iptables_rules.stdout.find("forward_tun_tap") == -1
+
+- name: Allow forwarding from interface to tun/tap
+  iptables:
+    chain: FORWARD
+    in_interface: "{{ openvpn_interface }}"
+    out_interface: "{{ openvpn_dev }}+"
+    jump: ACCEPT
+    comment: forward_reverse
+  register: rules
+  when: iptables_rules.stdout.find("forward_reverse") == -1
+
+- name: Allow NATing outgoing vpn traffic
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    source: "{{ openvpn_server | regex_replace('^(?P<host>.+)\\s(?P<mask>.+)$', '\\g<host>/\\g<mask>') | ipaddr('net') }}"
+    out_interface: "{{ openvpn_interface }}"
+    jump: MASQUERADE
+    comment: vpn_masquerade
+  register: rules
+  when: iptables_nat_rules.stdout.find("vpn_masquerade") == -1 and openvpn_server != ""
+
+- name: Save the rules (RedHat)
+  command: iptables-save
+  when: rules.changed and ansible_os_family == "RedHat"
+
+- name: Install iptables-peristent (Debian)
+  apt:
+    name: iptables-persistent
+    force: yes
+
+- name: Save the rules (Debian)
+  command: /etc/init.d/iptables-persistent save
+  when: rules.changed and ansible_os_family == "Debian" and ansible_lsb.codename == "trusty"
+
+- name: Save the rules
+  command: netfilter-persistent save
+  when: rules.changed and ansible_os_family == "Debian" and ansible_lsb.codename != "trusty"
+
+# - name: Reload the firewall service
+#   service:
+#     name: firewalld
+#     state: reloaded
+#   when: ansible_os_family == "RedHat"
+#
+# - name: Restart iptables
+#   service:
+#     name: ufw
+#     state: reloaded
+#   when: ansible_os_family == "Debian"

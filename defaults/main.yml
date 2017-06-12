@@ -11,6 +11,7 @@ openvpn_use_system_easyrsa: false                   # Install EasyRSA from syste
 
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address
+openvpn_interface: "{{ ansible_default_ipv4.interface }}"   # The interface that traffic will come in from
 openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun

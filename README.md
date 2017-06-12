@@ -12,7 +12,8 @@ Ansible role which manage openvpn server
 
 #### Requirements
 
-Only tested on ubuntu for now.
+* Install python-ipaddr
+* Only tested on ubuntu for now.
 
 #### Variables
 
