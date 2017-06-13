@@ -38,6 +38,10 @@ openvpn_client_options: []                          # Additional client options
                                                     # openvpn_client_options:
                                                     # - dev-node MyTap
                                                     # - client-to-client
+openvpn_dns: [                                              # DNS servers to use
+  208.67.222.222,
+  208.67.220.220
+]
 
 openvpn_key_country: US
 openvpn_key_province: CA
