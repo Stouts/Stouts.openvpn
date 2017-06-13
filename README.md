@@ -12,7 +12,7 @@ Ansible role which manage openvpn server
 
 #### Requirements
 
-* Install python-ipaddr
+* Install python-netaddr
 * Only tested on ubuntu for now.
 
 #### Variables
