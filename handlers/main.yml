@@ -9,3 +9,32 @@
   with_items: "{{openvpn_clients_changed.results}}"
   args:
     chdir: "{{ openvpn_keydir }}"
+  register: done_packing
+  listen: openvpn pack clients
+
+#- name: Download client credentials (zip)
+  #fetch:
+    #src: "{{ openvpn_keydir }}/{{ item.item }}.zip"
+    #dst: "{{ openvpn_download_dir }}"
+  #when: item.changed and openvpn_download_clients and not openvpn_unified_client_profiles
+  #with_items: "{{ openvpn_clients_changed.results }}"
+
+- name: Download client credentials (zip)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.zip"
+    dest: "{{ openvpn_download_dir }}"
+    flat: yes
+    validate_checksum: yes
+  when: item.changed and done_packing and openvpn_download_clients and not openvpn_unified_client_profiles
+  with_items: "{{ openvpn_clients_changed.results }}"
+  listen: openvpn pack clients
+
+- name: Download client credentials (ovpn)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.ovpn"
+    dest: "{{ openvpn_download_dir }}"
+    flat: yes
+    validate_checksum: yes
+  when: item.changed and done_packing and openvpn_download_clients and openvpn_unified_client_profiles
+  with_items: "{{ openvpn_clients_changed.results }}"
+  listen: openvpn pack clients
