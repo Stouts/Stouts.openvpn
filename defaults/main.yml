@@ -1,43 +1,44 @@
 ---
 
-openvpn_enabled: yes                                # The role is enabled
+openvpn_enabled: yes                                        # The role is enabled
 
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{openvpn_etcdir}}/keys"
 
 # Installation settings
-openvpn_use_external_repo: false                    # Enable upstream OpenVPN repository
-openvpn_use_system_easyrsa: false                   # Install EasyRSA from system packages
+openvpn_use_external_repo: false                            # Enable upstream OpenVPN repository
+openvpn_use_system_easyrsa: false                           # Install EasyRSA from system packages
 
 # Default settings (See OpenVPN documentation)
-openvpn_host: "{{inventory_hostname}}"              # The server address
+openvpn_host: "{{inventory_hostname}}"                      # The server address
+openvpn_interface: "{{ ansible_default_ipv4.interface }}"   # The interface that traffic will come in from
 openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
-openvpn_server: 10.8.0.0 255.255.255.0              # Set empty for skip
+openvpn_server: 10.8.0.0 255.255.255.0                      # Set empty for skip
 openvpn_bridge: {}
 openvpn_max_clients: 100
-openvpn_log: /var/log/openvpn.log                   # Log's directory
+openvpn_log: /var/log/openvpn.log                           # Log's directory
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
-openvpn_comp_lzo: yes                               # Enable compression
-openvpn_cipher: BF-CBC                              # Encryption algorithm
+openvpn_comp_lzo: yes                                       # Enable compression
+openvpn_cipher: BF-CBC                                      # Encryption algorithm
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
-openvpn_tls_auth : False                            # Enable perfect forward secracyxy
-openvpn_tls_key  : "ta.key"
+openvpn_tls_auth: False                                     # Enable perfect forward secracyxy
+openvpn_tls_key: "ta.key"
 openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
 openvpn_client_to_client: yes
-openvpn_server_options: []                          # Additional server options
-                                                    # openvpn_server_options:
-                                                    # - dev-node MyTap
-                                                    # - client-to-client
-openvpn_client_options: []                          # Additional client options
-                                                    # openvpn_client_options:
-                                                    # - dev-node MyTap
-                                                    # - client-to-client
+openvpn_server_options: []                                  # Additional server options
+                                                            # openvpn_server_options:
+                                                            # - dev-node MyTap
+                                                            # - client-to-client
+openvpn_client_options: []                                  # Additional client options
+                                                            # openvpn_client_options:
+                                                            # - dev-node MyTap
+                                                            # - client-to-client
 
 openvpn_key_country: US
 openvpn_key_province: CA
@@ -46,15 +47,15 @@ openvpn_key_org: Fort-Funston
 openvpn_key_email: me@myhost.mydomain
 openvpn_key_size: 1024
 
-openvpn_clients: [client]                         # Make clients certificate
-openvpn_clients_revoke: []                        # Revoke clients certificates
+openvpn_clients: [client]                                   # Make clients certificate
+openvpn_clients_revoke: []                                  # Revoke clients certificates
 
 # Use PAM authentication
 openvpn_use_pam: yes
-openvpn_use_pam_users: []                         # If empty use system users
-                                                  # otherwise use users from the option
-                                                  # openvpn_use_pam_users:
-                                                  # - { name: user, password: password }
+openvpn_use_pam_users: []                                   # If empty use system users
+                                                            # otherwise use users from the option
+                                                            # openvpn_use_pam_users:
+                                                            # - { name: user, password: password }
 
 # LDAP authentication and configuration (optional)
 openvpn_use_ldap: no
