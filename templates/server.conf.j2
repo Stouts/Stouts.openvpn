@@ -168,3 +168,7 @@ script-security 3 execve
 {% if crl_pem_file.stat.exists %}
 crl-verify {{openvpn_keydir}}/crl.pem
 {% endif %}
+
+{% for dns in openvpn_dns %}
+push "dhcp-option DNS {{ dns }}"
+{% endfor %}
