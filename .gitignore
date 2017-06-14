@@ -1,0 +1,5 @@
+.vagrant
+*~
+*.retry
+.directory
+client_credentials
