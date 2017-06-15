@@ -43,10 +43,6 @@
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: "{{ openvpn_clients_revoke | default([])}}"
 
-- include: read-client-files.yml
-  when: openvpn_unified_client_profiles
-  with_items: "{{ openvpn_clients_revoke | default([])}}"
-
 - name: Create client configuration directory if requested
   file: >
     path={{openvpn_client_config_dir}}
@@ -60,7 +56,7 @@
 
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
-  with_items: "{{ openvpn_clients }}"
+  with_items: "{{ openvpn_clients | default([])}}"
   notify: openvpn pack clients
   register: openvpn_clients_changed
 

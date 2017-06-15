@@ -21,7 +21,7 @@ openvpn_log: /var/log/openvpn.log                   # Log's directory
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: yes                               # Enable compression
-openvpn_cipher: BF-CBC                              # Encryption algorithm
+openvpn_cipher: AES-256-GCM                         # Encryption algorithm
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_tls_auth : False                            # Enable perfect forward secracyxy
@@ -76,7 +76,3 @@ openvpn_monitoring_clients_critical: 10
 openvpn_status_file_path: "{{ openvpn_etcdir }}/{{ openvpn_status }}"
 openvpn_enable_collect_user_count: true
 openvpn_enable_collect_individual_users: true 
-
-# Use simple authentication (default is disabled)
-openvpn_simple_auth: no
-openvpn_simple_auth_password: ""

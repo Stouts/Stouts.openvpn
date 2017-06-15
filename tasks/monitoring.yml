@@ -27,6 +27,7 @@
   file:
     path: "{{ openvpn_status_file_path }}"
     mode: 0644
+    state: touch
 
 - name: Register consul service for openvpn
   consul_service:
