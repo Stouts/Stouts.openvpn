@@ -14,7 +14,7 @@
 
 - name: Install requirements (Debian)
   apt: name={{item}} force=yes
-  with_items: [openvpn, udev, openssl, zip]
+  with_items: [openvpn, udev, openssl, zip, libpam-google-authenticator]
 
 - name: Install dependencies (Debian)
   apt: name={{item}} force=yes

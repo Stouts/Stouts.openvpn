@@ -51,6 +51,7 @@ openvpn_clients_revoke: []                        # Revoke clients certificates
 
 # Use PAM authentication
 openvpn_use_pam: yes
+openvpn_use_google_authenticator: yes
 openvpn_use_pam_users: []                         # If empty use system users
                                                   # otherwise use users from the option
                                                   # openvpn_use_pam_users:
