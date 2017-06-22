@@ -64,6 +64,7 @@
   apt:
     name: iptables-persistent
     force: yes
+  when: ansible_os_family == "Debian"
 
 - name: Save the rules (Debian)
   command: /etc/init.d/iptables-persistent save
