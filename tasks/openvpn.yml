@@ -1,6 +1,14 @@
 ---
 
-- include_vars: "{{ansible_distribution}}.{{ansible_distribution_release}}.yml"
+- name: Include OS-specific variables.
+  include_vars: "{{item}}"
+  with_first_found:
+    - files:
+      - "{{ ansible_distribution }}.{{ ansible_lsb.codename }}.yml"
+      - "{{ ansible_distribution }}.yml"
+      - "{{ ansible_os_family }}.yml"
+      - "Common-default.yml"
+      paths: vars
 
 - include: install.deb.yml
   when: ansible_os_family == 'Debian'
@@ -10,5 +18,16 @@
 
 - include: configure.yml
 
+- include: setup-bridge.yml
+
+- include: configure.clients.yml
+  tags:
+    - client
+- include: setup-bridge.yml
+
 - name: Ensure OpenVPN is started
-  service: name=openvpn state=started enabled=yes
+  service: name={{openvpn_service}} state=started enabled=yes
+
+- include: monitoring.yml
+  tags:
+    - monitoring

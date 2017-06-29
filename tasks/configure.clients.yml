@@ -1,0 +1,51 @@
+---
+
+- name: Generate Clients keys
+  command: "{{ openvpn_etcdir }}/build-client.sh {{ item }}"
+  args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
+  with_items: "{{openvpn_clients | default([])}}"
+
+- name: Revoke Clients keys
+  command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
+  args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
+  with_items: "{{openvpn_clients_revoke | default([])}}"
+
+- name: Gather CA cert
+  command: cat {{ openvpn_keydir }}/ca.crt
+  register: openvpn_ca_cert
+
+- name: Gather client certs
+  command: cat {{ openvpn_keydir }}/{{ item }}.crt
+  with_items: "{{openvpn_clients | default([])}}"
+  register: openvpn_client_certs
+
+- name: Gather client keys
+  command: cat {{ openvpn_keydir }}/{{ item }}.key
+  with_items: "{{openvpn_clients | default([])}}"
+  register: openvpn_client_keys
+
+- name: Create directory for Google Authenticator config
+  file:
+    path: "{{ openvpn_keydir }}/otp"
+    state: directory
+
+- name: Generate google authenticator key
+  command: google-authenticator --time-based --disallow-reuse --force --rate-limit=3 --rate-time=30 --window-size=3 -l "VPN" -s {{openvpn_keydir}}/otp/{{ item }}.google_authenticator
+  register: google_authenticator_output
+  with_items: "{{openvpn_clients | default([])}}"
+
+- name: Generate Clients configurations
+  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item.1}}.ovpn force=yes
+  with_indexed_items: "{{openvpn_clients | default([])}}"
+  register: openvpn_clients_changed
+
+- name: openvpn pack clients
+  command: tar cvzf {{openvpn_keydir}}/{{item.item.1}}.tar.gz -C {{openvpn_keydir}} {{item.item.1}}.crt {{item.item.1}}.key otp/{{item.item.1}}.google_authenticator {{item.item.1}}.ovpn ca.crt
+  when: item.changed
+  with_items: "{{openvpn_clients_changed.results}}"
+
+- name: Configure users
+  htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
+  with_items: "{{openvpn_use_pam_users}}"
+
+- debug: msg="{{google_authenticator_output.results}}"

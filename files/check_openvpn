@@ -1,0 +1,88 @@
+#! /usr/bin/python
+
+# Check if an OpenVPN server runs on a given UDP port.
+#
+# Copyright 2013 Roland Wolters, credativ GmbH
+#
+# Version 1.0
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+# Source: https://exchange.icinga.org/exchange/check_openvpn
+
+import sys
+import socket
+import argparse
+import binascii
+
+def ok(msg):
+    print "OK: %s" % msg
+    sys.exit(0)
+
+def critical(msg):
+    print "CRIT: %s" % msg
+    sys.exit(2)
+
+def checkserver(host,port,proto):
+    byte_stream = "\x38\x01\x00\x00\x00\x00\x00\x00\x00"
+
+    if proto:
+        ovpn_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    else:
+        ovpn_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    ovpn_sock.settimeout(5)
+
+    try:
+        ovpn_sock.connect((host, port))
+        ovpn_sock.sendto(byte_stream, (host, port))
+        data, addr = ovpn_sock.recvfrom(1024) # buffer size is 1024 bytes
+        reply = binascii.hexlify(data)
+        if proto:
+            ok("OpenVPN tcp port reachable.")
+        else:
+            ok("OpenVPN server response (hex): %s" % reply)
+    except socket.timeout:
+        critical("Request timed out")
+        ovpn_sock.close()
+    except (socket.error, Exception):
+        critical("OpenVPN server not responding")
+        ovpn_sock.close()
+
+    ovpn_sock.close()
+    return data
+
+def optionsparser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p","--port", help="set port number",
+    type=int, dest="port", default="1194")
+    parser.add_argument("-t","--tcp", help="use tcp instead of udp",
+    action="store_true")
+    parser.add_argument("host", type=str, help="the OpenVPN host name or ip")
+    return parser.parse_args()
+
+def main():
+    arguments = optionsparser()
+
+    data = checkserver(arguments.host,arguments.port,arguments.tcp)
+
+if __name__ == "__main__":
+    main()
+

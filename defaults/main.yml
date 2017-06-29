@@ -5,19 +5,27 @@ openvpn_enabled: yes                                # The role is enabled
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{openvpn_etcdir}}/keys"
 
+# Installation settings
+openvpn_use_external_repo: false                    # Enable upstream OpenVPN repository
+openvpn_use_system_easyrsa: false                   # Install EasyRSA from system packages
+
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{inventory_hostname}}"              # The server address
 openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
 openvpn_server: 10.8.0.0 255.255.255.0              # Set empty for skip
+openvpn_bridge: {}
 openvpn_max_clients: 100
 openvpn_log: /var/log/openvpn.log                   # Log's directory
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: yes                               # Enable compression
+openvpn_cipher: AES-256-GCM                         # Encryption algorithm
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
+openvpn_tls_auth : False                            # Enable perfect forward secracyxy
+openvpn_tls_key  : "ta.key"
 openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
@@ -38,11 +46,12 @@ openvpn_key_org: Fort-Funston
 openvpn_key_email: me@myhost.mydomain
 openvpn_key_size: 1024
 
-openvpn_clients: [client]                         # Make clients certificate
+openvpn_clients: []                               # Make clients certificate
 openvpn_clients_revoke: []                        # Revoke clients certificates
 
 # Use PAM authentication
 openvpn_use_pam: yes
+openvpn_use_google_authenticator: yes
 openvpn_use_pam_users: []                         # If empty use system users
                                                   # otherwise use users from the option
                                                   # openvpn_use_pam_users:
@@ -52,3 +61,19 @@ openvpn_use_pam_users: []                         # If empty use system users
 openvpn_use_ldap: no
 openvpn_ldap_tlsenable: 'no'
 openvpn_ldap_follow_referrals: 'no'
+
+# Use simple authentication (default is disabled)
+openvpn_simple_auth: no
+openvpn_simple_auth_password: ""
+
+# Whether to embed CA, cert, and key info inside client OVPN config file.
+openvpn_unified_client_profiles: no
+# Monitoring
+openvpn_nagios_plugin_dir: "{{ openvpn_etcdir }}/nagios-plugins"
+openvpn_monitoring_clients_warning: 5
+openvpn_monitoring_clients_critical: 10
+
+# Collectd openvpn plugin configuration
+openvpn_status_file_path: "{{ openvpn_etcdir }}/{{ openvpn_status }}"
+openvpn_enable_collect_user_count: true
+openvpn_enable_collect_individual_users: true 
