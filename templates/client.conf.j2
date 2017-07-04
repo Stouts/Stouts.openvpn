@@ -18,6 +18,9 @@ dev {{ openvpn_dev }}
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
 
+# Authenticate packets with HMAC using message digest algorithm
+auth {{ openvpn_auth }}
+
 # The hostname/IP and port of the server. You can have multiple remote entries
 # to load balance between the servers.
 remote {{openvpn_host}} {{openvpn_port}} udp
