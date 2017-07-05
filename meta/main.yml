@@ -11,6 +11,10 @@ galaxy_info:
   - name: Ubuntu
     versions:
     - all
+  - name: Debian
+    versions:
+    - jessie
+    - stretch
   categories:
   - system
   - networking

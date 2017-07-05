@@ -9,6 +9,13 @@
   register: openvpn_easyrsa_check
   when: openvpn_use_system_easyrsa
 
+- name: Fix openssl.cnf path on Debian Stretch
+  file:
+    src:  "{{ '/usr/share/easy-rsa' if openvpn_use_system_easyrsa else openvpn_etcdir + '/easy-rsa' }}/openssl-1.0.0.cnf"
+    dest: "{{ '/usr/share/easy-rsa' if openvpn_use_system_easyrsa else openvpn_etcdir + '/easy-rsa' }}/openssl.cnf"
+    state: link
+  when: ansible_distribution_release == 'stretch'
+
 - fail:
     msg: >
       EasyRSA 2.x is not present in /usr/share/easy-rsa.
