@@ -34,7 +34,7 @@
     state: directory
 
 - name: Generate google authenticator key
-  command: google-authenticator --time-based --disallow-reuse --force --rate-limit=3 --rate-time=30 --window-size=3 -l "VPN" -s {{openvpn_keydir}}/otp/{{ item }}.google_authenticator
+  command: google-authenticator --time-based --disallow-reuse --force --rate-limit=3 --rate-time=30 --window-size=3 -l "Grofers VPN ({{item}})" -s {{openvpn_keydir}}/otp/{{ item }}.google_authenticator
   register: google_authenticator_output
   with_items: "{{openvpn_clients | default([])}}"
   run_once: True
