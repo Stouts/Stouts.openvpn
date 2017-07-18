@@ -1,10 +1,12 @@
 ---
+dist: trusty
 language: python
 python: "2.7"
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install -qq python-apt python-pycurl
 install:
+  - pip install netaddr
   - pip install ansible>=1.6.0
 script:
   # Prepare tests

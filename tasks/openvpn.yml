@@ -10,15 +10,17 @@
       - "Common-default.yml"
       paths: vars
 
-- include: install.deb.yml
+- import_tasks: install.deb.yml
   when: ansible_os_family == 'Debian'
 
-- include: install.yum.yml
+- import_tasks: install.yum.yml
   when: ansible_os_family == 'RedHat'
 
-- include: configure.yml
+- import_tasks: configure.yml
 
-- include: setup-bridge.yml
+- import_tasks: setup-bridge.yml
+
+- import_tasks: firewall.yml
 
 - name: Ensure OpenVPN is started
   service: name={{openvpn_service}} state=started enabled=yes
