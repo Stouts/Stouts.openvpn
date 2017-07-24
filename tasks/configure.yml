@@ -99,7 +99,7 @@
   - name: Revoke Clients keys
     shell: >
       [[ -f crl.pem && -f "{{ item }}.crt" ]] || exit 20;
-      openssl verify -CAfile <(cat ca.crt crl.pem) -crl_check "{{ item }}.crt" | grep revoked && exit 20;
+      openssl verify -CAfile <(cat ca.crt crl.pem) -crl_check "{{ item }}.crt" 2>&1 | grep revoked && exit 20;
       . "{{ openvpn_etcdir }}/vars" && "$EASY_RSA/revoke-full" "{{ item }}"
     args:
       executable: /bin/bash
