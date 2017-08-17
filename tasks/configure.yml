@@ -43,6 +43,12 @@
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
   with_items: "{{ openvpn_clients_revoke }}"
 
+- name: delete crl.pem if revoke users empty
+  file:
+    path: "{{openvpn_keydir}}/crl.pem"
+    state: absent
+  when: not openvpn_clients_revoke
+
 - include: read-client-files.yml
   when: openvpn_unified_client_profiles
 
