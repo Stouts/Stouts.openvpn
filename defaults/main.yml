@@ -27,6 +27,7 @@ openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_tls_auth : False                            # Enable perfect forward secracyxy
 openvpn_tls_key  : "ta.key"
+openvpn_tls_cipher: []                             # Defaults to openvpn defaults
 openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
