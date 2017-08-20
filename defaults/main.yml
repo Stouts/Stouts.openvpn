@@ -22,6 +22,7 @@ openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: yes                               # Enable compression
 openvpn_cipher: BF-CBC                              # Encryption algorithm
+openvpn_auth: SHA256                                # HMAC digest
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_tls_auth : False                            # Enable perfect forward secracyxy

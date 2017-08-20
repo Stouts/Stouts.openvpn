@@ -17,6 +17,7 @@ proto {{ openvpn_proto }}
 
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
+auth {{ openvpn_auth }}
 
 # The hostname/IP and port of the server. You can have multiple remote entries
 # to load balance between the servers.
