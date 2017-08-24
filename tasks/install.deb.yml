@@ -3,7 +3,7 @@
 - name: Add OpenVPN repo GPG key
   apt_key:
     id: E158C569
-    url: https://swupdate.openvpn.net/repos/repo-public.gpg
+    keyserver: keyserver.ubuntu.com
   when: openvpn_use_external_repo
 
 - name: Add OpenVPN repo sources
