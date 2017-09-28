@@ -3,6 +3,9 @@
 - name: openvpn restart
   service: name={{openvpn_service}} state=restarted
 
+- name: restart collectd
+  service: name=collectd state=restarted
+
 - name: openvpn pack clients
   command: zip -j {{item.item}}.zip {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
   when: item.changed

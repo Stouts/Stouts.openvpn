@@ -17,6 +17,9 @@ proto {{ openvpn_proto }}
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
 
+# Authenticate packets with HMAC using message digest algorithm
+auth {{ openvpn_auth }}
+
 # "dev tun" will create a routed IP tunnel, "dev tap" will create an ethernet
 # tunnel. Use "dev tap0" if you are ethernet bridging and have precreated a
 # tap0 virtual interface and bridged it with your ethernet interface. If you
@@ -148,8 +151,8 @@ client-to-client
 {% endif %}
 
 {% if openvpn_use_pam %}
-client-cert-not-required
 plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
+reneg-sec 0
 {% endif %}
 
 {% if openvpn_use_ldap %}

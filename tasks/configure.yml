@@ -36,15 +36,12 @@
 - name: Generate Clients keys
   command: "{{openvpn_etcdir}}/build-client.sh {{item}}"
   args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
-  with_items: "{{ openvpn_clients }}"
+  with_items: "{{ openvpn_clients | default([])}}"
 
 - name: Revoke Clients keys
   command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
   args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
-  with_items: "{{ openvpn_clients_revoke }}"
-
-- include: read-client-files.yml
-  when: openvpn_unified_client_profiles
+  with_items: "{{ openvpn_clients_revoke | default([])}}"
 
 - name: Create client configuration directory if requested
   file: >
@@ -59,7 +56,7 @@
 
 - name: Generate Clients configurations
   template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
-  with_items: "{{ openvpn_clients }}"
+  with_items: "{{ openvpn_clients | default([])}}"
   notify: openvpn pack clients
   register: openvpn_clients_changed
 

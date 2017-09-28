@@ -13,14 +13,19 @@ dev {{ openvpn_dev }}
 
 # Are we connecting to a TCP or UDP server?  Use the same setting as on the
 # server.
-proto {{ openvpn_proto }}
+# proto {{ openvpn_proto }}
 
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
 
+# Authenticate packets with HMAC using message digest algorithm
+auth {{ openvpn_auth }}
+
 # The hostname/IP and port of the server. You can have multiple remote entries
 # to load balance between the servers.
-remote {{openvpn_host}} {{openvpn_port}}
+remote {{openvpn_host}} {{openvpn_port}} udp
+remote {{openvpn_host}} {{openvpn_port}} tcp
+max-routes 1000
 
 # Keep trying indefinitely to resolve the host name of the OpenVPN server.
 # Very useful on machines which are not permanently connected to the internet
@@ -37,28 +42,9 @@ persist-tun
 # SSL/TLS parms. See the server config file for more description.  It's best to
 # use a separate .crt/.key file pair for each client.  A single ca file can be
 # used for all clients.
-{% if openvpn_unified_client_profiles %}
-<ca>
-{{ openvpn_ca_file_contents }}
-</ca>
-<cert>
-{{ openvpn_client_cert_output |default([{'item':client,'stdout':''}])|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
-</cert>
-<key>
-{{ openvpn_client_keys_output |default([{'item':client,'stdout':''}])|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
-</key>
-{% if openvpn_tls_auth %}
-key-direction 1
-<tls-auth>
-{{ openvpn_tls_auth_file_contents | default('') }}
-</tls-auth>
-{% endif %}
-
-{% else %}
-ca ca.crt
-cert {{client}}.crt
-key {{client}}.key
-{% endif %}
+#ca ca.crt
+#cert {{client.1}}.crt
+#key {{client.1}}.key
 
 # Verify server certificate by checking that the certicate has the nsCertType
 # field set to "server".  This is an important precaution to protect against a
@@ -87,8 +73,20 @@ verb {{openvpn_verb}}
 
 {% if openvpn_use_pam or openvpn_use_ldap %}
 auth-user-pass
+auth-nocache
+reneg-sec 0
 {% endif %}
 
 {% for option in openvpn_client_options %}
 {{option}}
 {% endfor %}
+
+<ca>
+{{ openvpn_ca_cert['stdout'] }}
+</ca>
+<cert>
+{{ openvpn_client_certs.results[client.0]['stdout'] }}
+</cert>
+<key>
+{{ openvpn_client_keys.results[client.0]['stdout'] }}
+</key>

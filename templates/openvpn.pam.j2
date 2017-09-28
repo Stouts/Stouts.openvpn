@@ -1,6 +1,9 @@
 # {{ ansible_managed }}
 
-{% if openvpn_use_pam_users %}
+{% if openvpn_use_google_authenticator %}
+auth required pam_google_authenticator.so secret={{ openvpn_keydir }}/otp/${USER}.google_authenticator user=root
+account sufficient pam_permit.so
+{% elif openvpn_use_pam_users %}
 auth		required	pam_pwdfile.so pwdfile={{openvpn_etcdir}}/users
 account		required	pam_permit.so
 {% else %}

@@ -9,12 +9,12 @@
 - name: Add OpenVPN repo sources
   apt_repository:
     filename: openvpn
-    repo: deb http://swupdate.openvpn.net/apt {{ ansible_lsb.codename }} main
+    repo: deb http://build.openvpn.net/debian/openvpn/stable {{ ansible_lsb.codename }} main
   when: openvpn_use_external_repo
 
 - name: Install requirements (Debian)
   apt: name={{item}} force=yes
-  with_items: [openvpn, udev, openssl, zip]
+  with_items: [openvpn, udev, openssl, zip, libpam-google-authenticator]
 
 - name: Install dependencies (Debian)
   apt: name={{item}} force=yes
