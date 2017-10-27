@@ -1,6 +1,11 @@
 ---
 
 openvpn_enabled: yes                                # The role is enabled
+openvpn_version: stable                             # Version can be one of
+                                                    # stable: stable releases only - no alphas, betas or RCs
+                                                    # testing: latest releases, including alphas/betas/RCs
+                                                    # release/2.3: OpenvPN 2.3 releases
+                                                    # release/2.4: OpenVPN 2.4 releases, including alphas/betas/RCs
 
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{openvpn_etcdir}}/keys"
