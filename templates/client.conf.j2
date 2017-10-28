@@ -1,6 +1,7 @@
 # {{ ansible_managed }}
 
-{%- set client=item -%}
+{%- set client=user -%}
+{%- set endpoint=item -%}
 
 # Specify that we are a client and that we will be pulling certain config file
 # directives from the server.
@@ -21,7 +22,7 @@ auth {{ openvpn_auth }}
 
 # The hostname/IP and port of the server. You can have multiple remote entries
 # to load balance between the servers.
-remote {{openvpn_host}} {{openvpn_port}}
+remote {{endpoint}} {{openvpn_port}}
 
 # Keep trying indefinitely to resolve the host name of the OpenVPN server.
 # Very useful on machines which are not permanently connected to the internet
