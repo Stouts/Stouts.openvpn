@@ -21,11 +21,12 @@
 - name: Sync local keys
   copy:
     src: "{{ openvpn_download_dir }}"
-    dest: /etc/openvpn/keys
+    dest: /etc/openvpn
     directory_mode: yes
     owner: root
     group: root
     mode: 0644
+    directory_mode: 0644
 
 - name: Generate scripts
   template: src={{item}}.j2 dest={{openvpn_etcdir}}/{{item}} mode=0700
@@ -101,9 +102,12 @@
 - name: Set ip forwarding in the sysctl file and reload if necessary
   sysctl: name="net.ipv4.ip_forward" value=1 sysctl_set=yes state=present reload=yes
 
-- name: openvpn keydir packing
-  archive:
-    path: "{{ openvpn_keydir }}"
-    dest: /etc/openvpn/keys.tar.gz
-    format: gz
-  notify: [openvpn download all keys]
+- name: Sync local keys
+  copy:
+    src: "{{ openvpn_download_dir }}"
+    dest: /etc/openvpn
+    directory_mode: yes
+    owner: root
+    group: root
+    mode: 0644
+    directory_mode: 0644
