@@ -104,8 +104,8 @@
 
 - name: Sync local keys
   copy:
-    src: "{{ openvpn_download_dir }}"
-    dest: /etc/openvpn
+    src: /etc/openvpn/keys
+    dest: "{{ openvpn_download_dir }}"
     directory_mode: yes
     owner: root
     group: root
