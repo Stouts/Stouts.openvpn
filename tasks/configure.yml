@@ -102,12 +102,10 @@
 - name: Set ip forwarding in the sysctl file and reload if necessary
   sysctl: name="net.ipv4.ip_forward" value=1 sysctl_set=yes state=present reload=yes
 
-- name: Download local keys
-  copy:
-    src: /etc/openvpn/keys
-    dest: "{{ openvpn_download_dir }}"
-    directory_mode: yes
-    owner: root
-    group: root
-    mode: 0644
-    directory_mode: 0644
+
+- name: openvpn keydir packing
+  archive:
+    path: "{{ openvpn_keydir }}"
+    dest: /etc/openvpn/keys.tar.gz
+    format: gz
+  notify: [openvpn download all keys] 
