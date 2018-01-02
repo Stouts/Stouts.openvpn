@@ -32,4 +32,8 @@
     openvpn_ca_file_contents: "{{ openvpn_read_ca_file_results.stdout }}"
     openvpn_client_cert_output: "{{ openvpn_read_client_cert_files_results.results }}"
     openvpn_client_keys_output: "{{ openvpn_read_client_key_files_results.results }}"
+
+- name: Set tls auth file contents as fact.
+  set_fact:
     openvpn_tls_auth_file_contents: "{{ openvpn_read_tlsauth_file_results['content'] | b64decode | default('') }}"
+  when: openvpn_tls_auth 
