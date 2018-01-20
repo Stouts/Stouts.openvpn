@@ -104,6 +104,10 @@ openvpn_server_options:
 # Whether to embed CA, cert, and key info inside client OVPN config file.
 openvpn_unified_client_profiles: no
 
+# Additional routes to be pushed to clients - Default 'no'
+openvpn_push_routes_to_client:
+  - route 192.168.0.0 255.255.255.0
+  - route 192.168.10.0 255.255.255.0
 ```
 
 #### Usage

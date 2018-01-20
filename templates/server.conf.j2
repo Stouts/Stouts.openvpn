@@ -168,3 +168,10 @@ script-security 3 execve
 {% if crl_pem_file.stat.exists %}
 crl-verify {{openvpn_keydir}}/crl.pem
 {% endif %}
+
+{% if openvpn_push_routes_to_client %}
+# Additional routes to push to clients
+{% for push_route in openvpn_push_routes_to_client %}
+push "{{ push_route }}"
+{% endfor %}
+{% endif %}
