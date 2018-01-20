@@ -128,6 +128,11 @@ verb {{openvpn_verb}}
 # The maximum number of concurrently connected clients we want to allow.
 max-clients {{openvpn_max_clients}}
 
+{% if openvpn_dev.startswith('tun') %}
+# Server up - Script that runs on server initialization
+up /etc/openvpn/server.up.sh
+{% endif %}
+
 # It's a good idea to reduce the OpenVPN daemon's privileges after
 # initialization.
 #

@@ -30,7 +30,7 @@ openvpn_use_system_easyrsa: false                   # Install EasyRSA from syste
 openvpn_host: "{{inventory_hostname}}"              # The server address
 openvpn_port: 1194
 openvpn_proto: udp
-openvpn_dev: tun
+openvpn_dev: tun                                    # The device type - Will trigger ip_forward/iptables setup
 openvpn_server: 10.8.0.0 255.255.255.0
 openvpn_max_clients: 100
 openvpn_log: /var/log/openvpn.log                   # Log's directory

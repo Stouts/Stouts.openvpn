@@ -87,6 +87,20 @@
   template: src=server.conf.j2 dest={{openvpn_etcdir}}/server.conf
   notify: [openvpn restart]
 
+- name: Setup server.up.sh script
+  template: src=server.up.sh.j2 dest={{openvpn_etcdir}}/server.up.sh mode=0755
+  notify: [openvpn restart]
+  when: "'tun' in openvpn_dev"
+
+- name: Load ip_tables module
+  command: "modprobe ip_tables"
+  notify: [openvpn restart]
+  when: "'tun' in openvpn_dev"
+
+- name: Add ip_tables to /etc/modules
+  lineinfile: path=/etc/modules line="ip_tables"
+  when: "'tun' in openvpn_dev"
+
 - name: Ensure openvpn key dir has the right permission
   file: path={{openvpn_keydir}} state=directory mode=0700 owner={{openvpn_user}}
 
