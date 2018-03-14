@@ -32,6 +32,8 @@ openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
 openvpn_server: 10.8.0.0 255.255.255.0
+# Should be a network address with CIDR, example:
+# openvpn_server_v6: fc00:0:abc:def::/64
 openvpn_max_clients: 100
 openvpn_log: /var/log/openvpn.log                   # Log's directory
 openvpn_keepalive: "10 120"
