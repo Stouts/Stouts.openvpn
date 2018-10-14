@@ -1,6 +1,6 @@
 ---
 - name: Read CA file.
-  command: cat {{ openvpn_etcdir }}/keys/ca.crt
+  command: cat {{ openvpn_keydir }}/ca.crt
   no_log: true
   register: openvpn_read_ca_file_results
   changed_when: false
@@ -21,7 +21,7 @@
   with_items: "{{ openvpn_clients }}"
 
 - name: Read client key files.
-  command: cat {{ openvpn_etcdir }}/keys/{{ item }}.key
+  command: cat {{ openvpn_keydir }}/{{ item }}.key
   no_log: true
   changed_when: false
   register: openvpn_read_client_key_files_results
