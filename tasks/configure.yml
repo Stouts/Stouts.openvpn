@@ -22,6 +22,9 @@
   template: src={{item}}.j2 dest={{openvpn_etcdir}}/{{item}} mode=0700
   with_items: [vars, build-server.sh, build-client.sh, revoke-client.sh]
 
+- name: Copy openssl config file. Workaround to be fixed better
+  file: src={{openvpn_etcdir}}/easy-rsa/openssl-1.0.0.cnf path={{openvpn_etcdir}}/easy-rsa/openssl.cnf state=link
+
 - name: Generate Server keys
   command: "{{openvpn_etcdir}}/build-server.sh"
   args: { creates: "{{ openvpn_keydir }}" }
