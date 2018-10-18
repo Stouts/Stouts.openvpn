@@ -18,10 +18,10 @@ script:
 
   - sudo cat /var/log/openvpn.log
 
-  # Second run Idempotence test
+  # Second run Idempotence test (it changes 2 because one is the call of the handler and the other is the call of the stub handler)
   - >
     ansible-playbook -i inventory test.yml --connection=local --sudo
-    | grep -q 'changed=0.*failed=0'
+    | grep -q 'changed=2.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 

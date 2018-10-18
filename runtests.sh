@@ -13,7 +13,8 @@ assert () {
 {
     assert "ansible-playbook -c local --syntax-check test.yml"          &&
     assert "ansible-playbook -c local test.yml"                         &&
-    assert "ansible-playbook -c local test.yml" | grep changed=0
+    # it changes 2 because one is the call of the handler and the other is the call of the stub handler
+    assert "ansible-playbook -c local test.yml" | grep changed=2
 
 } || {
 
