@@ -9,3 +9,6 @@
   with_items: "{{openvpn_clients_changed.results}}"
   args:
     chdir: "{{ openvpn_keydir }}"
+
+- name: openvpn configuration done
+  command: "true"
