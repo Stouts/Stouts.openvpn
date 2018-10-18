@@ -59,6 +59,10 @@ openvpn_use_pam_users: []                         # If empty use system users
 # LDAP authentication and configuration (optional)
 openvpn_use_ldap: no
 openvpn_ldap_tlsenable: 'no'
+openvpn_ldap_tls_cacert: '/etc/ssl/ca-cert.pem'
+openvpn_ldap_tls_use_clientcert: 'no'
+openvpn_ldap_tls_clientcert: '/etc/ssl/client-cert.pem'
+openvpn_ldap_tls_clientkey: '/etc/ssl/client-key.pem'
 openvpn_ldap_follow_referrals: 'no'
 
 # Use simple authentication (default is disabled)

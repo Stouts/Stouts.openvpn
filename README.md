@@ -91,12 +91,15 @@ openvpn_simple_auth_password: password
 # the network configuration is changed;
 # if this happens just run the playbook again
 openvpn_bridge:
+    ports: "eth0 tap0"
     address: 10.0.0.1
     netmask: 255.255.255.0
     network: 10.0.0.0
     broadcast: 10.0.0.255
     dhcp_start: 10.0.0.2
     dhcp_end: 10.0.0.254
+    script:
+      - post-up ip route add <...>
 openvpn_server_options:
     - "dev-type tap"
     - "tls-server"
