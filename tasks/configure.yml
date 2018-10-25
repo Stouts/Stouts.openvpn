@@ -92,3 +92,17 @@
 
 - name: Set ip forwarding in the sysctl file and reload if necessary
   sysctl: name="net.ipv4.ip_forward" value=1 sysctl_set=yes state=present reload=yes
+
+- name: Test if interface is created
+  command: "ip link show {{ openvpn_dev }}0"
+  register: dev_created
+  changed_when: false
+  failed_when: false
+- block:
+  - name: Enable tun0
+    command: "modprobe {{ openvpn_dev }} --first-time"
+    register: modprobe
+    changed_when: not modprobe.stdout.find("Module already in kernel") or modprobe.rc == 0
+    failed_when: not (modprobe.stdout.find("Module already in kernel") or modprobe.rc == 0)
+    notify: openvpn restart
+  when: dev_created.stdout.find("does not exist") != -1
