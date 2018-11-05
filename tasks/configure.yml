@@ -18,6 +18,16 @@
      - openvpn_use_system_easyrsa
      - not openvpn_easyrsa_check.stat.exists
 
+- name: Sync local keys
+  copy:
+    src: "{{ openvpn_download_dir }}"
+    dest: /etc/openvpn
+    directory_mode: yes
+    owner: root
+    group: root
+    mode: 0644
+    directory_mode: 0644
+
 - name: Generate scripts
   template: src={{item}}.j2 dest={{openvpn_etcdir}}/{{item}} mode=0700
   with_items: [vars, build-server.sh, build-client.sh, revoke-client.sh]
@@ -57,11 +67,10 @@
   stat: path={{openvpn_keydir}}/crl.pem
   register: crl_pem_file
 
-- name: Generate Clients configurations
-  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
+- include_tasks: client_conf.yml
   with_items: "{{ openvpn_clients }}"
-  notify: openvpn pack clients
-  register: openvpn_clients_changed
+  loop_control:
+    loop_var: user
 
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
@@ -92,3 +101,11 @@
 
 - name: Set ip forwarding in the sysctl file and reload if necessary
   sysctl: name="net.ipv4.ip_forward" value=1 sysctl_set=yes state=present reload=yes
+
+
+- name: openvpn keydir packing
+  archive:
+    path: "{{ openvpn_keydir }}"
+    dest: /etc/openvpn/keys.tar.gz
+    format: gz
+  notify: [openvpn download all keys] 

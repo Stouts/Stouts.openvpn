@@ -22,10 +22,12 @@ openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: yes                               # Enable compression
 openvpn_cipher: BF-CBC                              # Encryption algorithm
+openvpn_auth: SHA256                                # HMAC digest
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_tls_auth : False                            # Enable perfect forward secracyxy
 openvpn_tls_key  : "ta.key"
+openvpn_tls_cipher: []                             # Defaults to openvpn defaults
 openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
@@ -67,3 +69,5 @@ openvpn_simple_auth_password: ""
 
 # Whether to embed CA, cert, and key info inside client OVPN config file.
 openvpn_unified_client_profiles: no
+openvpn_endpoints: []
+openvpn_download_dir: "creds/"

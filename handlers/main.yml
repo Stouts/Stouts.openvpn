@@ -9,3 +9,10 @@
   with_items: "{{openvpn_clients_changed.results}}"
   args:
     chdir: "{{ openvpn_keydir }}"
+
+- name: openvpn download all keys
+  fetch:
+    src: "/etc/openvpn/keys.tar.gz"
+    dest: "{{ openvpn_download_dir }}/keys.tar.gz"
+    flat: yes
+    validate_checksum: yes

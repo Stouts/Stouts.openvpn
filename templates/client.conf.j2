@@ -1,6 +1,7 @@
 # {{ ansible_managed }}
 
-{%- set client=item -%}
+{%- set client=user -%}
+{%- set endpoint=item -%}
 
 # Specify that we are a client and that we will be pulling certain config file
 # directives from the server.
@@ -17,10 +18,11 @@ proto {{ openvpn_proto }}
 
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
+auth {{ openvpn_auth }}
 
 # The hostname/IP and port of the server. You can have multiple remote entries
 # to load balance between the servers.
-remote {{openvpn_host}} {{openvpn_port}}
+remote {{endpoint}} {{openvpn_port}}
 
 # Keep trying indefinitely to resolve the host name of the OpenVPN server.
 # Very useful on machines which are not permanently connected to the internet
@@ -72,6 +74,10 @@ ns-cert-type server
 {% if openvpn_tls_auth and not openvpn_unified_client_profiles -%}
 # Use a static pre-shared key (PSK)
 tls-auth {{openvpn_tls_key}} 1
+{% endif %}
+
+{% if openvpn_tls_auth and openvpn_tls_cipher %}
+tls-cipher {{ openvpn_tls_cipher | join(':') }}
 {% endif %}
 
 # Enable compression on the VPN link. Don't enable this unless it is also
