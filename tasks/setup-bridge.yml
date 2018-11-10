@@ -4,7 +4,7 @@
   when: openvpn_bridge
   template:
     src: bridge-interface.j2
-    dest: "/etc/network/interfaces.d/{{ openvpn_dev }}"
+    dest: "/etc/network/interfaces.d/{{ openvpn_server_dev | default(openvpn_dev) }}"
   register: bridge
   tags: [bridge]
 
@@ -14,7 +14,7 @@
   tags: [bridge]
 
 - file:
-    path: "/etc/network/interfaces.d/{{ openvpn_dev }}"
+    path: "/etc/network/interfaces.d/{{ openvpn_server_dev | default(openvpn_dev) }}"
     state: absent
   when: not openvpn_bridge
   tags: [bridge]
