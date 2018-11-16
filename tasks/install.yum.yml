@@ -3,6 +3,7 @@
 - name: Install EPEL repository
   yum:
     name: epel-release
+  when: openvpn_use_external_repo
 
 - name: Install requirements (RedHat)
   apt: name={{item}} force=yes
