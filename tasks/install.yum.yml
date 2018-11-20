@@ -11,7 +11,7 @@
 
 - name: Install dependencies (RedHat)
   apt: name={{item}} force=yes
-  when: openvpn_use_pam_users|default(false)
+  when: openvpn_use_pam_users|length
   with_items: [python-passlib]
 
 - name: Install easy-rsa package
