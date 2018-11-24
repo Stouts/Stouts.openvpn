@@ -6,23 +6,21 @@
   when: openvpn_use_external_repo
 
 - name: Install requirements (RedHat)
-  apt: name={{item}} force=yes
+  yum: name={{item}}
   with_items: [openvpn, openssl, zip]
 
 - name: Install dependencies (RedHat)
-  apt: name={{item}} force=yes
+  yum: name=python-passlib
   when: openvpn_use_pam_users|length
-  with_items: [python-passlib]
 
 - name: Install easy-rsa package
-  apt: name=easy-rsa
+  yum: name=easy-rsa
   when: openvpn_use_system_easyrsa
 
 - name: Install LDAP dependencies (Debian)
-  apt: name=openvpn-auth-ldap force=yes
+  yum: name=openvpn-auth-ldap
   when: openvpn_use_ldap
 
-- name: Install bridge dependencies (Debian)
-  apt: name={{item}}
+- name: Install bridge dependencies (RedHat)
+  yum: name=bridge-utils
   when: openvpn_bridge
-  with_items: [bridge-utils]
