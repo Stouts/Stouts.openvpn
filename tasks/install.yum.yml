@@ -17,7 +17,7 @@
   yum: name=easy-rsa
   when: openvpn_use_system_easyrsa
 
-- name: Install LDAP dependencies (Debian)
+- name: Install LDAP dependencies (RedHat)
   yum: name=openvpn-auth-ldap
   when: openvpn_use_ldap
 
