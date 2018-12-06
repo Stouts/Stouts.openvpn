@@ -17,3 +17,5 @@ galaxy_info:
   categories:
   - system
   - networking
+dependencies:
+  - { role: 'geerlingguy.repo-epel', when: ansible_os_family == 'RedHat' }
