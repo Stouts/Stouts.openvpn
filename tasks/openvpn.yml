@@ -18,7 +18,11 @@
 
 - include: configure.yml
 
-- include: setup-bridge.yml
+- include: setup-bridge.deb.yml
+  when: ansible_os_family == 'Debian'
+
+- include: setup-bridge.rh.yml
+  when: ansible_os_family == 'RedHat'
 
 - name: Ensure OpenVPN is started
   service: name={{openvpn_service}} state=started enabled=yes
