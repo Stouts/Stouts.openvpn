@@ -4,6 +4,11 @@
 auth		required	pam_pwdfile.so pwdfile={{openvpn_etcdir}}/users
 account		required	pam_permit.so
 {% else %}
+ {% if ansible_os_family == 'Debian' %}
 @include common-auth
 @include common-account
+ {% elif ansible_os_family == 'RedHat' %}
+auth       include     system-auth
+account    include      system-auth
+ {% endif %}
 {% endif %}
