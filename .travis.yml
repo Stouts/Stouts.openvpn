@@ -12,3 +12,6 @@ install:
 script:
   - molecule test
 
+after_failure:
+  - journalctl -u openvpn
+  - cat /var/log/openvpn.log
