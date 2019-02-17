@@ -1,25 +1,23 @@
 ---
 
-dependencies: []
-
 galaxy_info:
   author: klen
   company: Stouts
   description: Manage OpenVPN server
   license: MIT
   platforms:
-  - name: Ubuntu
-    versions:
-    - all
-  - name: EL
-    versions:
-    - 7
-  - name: Debian
-    versions:
-    - jessie
-    - stretch
+    - name: Ubuntu
+      versions:
+        - all
+    - name: EL
+      versions:
+        - 7
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
   categories:
-  - system
-  - networking
-dependencies:
-  - { role: 'geerlingguy.repo-epel', when: ansible_os_family == 'RedHat' }
+    - system
+    - networking
+dependencies: []
+
