@@ -102,8 +102,7 @@
   template:
     src: openvpn.pam.j2
     dest: /etc/pam.d/openvpn
-  when: openvpn_use_pam
-  notify: openvpn restart
+  when: openvpn_use_pam == true
 
 - name: Configure users
   htpasswd:
