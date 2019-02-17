@@ -72,7 +72,11 @@
 
 - name: Setup PAM
   template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
-  when: openvpn_use_pam
+  when: openvpn_use_pam and ansible_os_family == 'Debian'
+
+- name: Setup PAM
+  copy: remote_src=True src=/etc/pam.d/login dest=/etc/pam.d/openvpn
+  when: openvpn_use_pam and ansible_os_family == 'RedHat'
 
 - name: Configure users
   htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
