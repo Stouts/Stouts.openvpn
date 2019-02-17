@@ -71,11 +71,16 @@
   register: openvpn_clients_changed
 
 - name: Setup PAM
-  template: src=openvpn.pam.j2 dest=/etc/pam.d/openvpn
+  template:
+    src: openvpn.pam.j2
+    dest: /etc/pam.d/openvpn
   when: openvpn_use_pam and ansible_os_family == 'Debian'
 
 - name: Setup PAM
-  copy: remote_src=True src=/etc/pam.d/login dest=/etc/pam.d/openvpn
+  copy:
+    remote_src: True
+    src: /etc/pam.d/login
+    dest: /etc/pam.d/openvpn
   when: openvpn_use_pam and ansible_os_family == 'RedHat'
 
 - name: Configure users

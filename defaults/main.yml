@@ -51,8 +51,6 @@ openvpn_clients_revoke: []                        # Revoke clients certificates
 
 # Use PAM authentication
 openvpn_use_pam: yes
-# pam_pwdfile is not present on RH/CentOS, hence the following will not work.
-# TODO: create unix users and set passwords on redhat
 openvpn_use_pam_users: []                         # If empty use system users
                                                   # otherwise use users from the option
                                                   # openvpn_use_pam_users:
