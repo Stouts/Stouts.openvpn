@@ -63,6 +63,7 @@ openvpn_clients_revoke: []
 # Use PAM authentication
 openvpn_use_pam: true
 openvpn_use_pam_users: []
+# Only for Debian-based, CentOS requires 'pam_pwdfile' from third party repos.
 # If empty use system users
 # otherwise use users from the option
 # openvpn_use_pam_users:
