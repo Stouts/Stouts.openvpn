@@ -1,72 +1,100 @@
 ---
 
 - name: Extract easy-rsa files
-  unarchive: src=easy-rsa.tar.gz dest={{openvpn_etcdir}}
-  when: not openvpn_use_system_easyrsa
+  unarchive:
+    src: easy-rsa.tar.gz
+    dest: "{{ openvpn_etcdir }}"
+  when: openvpn_use_system_easyrsa == false
 
 - name: Check if easy-rsa 2.x is available from the system
-  stat: path=/usr/share/easy-rsa/build-ca
+  stat:
+    path: /usr/share/easy-rsa/build-ca
   register: openvpn_easyrsa_check
-  when: openvpn_use_system_easyrsa
+  when: openvpn_use_system_easyrsa == true
 
 - name: Fix openssl.cnf path on Debian Stretch
   file:
-    src:  "{{ '/usr/share/easy-rsa' if openvpn_use_system_easyrsa else openvpn_etcdir + '/easy-rsa' }}/openssl-1.0.0.cnf"
-    dest: "{{ '/usr/share/easy-rsa' if openvpn_use_system_easyrsa else openvpn_etcdir + '/easy-rsa' }}/openssl.cnf"
+    src: "{{ openvpn_etcdir + '/easy-rsa/openssl-1.0.0.cnf' }}"
+    dest: "{{ openvpn_etcdir + '/easy-rsa/openssl.cnf' }}"
     state: link
-  when: ansible_distribution_release == 'stretch'
-
-- fail:
-    msg: >
-      EasyRSA 2.x is not present in /usr/share/easy-rsa.
-      Ensure the easy-rsa package is installed or disable the `openvpn_use_system_easyrsa` option.
   when:
-     - not ansible_check_mode|d(False)
-     - openvpn_use_system_easyrsa
-     - not openvpn_easyrsa_check.stat.exists
+    - ansible_distribution_release == 'stretch'
+    - openvpn_use_system_easyrsa == false
+
+- name: Fix openssl.cnf path on Debian Stretch with system easyrsa
+  file:
+    src: /usr/share/easy-rsa/openssl-1.0.0.cnf
+    dest: /usr/share/easy-rsa/openssl.cnf
+    state: link
+  when:
+    - ansible_distribution_release == 'stretch'
+    - openvpn_use_system_easyrsa == true
+
+- name: Fail if system rsa is present
+  fail:
+    msg: >-
+      EasyRSA 2.x is not present in /usr/share/easy-rsa.
+      Ensure the easy-rsa package is installed or disable the
+      `openvpn_use_system_easyrsa` option.
+  when:
+    - ansible_check_mode == false
+    - openvpn_use_system_easyrsa == true
+    - openvpn_easyrsa_check.stat.exists == false
 
 - name: Generate scripts
-  template: src={{item}}.j2 dest={{openvpn_etcdir}}/{{item}} mode=0700
-  with_items: [vars, build-server.sh, build-client.sh, revoke-client.sh]
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ openvpn_etcdir }}/{{ item }}"
+    mode: 0o700
+  loop:
+    - vars
+    - build-server.sh
+    - build-client.sh
+    - revoke-client.sh
 
 - name: Generate Server keys
-  command: "{{openvpn_etcdir}}/build-server.sh"
-  args: { creates: "{{ openvpn_keydir }}" }
+  command: "{{ openvpn_etcdir }}/build-server.sh"
+  args:
+    creates: "{{ openvpn_keydir }}"
 
 - name: Generate tls-auth key
   command: openvpn --genkey --secret {{ openvpn_tls_key }}
-    chdir="{{ openvpn_keydir }}"
-    creates="{{ openvpn_tls_key }}"
-  args: { creates: "{{ openvpn_keydir }}/{{ openvpn_tls_key }}" }
-  when: openvpn_tls_auth
+  args:
+    creates: "{{ openvpn_keydir }}/{{ openvpn_tls_key }}"
+  when: openvpn_tls_auth == true
 
 - name: Generate Clients keys
-  command: "{{openvpn_etcdir}}/build-client.sh {{item}}"
-  args: { creates: "{{ openvpn_keydir }}/{{item}}.crt" }
-  with_items: "{{ openvpn_clients }}"
+  command: "{{ openvpn_etcdir }}/build-client.sh {{ item }}"
+  args:
+    creates: "{{ openvpn_keydir }}/{{ item }}.crt"
+  loop: "{{ openvpn_clients }}"
 
 - name: Revoke Clients keys
-  command: "{{openvpn_etcdir}}/revoke-client.sh {{item}}"
-  args: { removes: "{{ openvpn_keydir }}/{{item}}.crt" }
-  with_items: "{{ openvpn_clients_revoke }}"
+  command: "{{ openvpn_etcdir }}/revoke-client.sh {{ item }}"
+  args:
+    removes: "{{ openvpn_keydir }}/{{ item }}.crt"
+  loop: "{{ openvpn_clients_revoke }}"
 
 - include: read-client-files.yml
-  when: openvpn_unified_client_profiles
+  when: openvpn_unified_client_profiles == true
 
 - name: Create client configuration directory if requested
-  file: >
-    path={{openvpn_client_config_dir}}
-    mode=755
-    state=directory
+  file:
+    path: "{{ openvpn_client_config_dir }}"
+    mode: 0o755
+    state: directory
   when: openvpn_client_config_dir is defined
 
 - name: Check if crl.pem exists
-  stat: path={{openvpn_keydir}}/crl.pem
+  stat:
+    path: "{{ openvpn_keydir }}/crl.pem"
   register: crl_pem_file
 
 - name: Generate Clients configurations
-  template: src=client.conf.j2 dest={{openvpn_keydir}}/{{item}}.ovpn
-  with_items: "{{ openvpn_clients }}"
+  template:
+    src: client.conf.j2
+    dest: "{{ openvpn_keydir }}/{{ item }}.ovpn"
+  loop: "{{ openvpn_clients }}"
   notify: openvpn pack clients
   register: openvpn_clients_changed
 
@@ -84,27 +112,47 @@
   when: openvpn_use_pam and ansible_os_family == 'RedHat'
 
 - name: Configure users
-  htpasswd: path={{openvpn_etcdir}}/users name={{item.name}} password={{item.password}} crypt_scheme=des_crypt
-  with_items: "{{ openvpn_use_pam_users }}"
+  htpasswd:
+    path: "{{ openvpn_etcdir }}/users"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    crypt_scheme: des_crypt
+  loop: "{{ openvpn_use_pam_users }}"
 
 - name: Setup LDAP
-  template: src=auth-ldap.conf.j2 dest=/etc/openvpn/auth-ldap.conf
-  when: openvpn_use_ldap
+  template:
+    src: auth-ldap.conf.j2
+    dest: /etc/openvpn/auth-ldap.conf
+  when: openvpn_use_ldap == true
 
 - name: Setup simple authentication
   template:
     src: auth-client.sh.j2
-    dest: "{{openvpn_etcdir}}/auth-client.sh"
-    mode: 0755
-  when: openvpn_simple_auth and openvpn_simple_auth_password
-  notify: [openvpn restart]
+    dest: "{{ openvpn_etcdir }}/auth-client.sh"
+    mode: 0o755
+  when:
+    - openvpn_simple_auth == true
+    - openvpn_simple_auth_password == true
+  notify: openvpn restart
 
 - name: Configure server
-  template: src=server.conf.j2 dest={{openvpn_etcdir}}/server.conf
-  notify: [openvpn restart]
+  template:
+    src: server.conf.j2
+    dest: "{{ openvpn_etcdir }}/server.conf"
+  notify: openvpn restart
 
 - name: Ensure openvpn key dir has the right permission
-  file: path={{openvpn_keydir}} state=directory mode=0700 owner={{openvpn_user}}
+  file:
+    path: "{{ openvpn_keydir }}"
+    state: directory
+    mode: 0o700
+    owner: "{{ openvpn_user }}"
 
 - name: Set ip forwarding in the sysctl file and reload if necessary
-  sysctl: name="net.ipv4.ip_forward" value=1 sysctl_set=yes state=present reload=yes
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: true
+    state: present
+    reload: true
+

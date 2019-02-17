@@ -1,14 +1,38 @@
 ---
 
+- name: Restart networking (Debian)
+  service:
+    name: networking
+    state: restarted
+  listen: restart networking debian
+
+- name: Restart networking (RedHat)
+  service:
+    name: network
+    state: restarted
+  listen: restart networking redhat
+
 - name: openvpn restart
-  service: name={{openvpn_service}} state=restarted
+  service:
+    name: "{{ openvpn_service }}"
+    state: restarted
 
 - name: openvpn pack clients
-  command: zip -j {{item.item}}.zip {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
-  when: item.changed
-  with_items: "{{openvpn_clients_changed.results}}"
+  command: >-
+    zip -j
+      {{ item.item }}.zip
+      {{ item.item }}.crt
+      {{ item.item }}.key
+      {{ item.item }}.ovpn
+      ca.crt
+      {{ openvpn_tls_key if openvpn_tls_auth else '' }}
+  when: item is changed
+  loop: "{{ openvpn_clients_changed.results }}"
   args:
-    chdir: "{{ openvpn_keydir }}"
+    chdir: "{{  openvpn_keydir  }}"
 
 - name: openvpn restart
-  service: name={{openvpn_service}} state=restarted
+  service:
+    name: "{{ openvpn_service }}"
+    state: restarted
+

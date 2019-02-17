@@ -4,47 +4,49 @@
   apt_key:
     id: E158C569
     url: https://swupdate.openvpn.net/repos/repo-public.gpg
-  when: openvpn_use_external_repo
+  when: openvpn_use_external_repo == true
 
 - name: Add OpenVPN repo sources
   apt_repository:
     filename: openvpn
-    repo: deb http://swupdate.openvpn.net/apt {{ ansible_lsb.codename }} main
-  when: openvpn_use_external_repo
-
-
-# Bypass https://github.com/ansible/ansible/pull/20202
-- block:
-
-    - name: Install PIP
-      apt: pkg=python-pip
-
-    - name: Install passlib with pip
-      pip: name=passlib
-
-  when: >
-    ansible_version.full | version_compare('2.3.0', 'ge') and
-    ansible_version.full | version_compare('2.3.2', 'lt') and
-    ansible_distribution_release == 'stretch'
+    repo: deb http://swupdate.openvpn.net/apt "{{ ansible_lsb.codename }}" main
+  when: openvpn_use_external_repo == true
 
 - name: Install requirements (Debian)
-  apt: name={{item}} force=yes
-  with_items: [openvpn, udev, openssl, zip]
+  apt:
+    name: "{{ requirements }}"
+    update_cache: true
+    force: true
+  vars:
+    requirements:
+      - openvpn
+      - udev
+      - openssl
+      - zip
 
 - name: Install dependencies (Debian)
-  apt: name={{item}} force=yes
-  when: openvpn_use_pam_users|length
-  with_items: [libpam-pwdfile, python-passlib]
+  apt:
+    name: "{{ dependencies }}"
+    force: true
+  when: openvpn_use_pam_users | length > 0
+  vars:
+    dependencies:
+      - libpam-pwdfile
+      - python-passlib
 
 - name: Install easy-rsa package
-  apt: name=easy-rsa
-  when: openvpn_use_system_easyrsa
+  apt:
+    name: easy-rsa
+  when: openvpn_use_system_easyrsa == true
 
 - name: Install LDAP dependencies (Debian)
-  apt: name=openvpn-auth-ldap force=yes
-  when: openvpn_use_ldap
+  apt:
+    name: openvpn-auth-ldap
+    force: true
+  when: openvpn_use_ldap == true
 
 - name: Install bridge dependencies (Debian)
-  apt: name={{item}}
-  when: openvpn_bridge
-  with_items: [bridge-utils]
+  apt:
+    name: bridge-utils
+  when: openvpn_bridge == true
+
