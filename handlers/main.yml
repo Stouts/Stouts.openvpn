@@ -29,10 +29,39 @@
   when: item is changed
   loop: "{{ openvpn_clients_changed.results }}"
   args:
-    chdir: "{{  openvpn_keydir  }}"
+    chdir: "{{ openvpn_keydir }}"
+  register: done_packing
+  listen: openvpn pack clients
+
+- name: Download client credentials (zip)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.zip"
+    dest: "{{ openvpn_download_dir }}"
+    flat: true
+    validate_checksum: true
+  when:
+    - item is changed
+    - done_packing == true
+    - openvpn_download_clients == true
+    - openvpn_unified_client_profiles == false
+  loop: "{{ openvpn_clients_changed.results }}"
+  listen: openvpn pack clients
+
+- name: Download client credentials (ovpn)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.ovpn"
+    dest: "{{ openvpn_download_dir }}"
+    flat: true
+    validate_checksum: true
+  when:
+    - item is changed
+    - done_packing == true
+    - openvpn_download_clients == true
+    - openvpn_unified_client_profiles == true
+  loop: "{{ openvpn_clients_changed.results }}"
+  listen: openvpn pack clients
 
 - name: openvpn restart
   service:
     name: "{{ openvpn_service }}"
     state: restarted
-
