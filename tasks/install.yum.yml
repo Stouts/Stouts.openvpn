@@ -1,3 +1,32 @@
 ---
 
-- fail: msg="RedHat is not supported now"
+- name: Install requirements (RedHat)
+  yum:
+    name: "{{ requirements }}"
+    update_cache: true
+  vars:
+    requirements:
+      - openvpn
+      - openssl
+      - zip
+
+- name: Install dependencies (RedHat)
+  yum:
+    name: python-passlib
+  when: openvpn_use_pam_users | length > 0
+
+- name: Install easy-rsa package
+  yum:
+    name: easy-rsa
+  when: openvpn_use_system_easyrsa == true
+
+- name: Install LDAP dependencies (RedHat)
+  yum:
+    name: openvpn-auth-ldap
+  when: openvpn_use_ldap == true
+
+- name: Install bridge dependencies (RedHat)
+  yum:
+    name: bridge-utils
+  when: openvpn_bridge == true
+
