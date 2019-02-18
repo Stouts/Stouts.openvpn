@@ -4,15 +4,15 @@ language: python
 python: "2.7"
 
 env:
+  - MOLECULE_DISTRO=ubuntu1404
   - MOLECULE_DISTRO=ubuntu1604
+  - MOLECULE_DISTRO=ubuntu1804
+  - MOLECULE_DISTRO=debian8
   - MOLECULE_DISTRO=debian9
+  - MOLECULE_DISTRO=centos6
   - MOLECULE_DISTRO=centos7
 install:
   - pip install docker molecule
 
 script:
   - molecule test
-
-after_failure:
-  - journalctl -u openvpn
-  - cat /var/log/openvpn.log

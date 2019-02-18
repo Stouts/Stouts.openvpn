@@ -11,6 +11,7 @@ lint:
 platforms:
   - name: "instance-${MOLECULE_DISTRO}"
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu1604}-ansible:latest"
+    command: /lib/systemd/systemd
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
