@@ -6,10 +6,10 @@ python: "2.7"
 env:
   - MOLECULE_DISTRO=ubuntu1404
   - MOLECULE_DISTRO=ubuntu1604
-  - MOLECULE_DISTRO=ubuntu1804
+#  - MOLECULE_DISTRO=ubuntu1804
   - MOLECULE_DISTRO=debian8 MOLECULE_INIT_CMD=/lib/systemd/systemd
   - MOLECULE_DISTRO=debian9 MOLECULE_INIT_CMD=/lib/systemd/systemd
-  - MOLECULE_DISTRO=centos6 MOLECULE_INIT_CMD=/lib/systemd/systemd
+#  - MOLECULE_DISTRO=centos6 MOLECULE_INIT_CMD=/lib/systemd/systemd
   - MOLECULE_DISTRO=centos7 MOLECULE_INIT_CMD=/lib/systemd/systemd
 install:
   - pip install docker molecule
