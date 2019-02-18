@@ -1,0 +1,13 @@
+---
+
+openvpn_service: openvpn@server
+
+openvpn_group: nobody
+
+openvpn_use_pam_plugin_distribution:
+  /usr/lib64/openvpn/plugins/openvpn-plugin-auth-pam.so
+
+openvpn_use_ldap_plugin_distribution:
+  /usr/lib64/openvpn/plugin/lib/openvpn-auth-ldap.so
+
+openvpn_use_external_repo: true

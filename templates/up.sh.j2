@@ -1,0 +1,9 @@
+#!/bin/sh
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+BR=$1
+DEV=$2
+MTU=$3
+ip link set "$DEV" up promisc on mtu "$MTU"
+if ! brctl show $BR | egrep -q "\W+$DEV$"; then
+    brctl addif $BR $DEV
+fi

@@ -121,11 +121,11 @@ Example:
   - Stouts.openvpn
 
   vars:
-  openvpn_use_pam: yes
-  openvpn_clients: [myvpn]
-  openvpn_use_pam_users:
-  - { name: user1, password: password1 }
-  - { name: user2, password: password2 }
+    openvpn_use_pam: yes
+    openvpn_clients: [myvpn]
+    openvpn_use_pam_users:
+    - { name: user1, password: password1 }
+    - { name: user2, password: password2 }
 
 ```
 

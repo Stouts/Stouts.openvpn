@@ -1,0 +1,6 @@
+#!/bin/sh
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+BR=$1
+DEV=$2
+brctl delif $BR $DEV
+ip link set "$DEV" down
