@@ -1,5 +1,7 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    openvpn_download_clients: true
   roles:
     - role: Stouts.openvpn

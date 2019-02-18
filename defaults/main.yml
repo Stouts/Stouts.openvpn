@@ -84,3 +84,4 @@ openvpn_unified_client_profiles: false
 # Download the created client credentials to the specified directory
 openvpn_download_clients: false
 openvpn_download_dir: "client_credentials/"
+

@@ -30,7 +30,6 @@
   loop: "{{ openvpn_clients_changed.results }}"
   args:
     chdir: "{{ openvpn_keydir }}"
-  register: done_packing
   listen: openvpn pack clients
 
 - name: Download client credentials (zip)
@@ -41,7 +40,6 @@
     validate_checksum: true
   when:
     - item is changed
-    - done_packing == true
     - openvpn_download_clients == true
     - openvpn_unified_client_profiles == false
   loop: "{{ openvpn_clients_changed.results }}"
@@ -55,7 +53,6 @@
     validate_checksum: true
   when:
     - item is changed
-    - done_packing == true
     - openvpn_download_clients == true
     - openvpn_unified_client_profiles == true
   loop: "{{ openvpn_clients_changed.results }}"
