@@ -131,7 +131,7 @@ Example:
 
 ```
 
-Install and copy client's configuration from `/etc/openvpn/keys/myvpn.tar.gz` file.
+Install and copy client's configuration from `/etc/openvpn/keys/myvpn.zip` file.
 If you set `openvpn_unified_client_profiles: yes`, then you only need to copy
 `/etc/openvpn/keys/myvpn.ovpn`, as all the config info will be inlined.
 
