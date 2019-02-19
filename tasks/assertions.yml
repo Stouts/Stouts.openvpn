@@ -3,5 +3,5 @@
 - name: Check OS is supported
   assert:
     that:
-      - "ansible_os_family in ['Debian', 'Redhat']"
+      - "ansible_os_family in ['Debian', 'RedHat']"
     msg: "{{ ansible_os_family }} is not supported"
