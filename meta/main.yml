@@ -4,11 +4,14 @@ galaxy_info:
   author: klen
   company: Stouts
   description: Manage OpenVPN server
+  min_ansible_version: 2.4
   license: MIT
   platforms:
     - name: Ubuntu
       versions:
-        - all
+        - trusty
+        - xenial
+        - bionic
     - name: EL
       versions:
         - 7

@@ -1,0 +1,11 @@
+---
+
+- name: Include OS-specific variables.
+  include_vars: "{{ lookup('first_found', paths) }}"
+  vars:
+    paths:
+      - "vars/{{ ansible_distribution }}.{{
+            ansible_lsb.codename | default(omit)}}.yml"
+      - "vars/{{ ansible_distribution }}.yml"
+      - "vars/{{ ansible_os_family }}.yml"
+      - "vars/Common-default.yml"
