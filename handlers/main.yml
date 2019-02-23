@@ -40,8 +40,8 @@
     validate_checksum: true
   when:
     - item is changed
-    - openvpn_download_clients == true
-    - openvpn_unified_client_profiles == false
+    - openvpn_download_clients
+    - not openvpn_unified_client_profiles
   loop: "{{ openvpn_clients_changed.results }}"
   listen: openvpn pack clients
 
@@ -53,8 +53,8 @@
     validate_checksum: true
   when:
     - item is changed
-    - openvpn_download_clients == true
-    - openvpn_unified_client_profiles == true
+    - openvpn_download_clients
+    - openvpn_unified_client_profiles
   loop: "{{ openvpn_clients_changed.results }}"
   listen: openvpn pack clients
 

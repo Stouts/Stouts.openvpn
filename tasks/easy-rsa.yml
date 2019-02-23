@@ -4,7 +4,7 @@
   stat:
     path: /usr/share/easy-rsa/build-ca
   register: openvpn_easyrsa_check
-  when: openvpn_use_system_easyrsa == true
+  when: openvpn_use_system_easyrsa
 
 - name: Fail if system rsa is not present
   fail:
@@ -13,14 +13,14 @@
       Ensure the easy-rsa package is installed or disable the
       `openvpn_use_system_easyrsa` option.
   when:
-    - openvpn_use_system_easyrsa == true
-    - openvpn_easyrsa_check.stat.exists == false
+    - openvpn_use_system_easyrsa
+    - not openvpn_easyrsa_check.stat.exists
 
 - name: Extract easy-rsa files
   unarchive:
     src: easy-rsa.tar.gz
     dest: "{{ openvpn_etcdir }}"
-  when: openvpn_use_system_easyrsa == false
+  when: not openvpn_use_system_easyrsa
 
 # TODO revisit this in relation to
 # https://github.com/Stouts/Stouts.openvpn/pull/107
@@ -31,7 +31,7 @@
     state: link
   when:
     - ansible_distribution_release == 'stretch'
-    - openvpn_use_system_easyrsa == false
+    - not openvpn_use_system_easyrsa
 
 - name: Fix openssl.cnf path on Debian Stretch with system easyrsa
   file:
@@ -40,4 +40,4 @@
     state: link
   when:
     - ansible_distribution_release == 'stretch'
-    - openvpn_use_system_easyrsa == true
+    - openvpn_use_system_easyrsa

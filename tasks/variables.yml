@@ -7,7 +7,7 @@
     params:
       files:
         - "{{ ansible_distribution }}.{{
-              ansible_lsb.codename | default(omit)}}.yml"
+              ansible_lsb.codename | default(omit) }}.yml"
         - "{{ ansible_distribution }}.yml"
         - "{{ ansible_os_family }}.yml"
         - "Common-default.yml"

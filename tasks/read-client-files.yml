@@ -11,7 +11,7 @@
   no_log: true
   register: openvpn_read_tlsauth_file_results
   changed_when: false
-  when: openvpn_tls_auth == true
+  when: openvpn_tls_auth
 
 - name: Read client cert files.
   command: >-
@@ -49,5 +49,5 @@
         | b64decode
         | default('')
       }}
-  when: openvpn_tls_auth == true
+  when: openvpn_tls_auth
 

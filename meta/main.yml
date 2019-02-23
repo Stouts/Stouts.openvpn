@@ -19,7 +19,7 @@ galaxy_info:
       versions:
         - jessie
         - stretch
-  categories:
+  galaxy_tags:
     - system
     - networking
 dependencies: []
