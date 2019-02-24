@@ -20,7 +20,7 @@
   command: openvpn --genkey --secret {{ openvpn_tls_key }}
   args:
     creates: "{{ openvpn_keydir }}/{{ openvpn_tls_key }}"
-  when: openvpn_tls_auth
+  when: (openvpn_tls_auth)
 
 - name: Generate Clients keys
   command: "{{ openvpn_etcdir }}/build-client.sh {{ item }}"
@@ -35,7 +35,7 @@
   loop: "{{ openvpn_clients_revoke }}"
 
 - include: read-client-files.yml
-  when: openvpn_unified_client_profiles
+  when: (openvpn_unified_client_profiles)
 
 - name: Create client configuration directory if requested
   file:

@@ -4,7 +4,7 @@
   stat:
     path: /usr/share/easy-rsa/build-ca
   register: openvpn_easyrsa_check
-  when: openvpn_use_system_easyrsa
+  when: (openvpn_use_system_easyrsa)
 
 - name: Fail if system rsa is not present
   fail:
@@ -13,7 +13,7 @@
       Ensure the easy-rsa package is installed or disable the
       `openvpn_use_system_easyrsa` option.
   when:
-    - openvpn_use_system_easyrsa
+    - (openvpn_use_system_easyrsa)
     - not openvpn_easyrsa_check.stat.exists
 
 - name: Extract easy-rsa files
@@ -40,4 +40,4 @@
     state: link
   when:
     - ansible_distribution_release == 'stretch'
-    - openvpn_use_system_easyrsa
+    - (openvpn_use_system_easyrsa)
