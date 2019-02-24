@@ -42,10 +42,10 @@ persist-tun
 {{ openvpn_ca_file_contents }}
 </ca>
 <cert>
-{{ openvpn_client_cert_output |default([{'item':client,'stdout':''}])|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
+{{ openvpn_client_cert_output |default([{'item':client,'stdout':''}])|selectattr('item', 'match', client)|map(attribute='stdout')|list|first }}
 </cert>
 <key>
-{{ openvpn_client_keys_output |default([{'item':client,'stdout':''}])|selectattr('item', 'equalto', client)|map(attribute='stdout')|list|first }}
+{{ openvpn_client_keys_output |default([{'item':client,'stdout':''}])|selectattr('item', 'match', client)|map(attribute='stdout')|list|first }}
 </key>
 {% if openvpn_tls_auth %}
 key-direction 1
