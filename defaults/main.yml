@@ -24,7 +24,7 @@ openvpn_log: /var/log/openvpn.log
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: true
-openvpn_cipher: BF-CBC
+openvpn_cipher: AES-256-CBC 
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_tls_auth: false
@@ -51,7 +51,7 @@ openvpn_key_province: CA
 openvpn_key_city: SanFrancisco
 openvpn_key_org: Fort-Funston
 openvpn_key_email: me@myhost.mydomain
-openvpn_key_size: 1024
+openvpn_key_size: 2048
 
 # Make clients certificate
 openvpn_clients:
