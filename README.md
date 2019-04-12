@@ -32,7 +32,7 @@ For a complete variable reference, see the [`defaults/main.yml`](defaults/main.y
 - hosts: all
   vars:
     openvpn_use_pam: true
-    openvpn_donwload_clients: true
+    openvpn_download_clients: true
     openvpn_download_dir: /home/me/Projects
     openvpn_clients: 
       - client1
