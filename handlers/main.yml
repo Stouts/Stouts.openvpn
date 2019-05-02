@@ -58,6 +58,27 @@
   loop: "{{ openvpn_clients_changed.results }}"
   listen: openvpn pack clients
 
+- name: Save iptables rules
+  block:
+    - name: Save iptable rules (RedHat)
+      command: iptables-save
+      when: ansible_os_family == "RedHat"
+      listen: openvpn save iptables
+
+    - name: Save iptable rules (Ubuntu Trusty)
+      command: /etc/init.d/iptables-persistent save
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_lsb.codename == "trusty"
+      listen: openvpn save iptables
+
+    - name: Save the rules (Ubuntu)
+      command: netfilter-persistent save
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_lsb.codename != "trusty"
+      listen: openvpn save iptables
+
 - name: openvpn restart
   service:
     name: "{{ openvpn_service }}"
