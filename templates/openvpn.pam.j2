@@ -1,9 +1,12 @@
 # {{ ansible_managed }}
 
-{% if openvpn_use_pam_users %}
+{% if openvpn_use_pam_users and ansible_os_family == 'Debian' %}
 auth		required	pam_pwdfile.so pwdfile={{openvpn_etcdir}}/users
 account		required	pam_permit.so
-{% else %}
+{% elif ansible_os_family == 'Debian' %}
 @include common-auth
 @include common-account
+{% elif ansible_os_family == 'RedHat' %}
+auth       include     system-auth
+account    include      system-auth
 {% endif %}

@@ -1,11 +1,64 @@
 ---
 
+- name: Restart networking (Debian)
+  service:
+    name: networking
+    state: restarted
+  listen: restart networking debian
+
+- name: Restart networking (RedHat)
+  service:
+    name: network
+    state: restarted
+  listen: restart networking redhat
+
 - name: openvpn restart
-  service: name={{openvpn_service}} state=restarted
+  service:
+    name: "{{ openvpn_service }}"
+    state: restarted
 
 - name: openvpn pack clients
-  command: zip -j {{item.item}}.zip {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
-  when: item.changed
-  with_items: "{{openvpn_clients_changed.results}}"
+  command: >-
+    zip -j
+      {{ item.item }}.zip
+      {{ item.item }}.crt
+      {{ item.item }}.key
+      {{ item.item }}.ovpn
+      ca.crt
+      {{ openvpn_tls_key if openvpn_tls_auth else '' }}
+  when: item is changed
+  loop: "{{ openvpn_clients_changed.results }}"
   args:
     chdir: "{{ openvpn_keydir }}"
+  listen: openvpn pack clients
+
+- name: Download client credentials (zip)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.zip"
+    dest: "{{ openvpn_download_dir }}"
+    flat: true
+    validate_checksum: true
+  when:
+    - item is changed
+    - openvpn_download_clients | bool
+    - not openvpn_unified_client_profiles | bool
+  loop: "{{ openvpn_clients_changed.results }}"
+  listen: openvpn pack clients
+
+- name: Download client credentials (ovpn)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.ovpn"
+    dest: "{{ openvpn_download_dir }}"
+    flat: true
+    validate_checksum: true
+  when:
+    - item is changed
+    - openvpn_download_clients | bool
+    - openvpn_unified_client_profiles | bool
+  loop: "{{ openvpn_clients_changed.results }}"
+  listen: openvpn pack clients
+
+- name: openvpn restart
+  service:
+    name: "{{ openvpn_service }}"
+    state: restarted

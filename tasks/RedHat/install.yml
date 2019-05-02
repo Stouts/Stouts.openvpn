@@ -1,0 +1,31 @@
+---
+
+- name: Install requirements
+  yum:
+    name: "{{ requirements }}"
+    update_cache: true
+  vars:
+    requirements:
+      - openvpn
+      - openssl
+      - zip
+
+- name: Install PAM dependencies
+  yum:
+    name: python-passlib
+  when: openvpn_use_pam_users | length > 0
+
+- name: Install easy-rsa package
+  yum:
+    name: easy-rsa
+  when: openvpn_use_system_easyrsa | bool
+
+- name: Install LDAP dependencies
+  yum:
+    name: openvpn-auth-ldap
+  when: openvpn_use_ldap | bool
+
+- name: Install bridge dependencies
+  yum:
+    name: bridge-utils
+  when: openvpn_bridge| bool
