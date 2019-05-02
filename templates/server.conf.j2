@@ -185,9 +185,6 @@ crl-verify {{openvpn_keydir}}/crl.pem
 push "dhcp-option DNS {{ dns }}"
 {% endfor %}
 
-{% if openvpn_push_routes_to_client %}
-# Additional routes to push to clients
-{% for push_route in openvpn_push_routes_to_client %}
-push "{{ push_route }}"
+{% for push_route in openvpn_route_ranges %}
+push "route {{ push_route }}"
 {% endfor %}
-{% endif %}
