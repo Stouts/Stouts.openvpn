@@ -4,7 +4,7 @@
   template:
     src: openvpn.pam.j2
     dest: /etc/pam.d/openvpn
-  when: openvpn_use_pam == true
+  when: openvpn_use_pam | bool
 
 - name: Configure users
   htpasswd:
@@ -18,7 +18,7 @@
   template:
     src: auth-ldap.conf.j2
     dest: /etc/openvpn/auth-ldap.conf
-  when: openvpn_use_ldap == true
+  when: openvpn_use_ldap | bool
 
 - name: Setup simple authentication
   template:
@@ -26,8 +26,8 @@
     dest: "{{ openvpn_etcdir }}/auth-client.sh"
     mode: 0o755
   when:
-    - openvpn_simple_auth == true
-    - openvpn_simple_auth_password == true
+    - openvpn_simple_auth | bool
+    - openvpn_simple_auth_password | bool
   notify: openvpn restart
 
 - name: Configure server
@@ -50,4 +50,3 @@
     sysctl_set: true
     state: present
     reload: true
-
