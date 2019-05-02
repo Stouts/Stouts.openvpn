@@ -1,0 +1,43 @@
+---
+
+- name: Check if easy-rsa 2.x is available from the system
+  stat:
+    path: /usr/share/easy-rsa/build-ca
+  register: openvpn_easyrsa_check
+  when: openvpn_use_system_easyrsa | bool
+
+- name: Fail if system rsa is not present
+  fail:
+    msg: >-
+      EasyRSA 2.x is not present in /usr/share/easy-rsa.
+      Ensure the easy-rsa package is installed or disable the
+      `openvpn_use_system_easyrsa` option.
+  when:
+    - openvpn_use_system_easyrsa | bool
+    - not openvpn_easyrsa_check.stat.exists | bool
+
+- name: Extract easy-rsa files
+  unarchive:
+    src: easy-rsa.tar.gz
+    dest: "{{ openvpn_etcdir }}"
+  when: not openvpn_use_system_easyrsa | bool
+
+# TODO revisit this in relation to
+# https://github.com/Stouts/Stouts.openvpn/pull/107
+- name: Fix openssl.cnf path on Debian Stretch
+  file:
+    src: "{{ openvpn_etcdir + '/easy-rsa/openssl-1.0.0.cnf' }}"
+    dest: "{{ openvpn_etcdir + '/easy-rsa/openssl.cnf' }}"
+    state: link
+  when:
+    - ansible_distribution_release == 'stretch'
+    - not openvpn_use_system_easyrsa | bool
+
+- name: Fix openssl.cnf path on Debian Stretch with system easyrsa
+  file:
+    src: /usr/share/easy-rsa/openssl-1.0.0.cnf
+    dest: /usr/share/easy-rsa/openssl.cnf
+    state: link
+  when:
+    - ansible_distribution_release == 'stretch'
+    - openvpn_use_system_easyrsa | bool

@@ -1,16 +1,25 @@
 ---
 
-dependencies: []
-
 galaxy_info:
   author: klen
   company: Stouts
   description: Manage OpenVPN server
+  min_ansible_version: 2.4
   license: MIT
   platforms:
-  - name: Ubuntu
-    versions:
-    - all
-  categories:
-  - system
-  - networking
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - bionic
+    - name: EL
+      versions:
+        - 7
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+  galaxy_tags:
+    - system
+    - networking
+dependencies: []

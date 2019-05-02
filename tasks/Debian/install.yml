@@ -1,0 +1,51 @@
+---
+
+- name: Add OpenVPN repo GPG key
+  apt_key:
+    id: E158C569
+    url: https://swupdate.openvpn.net/repos/repo-public.gpg
+  when: openvpn_use_external_repo | bool
+
+- name: Add OpenVPN repo sources
+  apt_repository:
+    filename: openvpn
+    repo: deb http://swupdate.openvpn.net/apt "{{ ansible_lsb.codename }}" main
+  when: openvpn_use_external_repo | bool
+
+- name: Install requirements
+  apt:
+    name: "{{ requirements }}"
+    update_cache: true
+    force: true
+  vars:
+    requirements:
+      - openvpn
+      - udev
+      - openssl
+      - zip
+
+- name: Install PAM dependencies
+  apt:
+    name: "{{ dependencies }}"
+    force: true
+  when: openvpn_use_pam_users | length > 0
+  vars:
+    dependencies:
+      - libpam-pwdfile
+      - python-passlib
+
+- name: Install easy-rsa package
+  apt:
+    name: easy-rsa
+  when: openvpn_use_system_easyrsa | bool
+
+- name: Install LDAP dependencies
+  apt:
+    name: openvpn-auth-ldap
+    force: true
+  when: openvpn_use_ldap | bool
+
+- name: Install bridge dependencies
+  apt:
+    name: bridge-utils
+  when: openvpn_bridge | bool
