@@ -41,6 +41,17 @@ openvpn_group: nogroup
 openvpn_resolv_retry: infinite
 openvpn_client_to_client: true
 
+
+# Network ranges that the connecting clients should try to reach using the VPN
+# connection. Example:
+# openvpn_route_ranges:
+#   - 192.168.0.0 255.255.255.0
+#   - 192.168.10.0 255.255.255.0
+openvpn_route_ranges: []
+
+# DNS servers to push to the connecting client to avoid leaks via DNS queries
+openvpn_dns_servers: []
+
 openvpn_server_options: []
 # Additional server options
 # openvpn_server_options:
@@ -91,4 +102,3 @@ openvpn_unified_client_profiles: false
 # Download the created client credentials to the specified directory
 openvpn_download_clients: false
 openvpn_download_dir: "client_credentials/"
-
