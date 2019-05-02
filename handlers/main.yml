@@ -12,11 +12,6 @@
     state: restarted
   listen: restart networking redhat
 
-- name: openvpn restart
-  service:
-    name: "{{ openvpn_service }}"
-    state: restarted
-
 - name: Save iptables rules
   block:
     - name: Save iptable rules (RedHat)
@@ -38,7 +33,8 @@
         - ansible_lsb.codename != "trusty"
       listen: openvpn save iptables
 
-- name: openvpn restart
+- name: Restart OpenVPN service
   service:
     name: "{{ openvpn_service }}"
     state: restarted
+  listen: openvpn restart
