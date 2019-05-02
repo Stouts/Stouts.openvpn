@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    openvpn_download_clients: true
+    openvpn_download_dir: /tmp/
+  roles:
+    - role: Stouts.openvpn

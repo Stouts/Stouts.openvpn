@@ -1,24 +1,20 @@
 ---
 
-- name: Include OS-specific variables.
-  include_vars: "{{item}}"
-  with_first_found:
-    - files:
-      - "{{ ansible_distribution }}.{{ ansible_lsb.codename }}.yml"
-      - "{{ ansible_distribution }}.yml"
-      - "{{ ansible_os_family }}.yml"
-      - "Common-default.yml"
-      paths: vars
+- include_tasks: variables.yml
 
-- include: install.deb.yml
-  when: ansible_os_family == 'Debian'
+- include_tasks: assertions.yml
 
-- include: install.yum.yml
-  when: ansible_os_family == 'RedHat'
+- include_tasks: "{{ ansible_os_family }}/install.yml"
 
-- include: configure.yml
+- include_tasks: easy-rsa.yml
 
-- include: setup-bridge.yml
+- include_tasks: clients.yml
 
-- name: Ensure OpenVPN is started
-  service: name={{openvpn_service}} state=started enabled=yes
+- include_tasks: configure.yml
+
+- include_tasks: "{{ ansible_os_family }}/setup-bridge.yml"
+
+- include: firewall.yml
+  when: openvpn_route_traffic | bool
+
+- include_tasks: service.yml
