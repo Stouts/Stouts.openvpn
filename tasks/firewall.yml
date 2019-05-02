@@ -1,7 +1,5 @@
 ---
 
-# based on http://www.hashbangcode.com/blog/adding-iptables-rules-ansible
-
 - name: Install firewall dependencies (Debian)
   apt:
     name: "{{ packages }}"
@@ -76,5 +74,4 @@
   notify: openvpn save iptables
   when:
     - iptables_nat_rules.stdout.find("vpn_masquerade") == -1
-    - openvpn_server != ""
-
+    - not openvpn_server

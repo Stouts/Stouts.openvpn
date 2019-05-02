@@ -1,6 +1,6 @@
 ---
 - name: Read CA file.
-  command: cat "{{ openvpn_etcdir }}/keys/ca.crt"
+  command: cat "{{ openvpn_keydir }}/ca.crt"
   no_log: true
   register: openvpn_read_ca_file_results
   changed_when: false
@@ -11,7 +11,7 @@
   no_log: true
   register: openvpn_read_tlsauth_file_results
   changed_when: false
-  when: openvpn_tls_auth == true
+  when: openvpn_tls_auth
 
 - name: Read client cert files.
   command: >-
@@ -26,7 +26,7 @@
   loop: "{{ openvpn_clients }}"
 
 - name: Read client key files.
-  command: cat "{{ openvpn_etcdir }}/keys/{{ item }}.key"
+  command: cat {{ openvpn_keydir }}/{{ item }}.key
   no_log: true
   changed_when: false
   register: openvpn_read_client_key_files_results
@@ -49,5 +49,4 @@
         | b64decode
         | default('')
       }}
-  when: openvpn_tls_auth == true
-
+  when: openvpn_tls_auth

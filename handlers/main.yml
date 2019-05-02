@@ -29,7 +29,34 @@
   when: item is changed
   loop: "{{ openvpn_clients_changed.results }}"
   args:
-    chdir: "{{  openvpn_keydir  }}"
+    chdir: "{{ openvpn_keydir }}"
+  listen: openvpn pack clients
+
+- name: Download client credentials (zip)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.zip"
+    dest: "{{ openvpn_download_dir }}"
+    flat: true
+    validate_checksum: true
+  when:
+    - item is changed
+    - openvpn_download_clients | bool
+    - not openvpn_unified_client_profiles | bool
+  loop: "{{ openvpn_clients_changed.results }}"
+  listen: openvpn pack clients
+
+- name: Download client credentials (ovpn)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.ovpn"
+    dest: "{{ openvpn_download_dir }}"
+    flat: true
+    validate_checksum: true
+  when:
+    - item is changed
+    - openvpn_download_clients | bool
+    - openvpn_unified_client_profiles | bool
+  loop: "{{ openvpn_clients_changed.results }}"
+  listen: openvpn pack clients
 
 - name: Save iptables rules
   block:
@@ -56,4 +83,3 @@
   service:
     name: "{{ openvpn_service }}"
     state: restarted
-

@@ -4,13 +4,11 @@
   template:
     src: bridge-interface.deb.j2
     dest: "/etc/network/interfaces.d/{{ openvpn_dev }}"
-  when: openvpn_bridge == true
+  when: openvpn_bridge | bool
   notify: restart networking debian
-  tags: bridge
 
 - name: Remove interface configuration for "{{ openvpn_dev }}"
   file:
     path: "/etc/network/interfaces.d/{{ openvpn_dev }}"
     state: absent
-  when: openvpn_bridge == false
-  tags: bridge
+  when: not openvpn_bridge | bool
