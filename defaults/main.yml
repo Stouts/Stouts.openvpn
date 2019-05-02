@@ -47,7 +47,7 @@ openvpn_client_to_client: true
 # openvpn_route_ranges:
 #   - 192.168.0.0 255.255.255.0
 #   - 192.168.10.0 255.255.255.0
-openvpn_ranges_to_route: []
+openvpn_route_ranges: []
 
 # DNS servers to push to the connecting client to avoid leaks via DNS queries
 openvpn_dns_servers: []
@@ -102,4 +102,3 @@ openvpn_unified_client_profiles: false
 # Download the created client credentials to the specified directory
 openvpn_download_clients: false
 openvpn_download_dir: "client_credentials/"
-
