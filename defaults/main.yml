@@ -41,6 +41,8 @@ openvpn_group: nogroup
 openvpn_resolv_retry: infinite
 openvpn_client_to_client: true
 
+openvpn_push_routes_to_client: no
+
 openvpn_server_options: []
 # Additional server options
 # openvpn_server_options:
