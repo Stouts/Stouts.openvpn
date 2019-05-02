@@ -41,7 +41,16 @@ openvpn_group: nogroup
 openvpn_resolv_retry: infinite
 openvpn_client_to_client: true
 
-openvpn_push_routes_to_client: no
+
+# Network ranges that the connecting clients should try to reach using the VPN
+# connection. Example:
+# openvpn_route_ranges:
+#   - 192.168.0.0 255.255.255.0
+#   - 192.168.10.0 255.255.255.0
+openvpn_ranges_to_route: []
+
+# DNS servers to push to the connecting client to avoid leaks via DNS queries
+openvpn_dns_servers: []
 
 openvpn_server_options: []
 # Additional server options
