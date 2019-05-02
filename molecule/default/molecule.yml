@@ -9,7 +9,7 @@ lint:
   options:
     config-file: molecule/default/yamllint.yml
 platforms:
-  - name: "instance-${MOLECULE_DISTRO}"
+  - name: "instance-${MOLECULE_DISTRO:-ubuntu1604}"
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu1604}-ansible:latest"
     command: ${MOLECULE_INIT_CMD-""}
     volumes:

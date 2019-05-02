@@ -11,7 +11,12 @@ Ansible role that installs an openvpn server
 
 ## Requirements
 
+<<<<<<< HEAD
+* Install python-netaddr
+* Only tested on ubuntu for now.
+=======
 None. 
+>>>>>>> develop
 
 ## Supported platforms
 

@@ -14,4 +14,7 @@
 
 - include_tasks: "{{ ansible_os_family }}/setup-bridge.yml"
 
+- include: firewall.yml
+  when: openvpn_route_traffic | bool
+
 - include_tasks: service.yml

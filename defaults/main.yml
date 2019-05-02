@@ -4,7 +4,7 @@
 openvpn_enabled: true
 
 openvpn_etcdir: /etc/openvpn
-openvpn_keydir: "{{openvpn_etcdir}}/keys"
+openvpn_keydir: "{{ openvpn_etcdir }}/keys"
 
 # Set to 'true' to install openvpn from the upstream repo
 openvpn_use_external_repo: false
@@ -12,8 +12,15 @@ openvpn_use_external_repo: false
 # Set to 'true' to install EasyRSA from system packages
 openvpn_use_system_easyrsa: false
 
+# Set to true to make the vpn server NAT incoming traffic
+openvpn_route_traffic: false
+
+# The interface that traffic will come in from (WARNING default: any)
+openvpn_interface: ''
+
 # Default settings (See OpenVPN documentation)
-openvpn_host: "{{inventory_hostname}}"
+openvpn_host: "{{ inventory_hostname }}"
+
 openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
