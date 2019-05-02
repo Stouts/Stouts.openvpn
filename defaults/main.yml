@@ -54,7 +54,7 @@ openvpn_client_options: []
 # - client-to-client
 
 # DNS servers to push to the connecting client to avoid leaks via DNS queries
-openvpn_dns: []
+openvpn_dns_servers: []
 
 openvpn_key_country: US
 openvpn_key_province: CA
