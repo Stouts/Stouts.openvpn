@@ -66,10 +66,10 @@
       {{ item.item }}.ovpn
       ca.crt
       {{ openvpn_tls_key if openvpn_tls_auth else '' }}
-  when: item is changed
   loop: "{{ openvpn_clients_changed.results }}"
   args:
     chdir: "{{ openvpn_keydir }}"
+    creates: "{{ item.item }}.zip"
 
 - name: Download client credentials (zip)
   fetch:
@@ -78,7 +78,6 @@
     flat: true
     validate_checksum: true
   when:
-    - item is changed
     - openvpn_download_clients | bool
     - not openvpn_unified_client_profiles | bool
   loop: "{{ openvpn_clients_changed.results }}"
@@ -90,7 +89,6 @@
     flat: true
     validate_checksum: true
   when:
-    - item is changed
     - openvpn_download_clients | bool
     - openvpn_unified_client_profiles | bool
   loop: "{{ openvpn_clients_changed.results }}"
