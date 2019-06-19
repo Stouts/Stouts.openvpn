@@ -12,53 +12,29 @@
     state: restarted
   listen: restart networking redhat
 
-- name: openvpn restart
+- name: Save iptables rules
+  block:
+    - name: Save iptable rules (RedHat)
+      command: iptables-save
+      when: ansible_os_family == "RedHat"
+      listen: openvpn save iptables
+
+    - name: Save iptable rules (Ubuntu Trusty)
+      command: /etc/init.d/iptables-persistent save
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_lsb.codename == "trusty"
+      listen: openvpn save iptables
+
+    - name: Save the rules (Ubuntu)
+      command: netfilter-persistent save
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_lsb.codename != "trusty"
+      listen: openvpn save iptables
+
+- name: Restart OpenVPN service
   service:
     name: "{{ openvpn_service }}"
     state: restarted
-
-- name: openvpn pack clients
-  command: >-
-    zip -j
-      {{ item.item }}.zip
-      {{ item.item }}.crt
-      {{ item.item }}.key
-      {{ item.item }}.ovpn
-      ca.crt
-      {{ openvpn_tls_key if openvpn_tls_auth else '' }}
-  when: item is changed
-  loop: "{{ openvpn_clients_changed.results }}"
-  args:
-    chdir: "{{ openvpn_keydir }}"
-  listen: openvpn pack clients
-
-- name: Download client credentials (zip)
-  fetch:
-    src: "{{ openvpn_keydir }}/{{ item.item }}.zip"
-    dest: "{{ openvpn_download_dir }}"
-    flat: true
-    validate_checksum: true
-  when:
-    - item is changed
-    - openvpn_download_clients == true
-    - openvpn_unified_client_profiles == false
-  loop: "{{ openvpn_clients_changed.results }}"
-  listen: openvpn pack clients
-
-- name: Download client credentials (ovpn)
-  fetch:
-    src: "{{ openvpn_keydir }}/{{ item.item }}.ovpn"
-    dest: "{{ openvpn_download_dir }}"
-    flat: true
-    validate_checksum: true
-  when:
-    - item is changed
-    - openvpn_download_clients == true
-    - openvpn_unified_client_profiles == true
-  loop: "{{ openvpn_clients_changed.results }}"
-  listen: openvpn pack clients
-
-- name: openvpn restart
-  service:
-    name: "{{ openvpn_service }}"
-    state: restarted
+  listen: openvpn restart

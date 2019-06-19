@@ -4,7 +4,7 @@
 openvpn_enabled: true
 
 openvpn_etcdir: /etc/openvpn
-openvpn_keydir: "{{openvpn_etcdir}}/keys"
+openvpn_keydir: "{{ openvpn_etcdir }}/keys"
 
 # Set to 'true' to install openvpn from the upstream repo
 openvpn_use_external_repo: false
@@ -12,8 +12,15 @@ openvpn_use_external_repo: false
 # Set to 'true' to install EasyRSA from system packages
 openvpn_use_system_easyrsa: false
 
+# Set to true to make the vpn server NAT incoming traffic
+openvpn_route_traffic: false
+
+# The interface that traffic will come in from (WARNING default: any)
+openvpn_interface: ''
+
 # Default settings (See OpenVPN documentation)
-openvpn_host: "{{inventory_hostname}}"
+openvpn_host: "{{ inventory_hostname }}"
+
 openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
@@ -33,6 +40,17 @@ openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
 openvpn_client_to_client: true
+
+
+# Network ranges that the connecting clients should try to reach using the VPN
+# connection. Example:
+# openvpn_route_ranges:
+#   - 192.168.0.0 255.255.255.0
+#   - 192.168.10.0 255.255.255.0
+openvpn_route_ranges: []
+
+# DNS servers to push to the connecting client to avoid leaks via DNS queries
+openvpn_dns_servers: []
 
 openvpn_server_options: []
 # Additional server options
@@ -84,4 +102,3 @@ openvpn_unified_client_profiles: false
 # Download the created client credentials to the specified directory
 openvpn_download_clients: false
 openvpn_download_dir: "client_credentials/"
-
