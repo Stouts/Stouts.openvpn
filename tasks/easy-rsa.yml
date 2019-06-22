@@ -30,7 +30,8 @@
     dest: "{{ openvpn_etcdir + '/easy-rsa/openssl.cnf' }}"
     state: link
   when:
-    - ansible_distribution_release == 'stretch' or ansible_distribution_release == 'bionic'
+    - ansible_distribution_release == 'stretch' or
+      ansible_distribution_release == 'bionic'
     - not openvpn_use_system_easyrsa | bool
 
 - name: Fix openssl.cnf path on Debian Stretch/Ubuntu Bionic with system easyrsa
@@ -39,5 +40,6 @@
     dest: /usr/share/easy-rsa/openssl.cnf
     state: link
   when:
-    - ansible_distribution_release == 'stretch' or ansible_distribution_release == 'bionic'
+    - ansible_distribution_release == 'stretch' or
+      ansible_distribution_release == 'bionic'
     - openvpn_use_system_easyrsa | bool
