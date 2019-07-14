@@ -78,6 +78,9 @@ openvpn_clients:
 # Revoke clients certificates
 openvpn_clients_revoke: []
 
+# Set to true to enable checking client certificates even with pam authentication (disabled for pan authentication by default by default)
+openvpn_client_cert_required: false
+
 # Use PAM authentication
 openvpn_use_pam: true
 openvpn_use_pam_users: []
