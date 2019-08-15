@@ -1,24 +1,10 @@
 ---
 
-- name: Setup PAM
-  template:
-    src: openvpn.pam.j2
-    dest: /etc/pam.d/openvpn
-  when: openvpn_use_pam | bool
-
-- name: Configure users
-  htpasswd:
-    path: "{{ openvpn_etcdir }}/users"
-    name: "{{ item.name }}"
-    password: "{{ item.password }}"
-    crypt_scheme: des_crypt
-  loop: "{{ openvpn_use_pam_users }}"
-
-- name: Setup LDAP
-  template:
-    src: auth-ldap.conf.j2
-    dest: /etc/openvpn/auth-ldap.conf
-  when: openvpn_use_ldap | bool
+- name: install packages
+  package:
+    name: ["libselinux-python", "policycoreutils-python"]
+    state: present
+  when: ansible_os_family == "RedHat"
 
 - name: Setup simple authentication
   template:
@@ -35,6 +21,15 @@
     src: server.conf.j2
     dest: "{{ openvpn_etcdir }}/server.conf"
   notify: openvpn restart
+
+- name: allow openvpn to listen on configured port
+  seport:
+    ports: "{{ openvpn_port }}"
+    proto: "{{ openvpn_proto }}"
+    setype: openvpn_port_t
+    state: present
+    ignore_selinux_state: true
+  when: ansible_os_family == "RedHat"
 
 - name: Ensure openvpn key dir has the right permission
   file:

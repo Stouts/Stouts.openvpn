@@ -1,11 +1,11 @@
 ---
 
 galaxy_info:
-  author: klen
-  company: Stouts
-  description: Manage OpenVPN server
+  description: openvpn role
+  issue_tracker_url: https://github.com/escapace/ansible-openvpn/issues
+  license: Apache-2.0
   min_ansible_version: 2.4
-  license: MIT
+  github_branch: master
   platforms:
     - name: Ubuntu
       versions:
@@ -20,6 +20,9 @@ galaxy_info:
         - jessie
         - stretch
   galaxy_tags:
-    - system
-    - networking
-dependencies: []
+  - escapace
+  - openvpn
+
+dependencies:
+   - { role: escapace.ferm }
+   - { role: escapace.dummy }

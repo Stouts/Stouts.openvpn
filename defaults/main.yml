@@ -16,31 +16,28 @@ openvpn_use_system_easyrsa: false
 openvpn_route_traffic: false
 
 # The interface that traffic will come in from (WARNING default: any)
-openvpn_interface: ''
+# openvpn_interface: "{{ ansible_default_ipv4.interface }}"
 
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{ inventory_hostname }}"
-
 openvpn_port: 1194
 openvpn_proto: udp
-openvpn_dev: tun
-openvpn_server: 10.8.0.0 255.255.255.0
-openvpn_bridge: {}
+openvpn_dev_type: tun
+openvpn_dev_name: "{{ openvpn_dev_type }}-ovpn"
+openvpn_server: 10.8.0.0/24
+openvpn_server_ipv6:
 openvpn_max_clients: 100
-openvpn_log: /var/log/openvpn.log
 openvpn_keepalive: "10 120"
-openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: true
-openvpn_cipher: BF-CBC
+openvpn_cipher: AES-256-CBC
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
-openvpn_tls_auth: false
+openvpn_tls_auth: true
 openvpn_tls_key: "ta.key"
 openvpn_user: nobody
 openvpn_group: nogroup
 openvpn_resolv_retry: infinite
-openvpn_client_to_client: true
-
+openvpn_client_to_client: false
 
 # Network ranges that the connecting clients should try to reach using the VPN
 # connection. Example:
@@ -66,10 +63,10 @@ openvpn_client_options: []
 
 openvpn_key_country: US
 openvpn_key_province: CA
-openvpn_key_city: SanFrancisco
-openvpn_key_org: Fort-Funston
-openvpn_key_email: me@myhost.mydomain
-openvpn_key_size: 1024
+openvpn_key_city: San Francisco
+openvpn_key_org: Acme Corporation
+openvpn_key_email: acme@example.com
+openvpn_key_size: 2048
 
 # Make clients certificate
 openvpn_clients:
@@ -78,26 +75,12 @@ openvpn_clients:
 # Revoke clients certificates
 openvpn_clients_revoke: []
 
-# Use PAM authentication
-openvpn_use_pam: true
-openvpn_use_pam_users: []
-# Only for Debian-based, CentOS requires 'pam_pwdfile' from third party repos.
-# If empty use system users
-# otherwise use users from the option
-# openvpn_use_pam_users:
-# - { name: user, password: password }
-
-# LDAP authentication and configuration (optional)
-openvpn_use_ldap: false
-openvpn_ldap_tlsenable: 'false'
-openvpn_ldap_follow_referrals: 'false'
-
 # Use simple authentication (default is disabled)
 openvpn_simple_auth: false
 openvpn_simple_auth_password: ""
 
 # Whether to embed CA, cert, and key info inside client OVPN config file.
-openvpn_unified_client_profiles: false
+openvpn_unified_client_profiles: true
 
 # Download the created client credentials to the specified directory
 openvpn_download_clients: false

@@ -9,7 +9,7 @@ client
 # Use the same setting as you are using on the server. On most systems, the VPN
 # will not function unless you partially or fully disable the firewall for the
 # TUN/TAP interface.
-dev {{ openvpn_dev }}
+dev {{ openvpn_dev_type }}
 
 # Are we connecting to a TCP or UDP server?  Use the same setting as on the
 # server.
@@ -85,10 +85,16 @@ comp-lzo
 # Set log file verbosity.
 verb {{openvpn_verb}}
 
-{% if openvpn_use_pam or openvpn_use_ldap %}
-auth-user-pass
-{% endif %}
-
 {% for option in openvpn_client_options %}
 {{option}}
 {% endfor %}
+
+{% if openvpn_route_traffic %}
+{% if openvpn_server %}
+redirect-gateway def1
+{% endif %}
+
+{% if openvpn_server_ipv6|length %}
+redirect-gateway ipv6
+{% endif %}
+{% endif %}

@@ -1,38 +1,5 @@
 ---
 
-- name: Restart networking (Debian)
-  service:
-    name: networking
-    state: restarted
-  listen: restart networking debian
-
-- name: Restart networking (RedHat)
-  service:
-    name: network
-    state: restarted
-  listen: restart networking redhat
-
-- name: Save iptables rules
-  block:
-    - name: Save iptable rules (RedHat)
-      command: iptables-save
-      when: ansible_os_family == "RedHat"
-      listen: openvpn save iptables
-
-    - name: Save iptable rules (Ubuntu Trusty)
-      command: /etc/init.d/iptables-persistent save
-      when:
-        - ansible_os_family == "Debian"
-        - ansible_lsb.codename == "trusty"
-      listen: openvpn save iptables
-
-    - name: Save the rules (Ubuntu)
-      command: netfilter-persistent save
-      when:
-        - ansible_os_family == "Debian"
-        - ansible_lsb.codename != "trusty"
-      listen: openvpn save iptables
-
 - name: Restart OpenVPN service
   service:
     name: "{{ openvpn_service }}"

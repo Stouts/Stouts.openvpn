@@ -1,0 +1,48 @@
+@def $OPENVPN_DEV = {{ openvpn_dev_name }};
+@def $OPENVPN_PORT = {{ openvpn_port }};
+
+{% if openvpn_server %}
+@def $OPENVPN_V4_CIDR = {{ openvpn_server }};
+
+{% if openvpn_route_traffic %}
+domain ip table nat {
+    chain POSTROUTING {
+        saddr $OPENVPN_V4_CIDR outerface $DEFAULT_V4_DEV MASQUERADE;
+    }
+}
+{% endif %}
+
+domain ip table filter {
+    chain INPUT {
+        interface $DEFAULT_V4_DEV proto udp dport $OPENVPN_PORT ACCEPT;
+    }
+
+    {% if openvpn_route_traffic %}
+    chain FORWARD {
+        saddr $OPENVPN_V4_CIDR interface $OPENVPN_DEV outerface $DEFAULT_V4_DEV ACCEPT;
+        daddr $OPENVPN_V4_CIDR outerface $OPENVPN_DEV interface $DEFAULT_V4_DEV mod state state (ESTABLISHED RELATED) ACCEPT;
+
+        interface $OPENVPN_DEV outerface $OPENVPN_DEV DROP;
+    }
+    {% endif %}
+}
+{% endif %}
+
+{% if openvpn_server_ipv6|length %}
+@def $OPENVPN_V6_CIDR = {{ openvpn_server_ipv6 }};
+
+domain ip6 table filter {
+    chain INPUT {
+        interface $DEFAULT_V6_DEV proto udp dport $OPENVPN_PORT ACCEPT;
+    }
+
+    {% if openvpn_route_traffic %}
+    chain FORWARD {
+        saddr $OPENVPN_V6_CIDR interface $OPENVPN_DEV outerface $DEFAULT_V6_DEV ACCEPT;
+        daddr $OPENVPN_V6_CIDR outerface $OPENVPN_DEV interface $DEFAULT_V6_DEV mod state state (ESTABLISHED RELATED) ACCEPT;
+
+        interface $OPENVPN_DEV outerface $OPENVPN_DEV DROP;
+    }
+    {% endif %}
+}
+{% endif %}
