@@ -24,20 +24,23 @@
 
 # TODO revisit this in relation to
 # https://github.com/Stouts/Stouts.openvpn/pull/107
-- name: Fix openssl.cnf path on Debian Stretch
+- name: Fix openssl.cnf path on Debian Stretch / Ubuntiu Bionic
   file:
     src: "{{ openvpn_etcdir + '/easy-rsa/openssl-1.0.0.cnf' }}"
     dest: "{{ openvpn_etcdir + '/easy-rsa/openssl.cnf' }}"
     state: link
   when:
-    - ansible_distribution_release == 'stretch'
+    - ansible_distribution_release == 'stretch' or
+      ansible_distribution_release == 'bionic'
     - not openvpn_use_system_easyrsa | bool
 
-- name: Fix openssl.cnf path on Debian Stretch with system easyrsa
+- name: Fix openssl.cnf path on Debian Stretch / Ubuntiu Bionic
+        with system easyrsa
   file:
     src: /usr/share/easy-rsa/openssl-1.0.0.cnf
     dest: /usr/share/easy-rsa/openssl.cnf
     state: link
   when:
-    - ansible_distribution_release == 'stretch'
+    - ansible_distribution_release == 'stretch' or
+      ansible_distribution_release == 'bionic'
     - openvpn_use_system_easyrsa | bool
