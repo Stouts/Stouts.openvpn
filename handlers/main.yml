@@ -1,11 +1,40 @@
 ---
 
-- name: openvpn restart
-  service: name={{openvpn_service}} state=restarted
+- name: Restart networking (Debian)
+  service:
+    name: networking
+    state: restarted
+  listen: restart networking debian
 
-- name: openvpn pack clients
-  command: zip -j {{item.item}}.zip {{item.item}}.crt {{item.item}}.key {{item.item}}.ovpn ca.crt {{openvpn_tls_key if openvpn_tls_auth else ''}}
-  when: item.changed
-  with_items: "{{openvpn_clients_changed.results}}"
-  args:
-    chdir: "{{ openvpn_keydir }}"
+- name: Restart networking (RedHat)
+  service:
+    name: network
+    state: restarted
+  listen: restart networking redhat
+
+- name: Save iptables rules
+  block:
+    - name: Save iptable rules (RedHat)
+      command: iptables-save
+      when: ansible_os_family == "RedHat"
+      listen: openvpn save iptables
+
+    - name: Save iptable rules (Ubuntu Trusty)
+      command: /etc/init.d/iptables-persistent save
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_lsb.codename == "trusty"
+      listen: openvpn save iptables
+
+    - name: Save the rules (Ubuntu)
+      command: netfilter-persistent save
+      when:
+        - ansible_os_family == "Debian"
+        - ansible_lsb.codename != "trusty"
+      listen: openvpn save iptables
+
+- name: Restart OpenVPN service
+  service:
+    name: "{{ openvpn_service }}"
+    state: restarted
+  listen: openvpn restart

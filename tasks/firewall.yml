@@ -1,0 +1,77 @@
+---
+
+- name: Install firewall dependencies (Debian)
+  apt:
+    name: "{{ packages }}"
+  when: ansible_os_family == "Debian"
+  vars:
+    packages:
+      - iptables
+      - iptables-persistent
+      - module-init-tools
+
+- name: Read existing iptable rules
+  shell: iptables -L
+  tags:
+    # Ansible Lint complains about using shell instead of the iptables_module
+    - skip_ansible_lint
+  register: iptables_rules
+  changed_when: false
+
+- name: Read existing iptable rules (nat table)
+  shell: iptables -L -t nat
+  tags:
+    # Ansible Lint complains about using shell instead of the iptables_module
+    - skip_ansible_lint
+  register: iptables_nat_rules
+  changed_when: false
+
+- name: Allow connections to the OpenVPN server
+  iptables:
+    chain: INPUT
+    in_interface: "{{ openvpn_interface | default(omit, true) }}"
+    ctstate: NEW
+    protocol: udp
+    destination_port: "{{ openvpn_port }}"
+    jump: ACCEPT
+    comment: incoming_openvpn
+  notify: openvpn save iptables
+  when: iptables_rules.stdout.find("incoming_openvpn") == -1
+
+- name: Allow forwarding from tun/tap to interface
+  iptables:
+    chain: FORWARD
+    in_interface: "{{ openvpn_dev }}+"
+    out_interface: "{{ openvpn_interface | default(omit, true) }}"
+    jump: ACCEPT
+    comment: forward_tun_tap
+  notify: openvpn save iptables
+  when: iptables_rules.stdout.find("forward_tun_tap") == -1
+
+- name: Allow forwarding from interface to tun/tap
+  iptables:
+    chain: FORWARD
+    in_interface: "{{ openvpn_interface | default(omit, true) }}"
+    out_interface: "{{ openvpn_dev }}+"
+    jump: ACCEPT
+    comment: forward_reverse
+  notify: openvpn save iptables
+  when: iptables_rules.stdout.find("forward_reverse") == -1
+
+- name: Allow NATing outgoing vpn traffic
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    source: >-
+      {{
+        openvpn_server
+        | regex_replace('^(?P<host>.+)\s+(?P<mask>.+)$', '\g<host>/\g<mask>')
+        | ipaddr('net')
+      }}
+    out_interface: "{{ openvpn_interface | default(omit, true) }}"
+    jump: MASQUERADE
+    comment: vpn_masquerade
+  notify: openvpn save iptables
+  when:
+    - iptables_nat_rules.stdout.find("vpn_masquerade") == -1
+    - openvpn_server | length > 0

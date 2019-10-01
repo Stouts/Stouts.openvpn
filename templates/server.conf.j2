@@ -14,6 +14,11 @@ port {{ openvpn_port }}
 # TCP or UDP server?
 proto {{ openvpn_proto }}
 
+{% if openvpn_portshare is defined %}
+# Port sharing
+port-share 127.0.0.1 {{ openvpn_portshare }}
+{% endif %}
+
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
 
@@ -81,6 +86,13 @@ server {{ openvpn_server }}
 # to connecting clients.  Leave this line commented
 # out unless you are ethernet bridging.
 server-bridge {{ openvpn_bridge.address }} {{ openvpn_bridge.netmask }} {{ openvpn_bridge.dhcp_start }} {{ openvpn_bridge.dhcp_end }}
+
+{% if ansible_os_family == 'RedHat' %}
+# Tap management through script
+up "/etc/openvpn/up.sh br-{{ openvpn_dev }}"
+down "/etc/openvpn/down.sh br-{{ openvpn_dev }}"
+script-security 2
+{% endif %}
 {% endif %}
 
 # Maintain a record of client <-> virtual IP address associations in this file.
@@ -168,3 +180,11 @@ script-security 3 execve
 {% if crl_pem_file.stat.exists %}
 crl-verify {{openvpn_keydir}}/crl.pem
 {% endif %}
+
+{% for dns in openvpn_dns_servers %}
+push "dhcp-option DNS {{ dns }}"
+{% endfor %}
+
+{% for push_route in openvpn_route_ranges %}
+push "route {{ push_route }}"
+{% endfor %}

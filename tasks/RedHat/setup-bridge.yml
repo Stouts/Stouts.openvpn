@@ -1,0 +1,28 @@
+---
+
+- name: Setup up script
+  when: openvpn_bridge | bool
+  template:
+    src: up.sh.j2
+    dest: /etc/openvpn/up.sh
+    mode: o+x
+
+- name: Setup down script
+  template:
+    src: down.sh.j2
+    dest: /etc/openvpn/down.sh
+    mode: o+x
+  when: openvpn_bridge | bool
+
+- name: Setup bridge
+  template:
+    src: bridge-interface.rh.j2
+    dest: "/etc/sysconfig/network-scripts/ifcfg-br-{{ openvpn_dev }}"
+  when: openvpn_bridge | bool
+  notify: restart networking redhat
+
+- name: Remove interface configuration for "{{ openvpn_dev }}"
+  file:
+    path: "/etc/sysconfig/network-scripts/ifcfg-br-{{ openvpn_dev }}"
+    state: absent
+  when: not openvpn_bridge | bool

@@ -1,0 +1,94 @@
+---
+
+- name: Generate scripts
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ openvpn_etcdir }}/{{ item }}"
+    mode: 0o700
+  loop:
+    - vars
+    - build-server.sh
+    - build-client.sh
+    - revoke-client.sh
+
+- name: Generate Server keys
+  command: "{{ openvpn_etcdir }}/build-server.sh"
+  args:
+    creates: "{{ openvpn_keydir }}"
+
+- name: Generate tls-auth key
+  command:
+    openvpn --genkey --secret "{{ openvpn_keydir }}/{{ openvpn_tls_key }}"
+  args:
+    creates: "{{ openvpn_keydir }}/{{ openvpn_tls_key }}"
+  when: openvpn_tls_auth
+
+- name: Generate Clients keys
+  command: "{{ openvpn_etcdir }}/build-client.sh {{ item }}"
+  args:
+    creates: "{{ openvpn_keydir }}/{{ item }}.crt"
+  loop: "{{ openvpn_clients }}"
+
+- name: Revoke Clients keys
+  command: "{{ openvpn_etcdir }}/revoke-client.sh {{ item }}"
+  args:
+    removes: "{{ openvpn_keydir }}/{{ item }}.crt"
+  loop: "{{ openvpn_clients_revoke }}"
+
+- include: read-client-files.yml
+  when: openvpn_unified_client_profiles
+
+- name: Create client configuration directory if requested
+  file:
+    path: "{{ openvpn_client_config_dir }}"
+    mode: 0o755
+    state: directory
+  when: openvpn_client_config_dir is defined
+
+- name: Check if crl.pem exists
+  stat:
+    path: "{{ openvpn_keydir }}/crl.pem"
+  register: crl_pem_file
+
+- name: Generate Clients configurations
+  template:
+    src: client.conf.j2
+    dest: "{{ openvpn_keydir }}/{{ item }}.ovpn"
+  loop: "{{ openvpn_clients }}"
+  register: openvpn_clients_changed
+
+- name: Pack clients
+  command: >-
+    zip -j
+      {{ item.item }}.zip
+      {{ item.item }}.crt
+      {{ item.item }}.key
+      {{ item.item }}.ovpn
+      ca.crt
+      {{ openvpn_tls_key if openvpn_tls_auth else '' }}
+  loop: "{{ openvpn_clients_changed.results }}"
+  args:
+    chdir: "{{ openvpn_keydir }}"
+    creates: "{{ item.item }}.zip"
+
+- name: Download client credentials (zip)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.zip"
+    dest: "{{ openvpn_download_dir }}"
+    flat: true
+    validate_checksum: true
+  when:
+    - openvpn_download_clients | bool
+    - not openvpn_unified_client_profiles | bool
+  loop: "{{ openvpn_clients_changed.results }}"
+
+- name: Download client credentials (ovpn)
+  fetch:
+    src: "{{ openvpn_keydir }}/{{ item.item }}.ovpn"
+    dest: "{{ openvpn_download_dir }}"
+    flat: true
+    validate_checksum: true
+  when:
+    - openvpn_download_clients | bool
+    - openvpn_unified_client_profiles | bool
+  loop: "{{ openvpn_clients_changed.results }}"
