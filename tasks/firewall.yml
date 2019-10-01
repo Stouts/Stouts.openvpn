@@ -8,7 +8,7 @@
     packages:
       - iptables
       - iptables-persistent
-      - module-init-tools
+      - kmod
 
 - name: Read existing iptable rules
   shell: iptables -L

@@ -5,6 +5,8 @@ openvpn_enabled: true
 
 openvpn_etcdir: /etc/openvpn
 openvpn_keydir: "{{ openvpn_etcdir }}/keys"
+openvpn_log: /var/log/openvpn.log
+openvpn_status: openvpn-status.log
 
 # Set to 'true' to install openvpn from the upstream repo
 openvpn_use_external_repo: false
@@ -24,15 +26,14 @@ openvpn_host: "{{ inventory_hostname }}"
 openvpn_port: 1194
 openvpn_proto: udp
 openvpn_dev: tun
-openvpn_server: 10.8.0.0 255.255.255.0
+openvpn_ipv6_enabled: false  # Listening also for IPv6
+
 openvpn_bridge: {}
 openvpn_max_clients: 100
-openvpn_log: /var/log/openvpn.log
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_comp_lzo: true
 openvpn_cipher: BF-CBC
-openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_tls_auth: false
 openvpn_tls_key: "ta.key"
@@ -41,6 +42,13 @@ openvpn_group: nogroup
 openvpn_resolv_retry: infinite
 openvpn_client_to_client: true
 
+# Internal subnets
+openvpn_server: 10.8.0.0 255.255.255.0
+### Keep undefined if you don't want to use an internal IPv6 subnet
+  # openvpn_ipv6_server: 10::/64
+  # openvpn_ipv6_ifconfig: 10::1 10::2
+  # openvpn_ipv6_route_default: 10::1
+
 
 # Network ranges that the connecting clients should try to reach using the VPN
 # connection. Example:
@@ -48,6 +56,10 @@ openvpn_client_to_client: true
 #   - 192.168.0.0 255.255.255.0
 #   - 192.168.10.0 255.255.255.0
 openvpn_route_ranges: []
+
+openvpn_ipv6_route_ranges: []
+# - 2000:1::/64
+# - 2000:3::/64
 
 # DNS servers to push to the connecting client to avoid leaks via DNS queries
 openvpn_dns_servers: []
