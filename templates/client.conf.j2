@@ -67,7 +67,8 @@ key {{client}}.key
 # To use this feature, you will need to generate your server certificates with
 # the nsCertType field set to "server".  The build-key-server script in the
 # easy-rsa folder will do this.
-ns-cert-type server
+# ns-cert-type server (Deprecated by 'remote-cert-tls' since OpenVPN 2.1)
+remote-cert-tls server
 
 {% if openvpn_tls_auth and not openvpn_unified_client_profiles -%}
 # Use a static pre-shared key (PSK)
