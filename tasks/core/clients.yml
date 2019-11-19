@@ -1,0 +1,64 @@
+---
+
+- name: Create client configuration directory
+  file:
+    path: "{{ openvpn_etcdir }}/ovpns"
+    state: directory
+
+- name: Generate client configurations
+  template:
+    src: client.conf.j2
+    dest: "{{ openvpn_etcdir }}/ovpns/{{ item }}.ovpn"
+  loop: "{{ openvpn_clients }}"
+  register: openvpn_clients_changed
+
+- name: Pack clients
+  command: >-
+    zip -j
+      {{ item }}.zip
+      {{ openvpn_keydir }}/issued/{{ item }}.crt
+      {{ openvpn_keydir }}/private/{{ item }}.key
+      {{ item }}.ovpn
+      {{ openvpn_keydir }}/ca.crt
+      {{ openvpn_tls_key if openvpn_tls_auth else '' }}
+  loop: "{{ openvpn_clients }}"
+  loop_control:
+    index_var: index
+  args:
+    chdir: "{{ openvpn_etcdir }}/ovpns/"
+  when: openvpn_clients_changed.results[index] is changed
+
+- name: Download client credentials
+  fetch:
+    src: "{{ openvpn_etcdir }}/ovpns/{{ item }}.zip"
+    dest: "{{ openvpn_download_dir }}"
+    flat: true
+    validate_checksum: true
+  loop: "{{ openvpn_clients }}"
+  loop_control:
+    index_var: index
+  when: openvpn_download_clients | bool
+  tags: openvpn-download
+
+- name: Extract client credentials
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ item | dirname }}"
+  loop: "{{ q('fileglob', openvpn_download_dir ~ '/*.zip') }}"
+  become: false
+  when:
+    - openvpn_download_clients | bool
+    - openvpn_download_extract | bool
+  delegate_to: localhost
+  tags: openvpn-download
+
+- name: Create ccd directory
+  file:
+    path: "{{ openvpn_ccd }}"
+    state: directory
+
+- name: Upload ccd configs
+  copy:
+    content: "{{ item.content }}"
+    dest: "{{ openvpn_ccd }}/{{ item.name }}"
+  loop: "{{ openvpn_ccd_configs }}"

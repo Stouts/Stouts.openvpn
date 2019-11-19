@@ -4,17 +4,30 @@
 
 - include_tasks: assertions.yml
 
-- include_tasks: "{{ ansible_os_family }}/install.yml"
+- include_tasks: "core/install/{{ ansible_os_family }}.yml"
 
-- include_tasks: easy-rsa.yml
+- include_tasks: authentication/ldap.yml
 
-- include_tasks: clients.yml
+- include_tasks: authentication/pam.yml
 
-- include_tasks: configure.yml
+- include_tasks: authentication/simple.yml
 
-- include_tasks: "{{ ansible_os_family }}/setup-bridge.yml"
+- include_tasks: authentication/tls.yml
 
-- include: firewall.yml
+- include_tasks: core/configure.yml
+
+- include_tasks: core/read-client-files.yml
+  when: openvpn_unified_client_profiles
+
+- import_tasks: core/clients.yml
+
+- include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
+
+- include_tasks: system/forwarding.yml
+
+- include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
+
+- include_tasks: system/firewall.yml
   when: openvpn_route_traffic | bool
 
 - include_tasks: service.yml

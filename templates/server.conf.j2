@@ -42,17 +42,17 @@ dev {{ openvpn_dev }}
 #
 # Any X509 key management system can be used. OpenVPN can also use a PKCS #12
 # formatted key file (see "pkcs12" directive in man page).
-ca {{openvpn_keydir}}/ca.crt
-cert {{openvpn_keydir}}/server.crt
-key {{openvpn_keydir}}/server.key  # This file should be kept secret
+ca {{ openvpn_keydir }}/ca.crt
+cert {{ openvpn_keydir }}/issued/server.crt
+key {{ openvpn_keydir }}/private/server.key  # This file should be kept secret
 
 # Diffie hellman parameters. Generate your own with: openssl dhparam -out
 # dh1024.pem 1024 Substitute 2048 for 1024 if you are using 2048 bit keys.
-dh {{openvpn_keydir}}/dh{{openvpn_key_size}}.pem
+dh {{ openvpn_keydir }}/dh.pem
 
 {% if openvpn_tls_auth -%}
 # Use a static pre-shared key (PSK)
-tls-auth {{ openvpn_keydir }}/{{ openvpn_tls_key }} 0
+tls-auth {{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }} 0
 tls-server
 {% endif %}
 
@@ -98,7 +98,7 @@ script-security 2
 # Maintain a record of client <-> virtual IP address associations in this file.
 # If OpenVPN goes down or is restarted, reconnecting clients can be assigned
 # the same virtual IP address from the pool that was previously assigned.
-ifconfig-pool-persist {{openvpn_ifconfig_pool_persist}}
+ifconfig-pool-persist {{ openvpn_ifconfig_pool_persist }}
 
 # The keepalive directive causes ping-like messages to be sent back and forth
 # over the link so that each side knows when the other side has gone down. Ping
@@ -178,7 +178,7 @@ script-security 3 execve
 {% endfor %}
 
 {% if crl_pem_file.stat.exists %}
-crl-verify {{openvpn_keydir}}/crl.pem
+crl-verify {{ openvpn_keydir }}/crl.pem
 {% endif %}
 
 {% for dns in openvpn_dns_servers %}
