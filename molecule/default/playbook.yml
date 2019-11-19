@@ -15,8 +15,8 @@
     # OpenVPN
     openvpn_keydir: "{{ easyrsa_pki_dir }}"
     openvpn_clients: "{{ easyrsa_clients }}"
-    openvpn_download_clients: true
-    openvpn_download_dir: /tmp/
+    # openvpn_download_clients: true
+    # openvpn_download_dir: /tmp/
     openvpn_ccd_configs:
       - name: client1
         content: '# pass'
