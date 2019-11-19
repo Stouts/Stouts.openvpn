@@ -1,0 +1,15 @@
+---
+
+- name: Setup PAM
+  template:
+    src: openvpn.pam.j2
+    dest: /etc/pam.d/openvpn
+  when: openvpn_use_pam | bool
+
+- name: Configure users
+  htpasswd:
+    path: "{{ openvpn_etcdir }}/users"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    crypt_scheme: des_crypt
+  loop: "{{ openvpn_use_pam_users }}"

@@ -1,0 +1,8 @@
+---
+
+- name: Generate tls-auth key
+  command:
+    openvpn --genkey --secret "{{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }}"
+  args:
+    creates: "{{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }}"
+  when: openvpn_tls_auth

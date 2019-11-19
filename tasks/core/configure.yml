@@ -1,0 +1,19 @@
+---
+
+- name: Ensure openvpn key dir has the right permission
+  file:
+    path: "{{ openvpn_keydir }}"
+    state: directory
+    mode: 0o700
+    owner: "{{ openvpn_user }}"
+
+- name: Check if crl.pem exists
+  stat:
+    path: "{{ openvpn_keydir }}/crl.pem"
+  register: crl_pem_file
+
+- name: Configure server
+  template:
+    src: server.conf.j2
+    dest: "{{ openvpn_etcdir }}/server.conf"
+  notify: openvpn restart
