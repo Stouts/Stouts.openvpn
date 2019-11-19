@@ -22,5 +22,5 @@
       - name: client2
         content: '# pass'
   roles:
-    - role: nkakouros-original.easyrsa
+    - role: nkakouros.easyrsa
     - role: Stouts.openvpn
