@@ -3,4 +3,5 @@
 - name: Prepare
   hosts: all
   tasks:
-    - include_role: geerlingguy.git
+    - include_role:
+        name: geerlingguy.git
