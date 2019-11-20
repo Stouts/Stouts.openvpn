@@ -13,16 +13,41 @@
   file:
     path: "{{ openvpn_etcdir }}/crl/"
     state: directory
+  when: _openvpn_crl_exists.stat.exists | bool
 
 - name: Copy crl list
   copy:
     src: >-
       {{
         openvpn_keydir + '/crl.pem' if openvpn_crl_mode == 'file' else
-        openvpn_keydir + '/revoked/certs_by_serial'
+        openvpn_keydir + '/revoked/certs_by_serial/'
       }}
     dest: "{{ openvpn_etcdir }}/crl/"
     remote_src: true
     owner: "{{ openvpn_user }}"
     group: "{{ openvpn_group }}"
+  register: _result
   when: _openvpn_crl_exists.stat.exists | bool
+
+- name: Convert hex serials to decimal
+  shell: |
+    shopt -s nullglob
+    certs=(*.crt)
+    certs=("${certs[@]%.crt}")
+    [[ "${certs[*]}" != '' ]] \
+    && for c in "${certs[@]}"; do
+         file="$(bc <<< "obase=10; ibase=16; $c")"
+         echo "$c" >| "$file"
+         rm "$c.crt"
+       done \
+    && chown {{ openvpn_user }}:{{ openvpn_group }} * \
+    && echo 'changed' \
+    || :
+  args:
+    chdir: "{{ openvpn_etcdir + '/crl/' }}"
+    executable: /bin/bash
+  register: __result
+  changed_when: __result.stdout is search('changed')
+  when:
+    - _result is not skipped
+    - openvpn_crl_mode == 'dir'

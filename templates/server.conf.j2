@@ -178,7 +178,7 @@ script-security 3 execve
 {% endfor %}
 
 {% if openvpn_crl_mode == 'dir' %}
-crl-verify {{ openvpn_etcdir }}/crl/certs_by_serial 'dir'
+crl-verify {{ openvpn_etcdir }}/crl/ 'dir'
 {% elif openvpn_crl_mode == 'file' %}
 crl-verify {{ openvpn_etcdir }}/crl/crl.pem
 {% endif %}

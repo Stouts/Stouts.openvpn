@@ -27,4 +27,3 @@ verifier:
   enabled: false
   lint:
     name: flake8
-
