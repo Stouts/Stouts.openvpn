@@ -29,12 +29,12 @@
   register: _result
   when: _openvpn_crl_exists.stat.exists | bool
 
-- name: Convert hex serials to decimal
+- name: Convert hex serials to decimal  # noqa 306
   shell: |
     shopt -s nullglob
     certs=(*.crt)
     certs=("${certs[@]%.crt}")
-    [[ "${certs[*]}" != '' ]] \
+    [[ "${certs[*]}" != '' ]] \ # noqa 602
     && for c in "${certs[@]}"; do
          file="$(bc <<< "obase=10; ibase=16; $c")"
          echo "$c" >| "$file"
@@ -46,6 +46,7 @@
   args:
     chdir: "{{ openvpn_etcdir + '/crl/' }}"
     executable: /bin/bash
+    warn: false
   register: __result
   changed_when: __result.stdout is search('changed')
   when:
