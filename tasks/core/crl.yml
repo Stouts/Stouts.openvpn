@@ -34,15 +34,15 @@
     shopt -s nullglob
     certs=(*.crt)
     certs=("${certs[@]%.crt}")
-    [[ "${certs[*]}" != '' ]] \ # noqa 602
-    && for c in "${certs[@]}"; do
-         file="$(bc <<< "obase=10; ibase=16; $c")"
-         echo "$c" >| "$file"
-         rm "$c.crt"
-       done \
-    && chown {{ openvpn_user }}:{{ openvpn_group }} * \
-    && echo 'changed' \
-    || :
+    if [[ "${certs[*]}" != '' ]]; then # noqa 602
+      for c in "${certs[@]}"; do
+        file="$(bc <<< "obase=10; ibase=16; $c")"
+        echo "$c" >| "$file"
+        rm "$c.crt"
+      done
+      chown {{ openvpn_user }}:{{ openvpn_group }} *
+      echo 'changed'
+    fi
   args:
     chdir: "{{ openvpn_etcdir + '/crl/' }}"
     executable: /bin/bash

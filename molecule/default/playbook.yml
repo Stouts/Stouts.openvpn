@@ -17,6 +17,7 @@
     openvpn_clients: "{{ easyrsa_clients }}"
     # openvpn_download_clients: true
     # openvpn_download_dir: /tmp/
+    openvpn_crl_mode: 'dir'
     openvpn_ccd_configs:
       - name: client1
         content: '# pass'
