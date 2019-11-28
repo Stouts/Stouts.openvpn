@@ -6,10 +6,10 @@
     # EasyRSA
     easyrsa_generate_dh: true
     easyrsa_servers:
-      - server
+      - name: server
     easyrsa_clients:
-      - client1
-      - client2
+      - name: client1
+      - name: client2
     easyrsa_pki_dir: /etc/easyrsa/pki
 
     # OpenVPN
