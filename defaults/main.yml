@@ -136,3 +136,5 @@ openvpn_simple_auth_password: ""
 openvpn_tls_auth: false
 openvpn_tls_key: "ta.key"
 # }}}
+
+openvpn_client_conf_template: client.conf.j2
