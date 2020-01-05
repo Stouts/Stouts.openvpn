@@ -58,14 +58,6 @@ openvpn_server_options: []
 # openvpn_server_options:
 # - dev-node MyTap
 # - client-to-client
-
-openvpn_crl_mode: 'file'
-# This variable defines how a crl is loaded. There are two possible values:
-# - file: a `crl.pem` located in the `openvpn_keydir` directory will be used
-# - dir: a `revoked/certs_by_serial` directory under `openvpn_keydir` will be
-#        used.
-# See the openvpn documentation for more info.
-# If you set this variable to anything else, a CRL will not be used.
 # }}}
 # Networking {{{
 # Set to true to make the vpn server NAT incoming traffic

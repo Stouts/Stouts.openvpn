@@ -177,10 +177,8 @@ script-security 3 execve
 {{option}}
 {% endfor %}
 
-{% if openvpn_crl_mode == 'dir' %}
-crl-verify {{ openvpn_etcdir }}/crl/ 'dir'
-{% elif openvpn_crl_mode == 'file' %}
-crl-verify {{ openvpn_etcdir }}/crl/crl.pem
+{% if crl_pem_file.stat.exists %}
+crl-verify {{ openvpn_keydir }}/crl.pem
 {% endif %}
 
 {% for dns in openvpn_dns_servers %}

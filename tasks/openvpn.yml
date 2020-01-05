@@ -14,12 +14,6 @@
 
 - include_tasks: authentication/tls.yml
 
-- include_tasks:
-    file: core/crl.yml
-    apply:
-      tags: openvpn-crl
-  tags: openvpn-crl
-
 - include_tasks: core/configure.yml
 
 - include_tasks: core/read-client-files.yml
