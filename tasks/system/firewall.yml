@@ -74,4 +74,4 @@
   notify: openvpn save iptables
   when:
     - iptables_nat_rules.stdout.find("vpn_masquerade") == -1
-    - openvpn_server | length > 0
+    - not openvpn_server
