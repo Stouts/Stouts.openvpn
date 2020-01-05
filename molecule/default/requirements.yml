@@ -1,3 +1,4 @@
 ---
 
-- src: nkakouros-original.easyrsa
+- src: geerlingguy.git
+- src: nkakouros.easyrsa

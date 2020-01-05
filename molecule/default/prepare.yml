@@ -2,6 +2,7 @@
 
 - name: Prepare
   hosts: all
+  become: true
   tasks:
     - include_role:
         name: geerlingguy.git
