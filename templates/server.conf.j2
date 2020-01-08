@@ -57,8 +57,8 @@ tls-server
 {% endif %}
 
 # Client configuration directory.
-{% if openvpn_client_config_dir is defined -%}
-client-config-dir {{ openvpn_client_config_dir }}
+{% if openvpn_ccd is defined -%}
+client-config-dir {{ openvpn_ccd }}
 {% endif %}
 
 # Which VPN topology to use? (net30, subnet, p2p)
