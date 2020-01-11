@@ -1,5 +1,8 @@
 ---
 
+# This file contains fold markers (`{{{` and `}}}`). If you use an editor that
+# supports fold markers, you can use them to view this file in a pretty format.
+
 # Set to 'false' to completely disable the role
 openvpn_enabled: true
 
