@@ -62,3 +62,12 @@
     content: "{{ item.content }}"
     dest: "{{ openvpn_ccd }}/{{ item.name }}"
   loop: "{{ openvpn_ccd_configs }}"
+
+- name: Disable client-to-client at the IP layer
+  iptables:
+    chain: FORWARD
+    in_interface: "{{ openvpn_dev }}+"
+    out_interface: "{{ openvpn_dev }}+"
+    jump: "{{ openvpn_client_to_client_via_ip | ternary('ALLOW', 'DROP') }}"
+    comment: drop-client-to-client
+  notify: openvpn save iptables

@@ -132,6 +132,15 @@ openvpn_download_extract: "{{ openvpn_download_clients }}"
 # Download the created client credentials as a zip to the specified directory on
 # the Ansible controller and, optionally, extract them.
 
+# Whether to allow communication among clients via the openvpn server.
+# Communication is still possible via the IP layer.
+openvpn_client_to_client: true
+
+# Whether to allow communication among clients via the IP layer. Communication
+# is still possible via the OpenVPN server itself (see
+# `openvpn_client_to_client`).
+openvpn_client_to_client_via_ip: false
+
 openvpn_ccd: /etc/openvpn/ccd/
 # The ccd (clients configuration directory). This will contain files with
 # configuration directives that the server will apply per connecting client.
