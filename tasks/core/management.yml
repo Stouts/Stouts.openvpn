@@ -1,0 +1,28 @@
+---
+
+- name: Create management password file
+  copy:
+    content: "{{ openvpn_management_pass }}"
+    dest: "{{ openvpn_etcdir }}/mgmt.pw"
+    owner: "{{ openvpn_user }}"
+    group: "{{ openvpn_group }}"
+    mode: 0o400
+  when: openvpn_management_pass != None
+  no_log: >-
+    {{
+      lookup('env', 'IN_MOLECULE')
+      | default(false, true)
+      | ternary(false, true)
+    }}
+
+- name: Add management directive to OpenVPN config
+  set_fact:
+    openvpn_server_options:
+      "{{ openvpn_server_options + _mgmt_option }}"
+  vars:
+    _mgmt_option:
+      - "management {{
+          openvpn_management_host }} {{
+          openvpn_management_port }} {{
+          openvpn_etcdir + '/mgmt.pw' if openvpn_management_pass != None else ''
+        }}"
