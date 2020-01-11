@@ -77,14 +77,35 @@ openvpn_management_pass: ~
 # Set to true to make the vpn server NAT incoming traffic
 openvpn_route_traffic: false
 
+# The interface that traffic will come in from. This is used when creating
+# firewall rules to allow the vpn server to successfully forward traffic (see
+# `openvpn_route_traffic`). The interface you specify here will limit these
+# firewall rules only to that interface. Leave this None to have the rules apply
+# to any interface.
+openvpn_out_interface: ~
+
+# A list of ranges that you want the OpenVPN server to be able to forward
+# traffic for you. Traffic from your machine to these ranges will be NATed so
+# that your IP address is hidden.
+openvpn_nat_ranges:
+  - 0.0.0.0/0
+
+# The address that will become the source address of outgoing traffic from the
+# OpenVPN server. You would want this to be the address of
+# `openvpn_out_interface`, if you have also set that variable.
+openvpn_nat_address: "{{ ansible_facts.default_ipv4.address }}"
+
 # Network ranges that the connecting clients should try to reach using the VPN
-# connection. Example:
+# connection. When connecting to the OpenVPN server, it will create routes on
+# your local machine, so that any traffic from your machine to these ranges,
+# will go through the OpenVPN server. This makes sense to be the same as
+# `openvpn_nat_ranges`, but you may want to use different values. Example:
 # openvpn_route_ranges:
 #   - 192.168.0.0 255.255.255.0
 #   - 192.168.10.0 255.255.255.0
 openvpn_route_ranges: []
 
-# DNS servers to push to the connecting client to avoid leaks via DNS queries
+# DNS servers to push to the connecting client to avoid leaks via DNS queries.
 openvpn_dns_servers: []
 # }}}
 # Clients {{{

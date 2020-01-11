@@ -1,0 +1,40 @@
+---
+
+- name: Allow forwarding from tun/tap to interface
+  iptables:
+    chain: FORWARD
+    in_interface: "{{ openvpn_dev }}+"
+    out_interface: "{{ openvpn_out_interface | default(omit, true) }}"
+    jump: ACCEPT
+    comment: forward_tun_tap
+  notify: openvpn save iptables
+  when: iptables_rules.stdout.find("forward_tun_tap") == -1
+
+- name: Allow forwarding from interface to tun/tap
+  iptables:
+    chain: FORWARD
+    in_interface: "{{ openvpn_out_interface | default(omit, true) }}"
+    out_interface: "{{ openvpn_dev }}+"
+    jump: ACCEPT
+    comment: forward_reverse
+  notify: openvpn save iptables
+  when: iptables_rules.stdout.find("forward_reverse") == -1
+
+- name: Allow NATing outgoing vpn traffic
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    source: >-
+      {{
+        openvpn_server
+        | regex_replace('^(?P<host>.+)\s+(?P<mask>.+)$', '\g<host>/\g<mask>')
+        | ipaddr('net')
+      }}
+    destination: "{{ item }}"
+    out_interface: "{{ openvpn_out_interface | default(omit, true) }}"
+    jump: SNAT
+    to_source: "{{ openvpn_nat_address }}"
+    comment: vpn_masquerade
+  loop: "{{ openvpn_nat_ranges }}"
+  when: iptables_nat_rules.stdout.find("vpn_masquerade") == -1
+  notify: openvpn save iptables

@@ -19,6 +19,13 @@
 
 - include_tasks: core/configure.yml
 
+- include_tasks: system/forwarding.yml
+
+- include_tasks: system/firewall.yml
+
+- include_tasks: system/routing.yml
+  when: openvpn_route_traffic | bool
+
 - include_tasks: core/read-client-files.yml
   when: openvpn_unified_client_profiles
 
@@ -26,11 +33,6 @@
 
 - include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
 
-- include_tasks: system/forwarding.yml
-
 - include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
-
-- include_tasks: system/firewall.yml
-  when: openvpn_route_traffic | bool
 
 - include_tasks: service.yml
