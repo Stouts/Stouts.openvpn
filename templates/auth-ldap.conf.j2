@@ -1,5 +1,9 @@
 <LDAP>
   # LDAP server URL
+  # possible values are:
+  #  - ldapserver.example.org
+  #  - ldap://ldapserver.example.org
+  #  - ldaps://ldapserver.example.org
   URL   {% if openvpn_ldap_server | regex_search('(^\w+:\/\/.+$)') %}{{ openvpn_ldap_server }}{% else %}ldap://{{ openvpn_ldap_server }}{% endif %}
   
 
