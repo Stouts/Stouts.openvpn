@@ -21,7 +21,7 @@
     src: easy-rsa.tar.gz
     dest: "{{ openvpn_etcdir }}"
   when: not openvpn_use_system_easyrsa | bool
-
+ 
 # TODO revisit this in relation to
 # https://github.com/Stouts/Stouts.openvpn/pull/107
 - name: Fix openssl.cnf path on Debian Stretch
@@ -30,14 +30,5 @@
     dest: "{{ openvpn_etcdir + '/easy-rsa/openssl.cnf' }}"
     state: link
   when:
-    - ansible_distribution_release == 'stretch'
+    - ansible_distribution_release == 'stretch' or ansible_distribution_release == 'buster'
     - not openvpn_use_system_easyrsa | bool
-
-- name: Fix openssl.cnf path on Debian Stretch with system easyrsa
-  file:
-    src: /usr/share/easy-rsa/openssl-1.0.0.cnf
-    dest: /usr/share/easy-rsa/openssl.cnf
-    state: link
-  when:
-    - ansible_distribution_release == 'stretch'
-    - openvpn_use_system_easyrsa | bool

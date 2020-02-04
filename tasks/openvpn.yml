@@ -18,3 +18,5 @@
   when: openvpn_route_traffic | bool
 
 - include_tasks: service.yml
+
+- include_tasks: activate.yml

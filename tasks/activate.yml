@@ -1,0 +1,31 @@
+---
+
+- name: stat easy-rsa
+  stat: path=/etc/openvpn/easy-rsa
+  register: easy_rsa_stat
+
+- name:
+  debug: 
+    var: easy_rsa_stat.stat.exists
+
+- name: Move easy-rsa to usr/share
+  copy:
+    src: /etc/openvpn/easy-rsa
+    dest: /usr/share
+    remote_src: yes
+  when: easy_rsa_stat.stat.exists
+
+- name: Delete directory
+  file:
+    path: /etc/openvpn/easy-rsa
+    state: absent
+  when: easy_rsa_stat.stat.exists
+
+- name: Fix openssl.cnf path on Debian Stretch with system easyrsa
+  file:
+    src: /usr/share/easy-rsa/openssl-1.0.0.cnf
+    dest: /usr/share/easy-rsa/openssl.cnf
+    state: link
+  when:
+    - ansible_distribution_release == 'stretch' or ansible_distribution_release == 'buster'
+    - openvpn_use_system_easyrsa | bool
