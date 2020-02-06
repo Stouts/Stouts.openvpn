@@ -42,9 +42,9 @@
 
 - name: Extract client credentials
   unarchive:
-    src: "{{ item }}"
-    dest: "{{ item | dirname }}"
-  loop: "{{ q('fileglob', openvpn_download_dir ~ '/*.zip') }}"
+    src: "{{ openvpn_download_dir }}/{{ item }}.zip"
+    dest: "{{ openvpn_download_dir }}"
+  loop: "{{ openvpn_clients }}"
   become: false
   when:
     - openvpn_download_clients | bool
