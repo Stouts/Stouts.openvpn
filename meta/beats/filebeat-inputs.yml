@@ -1,0 +1,8 @@
+---
+
+- type: log
+  paths:
+    - "{{ openvpn_log }}"
+  include_lines:
+    - 'Peer Connection Initiated'
+  pipeline: openvpn_connection_log_line

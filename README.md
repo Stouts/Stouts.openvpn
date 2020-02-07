@@ -33,7 +33,8 @@ found [here](https://github.com/nkakouros-original/ansible-role-easyrsa).
 See [defaults/main.yml](defaults/main.yml) for a full list of variables together
 with documentation on how to use them to configure this role.
 
-## Heartbeat monitor
+## Elastic Beats from monitoring
+### Heartbeat monitor
 
 The role comes bundled with a [meta/monitors.yml](meta/monitors.yml) template
 that can be used by [Heartbeat](https://www.elastic.co/products/beats/heartbeat)
@@ -58,6 +59,14 @@ use some Ansible tasks to upload it to your Heartbeat instance. For example:
   loop: "{{ roles | product(lookup('config', 'DEFAULT_ROLES_PATH')) | list }}"
   delegate_to: heartbeat_instance
 ```
+
+### Filebeat input
+
+The role also includes a filebeat input file that can be uploaded to a filebeat
+server. The input reads the OpenVPN log and reads the lines that correspond to
+successful connections. The role includes an Elasticsearch ingest pipeline that
+can be imported to Elasticsearch to parse and break the log lines into fields.
+The files can be found under the `meta/` folder.
 
 ## Example playbook
 

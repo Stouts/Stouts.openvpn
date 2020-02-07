@@ -1,0 +1,20 @@
+---
+
+pipeline:
+  description: "openvpn-connection-log-line"
+  processors:
+    - grok:
+        field: message
+        ignore_failure: true
+        patterns:
+          - "%{TIMESTAMP:openvpn.date} %{DATA} \\[%{DATA:openvpn.common_name}\\] Peer Connection Initiated with \\[AF_INET\\]%{IP:openvpn.host}:%{POSINT:openvpn.port}"
+        pattern_definitions:
+          TIMESTAMP: "%{DAY} %{MONTH}  ?%{MONTHDAY} %{TIME} %{YEAR}"
+    - gsub:
+        field: "openvpn.date"
+        pattern: "  "
+        replacement: ' '
+    - date:
+        field: "openvpn.date"
+        formats:
+          - EEE MMM d HH:mm:ss yyyy

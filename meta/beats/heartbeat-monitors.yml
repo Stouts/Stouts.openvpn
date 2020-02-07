@@ -12,7 +12,7 @@
 # The next two monitors require the management server to be enabled in OpenVPN
 # config.
 - name: OpenVPN service running
-  id: "{{ openvpn_monitor_tcp_with_pass_id | d('openvpn_tcp_with_pass') }}"
+  id: "{{ openvpn_monitor_mgmt_with_pass_id | d('openvpn_mgmt_with_pass') }}"
   type: tcp
   enabled: {{ openvpn_monitor_tcp_with_pass_enabled | d(false) }}
   schedule: '@every 5s'
@@ -22,9 +22,9 @@
     receive: 'ENTER PASSWORD:'
 
 - name: OpenVPN service running
-  id: "{{ openvpn_monitor_tcp_id | d('openvpn_tcp') }}"
+  id: "{{ openvpn_monitor_mgmt_id | d('openvpn_mgmt') }}"
   type: tcp
-  enabled: {{ openvpn_monitor_tcp_enabled | d(false) }}
+  enabled: {{ openvpn_monitor_mgmt_enabled | d(false) }}
   schedule: '@every 5s'
   hosts:
     - "tcp://{{ openvpn_monitor_mgmt_host }}:{{ openvpn_monitor_mgmt_port }}"
