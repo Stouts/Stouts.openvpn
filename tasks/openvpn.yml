@@ -21,7 +21,14 @@
 
 - include_tasks: system/forwarding.yml
 
-- include_tasks: system/firewall.yml
+- include_tasks: system/firewall-deps.yml
+  when:
+    openvpn_open_firewall | bool
+    or openvpn_route_traffic | bool
+    or openvpn_client_to_client_via_ip | bool
+
+- include_tasks: system/open-firewall.yml
+  when: openvpn_open_firewall | bool
 
 - include_tasks: system/routing.yml
   when: openvpn_route_traffic | bool

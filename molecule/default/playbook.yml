@@ -13,14 +13,21 @@
 
     # OpenVPN
     openvpn_keydir: "{{ easyrsa_pki_dir }}"
-    openvpn_clients: "{{ easyrsa_clients }}"
-    openvpn_download_clients: true
+    openvpn_clients: "{{ easyrsa_clients | map(attribute='name') | list }}"
     openvpn_download_dir: /tmp/
     openvpn_ccd_configs:
       - name: client1
         content: '# pass'
       - name: client2
         content: '# pass'
+
+    # Enabled them
+    openvpn_download_clients: false
+    openvpn_open_firewall: false
+    openvpn_route_traffic: false
+    openvpn_unified_client_profiles: false
+    openvpn_management_enable: false
+    openvpn_client_to_client_via_ip: false
   roles:
     - role: nkakouros.easyrsa
     - role: Stouts.openvpn

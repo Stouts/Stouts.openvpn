@@ -1,4 +1,5 @@
 # vi: ft=yaml.ansible.jinja2
+# yamllint disable rule:braces
 ---
 
 - name: OpenVPN host up

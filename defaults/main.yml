@@ -77,6 +77,9 @@ openvpn_management_pass: ~
 # Set to true to make the vpn server NAT incoming traffic
 openvpn_route_traffic: false
 
+# Whether to create an iptables rule to allow connections to the openvpn server.
+openvpn_open_firewall: true
+
 # The interface that traffic will come in from. This is used when creating
 # firewall rules to allow the vpn server to successfully forward traffic (see
 # `openvpn_route_traffic`). The interface you specify here will limit these

@@ -14,12 +14,21 @@ platforms:
     command: ${MOLECULE_INIT_CMD-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    sysctls:
+      net.ipv4.ip_forward: 1
     privileged: true
     pre_build_image: true
 provisioner:
   name: ansible
   lint:
     name: ansible-lint
+    options:
+      exclude:
+        - meta/beats
+  options:
+    vvv: true
+  env:
+    IN_MOLECULE: 'true'
 scenario:
   name: default
 verifier:

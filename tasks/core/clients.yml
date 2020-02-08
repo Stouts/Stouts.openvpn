@@ -71,3 +71,4 @@
     jump: "{{ openvpn_client_to_client_via_ip | ternary('ALLOW', 'DROP') }}"
     comment: drop-client-to-client
   notify: openvpn save iptables
+  when: openvpn_client_to_client_via_ip | bool
