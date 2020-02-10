@@ -192,20 +192,36 @@ openvpn_tls_key: "ta.key"
 # your scripts to write to some file, that file will need to be writable by the
 # OpenVPN server. The directories included in this variable will be created by
 # the role and your scripts will be able to create and write to files inside
-# them.
+# them. Eg, `/var/log/openvpn-script-out/`
 openvpn_script_output_directories: []
 
 # A path on the OpenVPN server where OpenVPN scripts should be uploaded to.
 openvpn_scripts_dir: "{{ openvpn_etcdir }}/scripts/"
 
 # A list of files located on the Ansible controller that the role should upload.
-# The scripts will be uploaded under `openvpn_scripts_dir`.
+# The scripts will be uploaded under `openvpn_scripts_dir`. You can reference
+# them in `openvpn_server_options` for the OpenVPN configuration option you
+# want. The files can be templates. The role comes with an example script (under
+# `templates/scripts/client-disconnect.sh.j2`) that will log client
+# disconnections. Eg:
+# ```
+# openvpn_script_files:
+#   - "scripts/client-disconnect.sh.j2"
+#   - "/home/me/ansible-stuff/script.sh"
+# ```
 openvpn_script_files: []
 
-# A list of inlinde script to upload. Example:
+# Similar to `openvpn_script_files` but contains a list of inline script to
+# upload. Example:
+# ```
 # openvpn_inline_scripts:
 #   - name: my-up-script.sh
 #     content: |
 #       #!/usr/bin/env
-#       echo 'Up!' >> /var/log/openvpn-script-output/up.log
+#       echo 'Up!' >> "{{ openvpn_script_output_directories[0] }}/up.log"
+# ```
 openvpn_inline_scripts: []
+
+# NOTE The role also comes with `up` and `down` scripts that are used if you
+# enable bridge configuration (see `openvpn_bridge`). These are handled by the
+# bridge-specific tasks.

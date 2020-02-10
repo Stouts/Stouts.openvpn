@@ -4,10 +4,7 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: "{{ openvpn_user }}"
-    group: "{{ openvpn_group }}"
-    mode: 0o700
-  loop: openvpn_script_output_directories
+  loop: "{{ openvpn_script_output_directories }}"
 
 - name: Create scripts directory
   file:
@@ -15,15 +12,19 @@
     state: directory
 
 - name: Upload script files
-  copy:
+  template:
     src: "{{ item }}"
-    dest: "{{ openvpn_scripts_dir }}"
+    dest: "{{ openvpn_scripts_dir }}{{ item | basename | replace('.j2', '') }}"
+    owner: "{{ openvpn_user }}"
+    group: "{{ openvpn_group }}"
     mode: 0o744
   loop: "{{ openvpn_script_files }}"
 
 - name: Upload inline scripts
-  copy:
+  template:
     content: "{{ item.content }}"
     dest: "{{ openvpn_scripts_dir }}/{{ item.name }}"
+    owner: "{{ openvpn_user }}"
+    group: "{{ openvpn_group }}"
     mode: 0o744
   loop: "{{ openvpn_inline_scripts }}"

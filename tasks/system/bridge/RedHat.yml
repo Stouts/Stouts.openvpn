@@ -4,13 +4,13 @@
   when: openvpn_bridge | bool
   template:
     src: bridge/up.sh.j2
-    dest: /etc/openvpn/up.sh
+    dest: "{{ openvpn_scripts_dir }}/up.sh"
     mode: o+x
 
 - name: Setup down script
   template:
     src: bridge/down.sh.j2
-    dest: /etc/openvpn/down.sh
+    dest: "{{ openvpn_scripts_dir }}/down.sh"
     mode: o+x
   when: openvpn_bridge | bool
 

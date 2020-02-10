@@ -38,10 +38,10 @@
 
 - import_tasks: core/clients.yml
 
-- include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
-
-- include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
-
 - include_tasks: scripts.yml
+
+- include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
+
+- include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
 
 - include_tasks: service.yml
