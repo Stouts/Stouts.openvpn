@@ -27,7 +27,7 @@
     or openvpn_route_traffic | bool
     or openvpn_client_to_client_via_ip | bool
 
-- include_tasks: system/open-firewall.yml
+- include_tasks: system/firewall-open.yml
   when: openvpn_open_firewall | bool
 
 - include_tasks: system/routing.yml
