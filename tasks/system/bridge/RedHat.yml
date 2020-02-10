@@ -3,20 +3,20 @@
 - name: Setup up script
   when: openvpn_bridge | bool
   template:
-    src: up.sh.j2
+    src: bridge/up.sh.j2
     dest: /etc/openvpn/up.sh
     mode: o+x
 
 - name: Setup down script
   template:
-    src: down.sh.j2
+    src: bridge/down.sh.j2
     dest: /etc/openvpn/down.sh
     mode: o+x
   when: openvpn_bridge | bool
 
 - name: Setup bridge
   template:
-    src: bridge-interface.rh.j2
+    src: bridge/bridge-interface.rh.j2
     dest: "/etc/sysconfig/network-scripts/ifcfg-br-{{ openvpn_dev }}"
   when: openvpn_bridge | bool
   notify: restart networking redhat

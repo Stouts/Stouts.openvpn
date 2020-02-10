@@ -2,7 +2,7 @@
 
 - name: Setup simple authentication
   template:
-    src: auth-client.sh.j2
+    src: authentication/auth-client.sh.j2
     dest: "{{ openvpn_etcdir }}/auth-client.sh"
     mode: 0o755
   when:

@@ -104,7 +104,9 @@ ifconfig-pool-persist {{ openvpn_ifconfig_pool_persist }}
 # over the link so that each side knows when the other side has gone down. Ping
 # every 10 seconds, assume that remote peer is down if no ping received during
 # a 120 second time period.
+{%- if openvpn_keepalive != '' %}
 keepalive {{ openvpn_keepalive }}
+{% endif %}
 
 # Enable compression on the VPN link. If you enable it here, you must also
 # enable it in the client config file.
