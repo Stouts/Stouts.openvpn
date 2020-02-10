@@ -183,3 +183,29 @@ openvpn_simple_auth_password: ""
 openvpn_tls_auth: false
 openvpn_tls_key: "ta.key"
 # }}}
+# Scripting
+# A list of directories that the role should create and that should be
+# accessible by the OpenVPN server to write into after it has dropped
+# privileges. The OpenVPN server should run with limited privileges, eg with
+# `openvpn_user` set to `nobody`. Such a user will not be able to access many
+# files and directories in the file system. This means that if you want one of
+# your scripts to write to some file, that file will need to be writable by the
+# OpenVPN server. The directories included in this variable will be created by
+# the role and your scripts will be able to create and write to files inside
+# them.
+openvpn_script_output_directories: []
+
+# A path on the OpenVPN server where OpenVPN scripts should be uploaded to.
+openvpn_scripts_dir: "{{ openvpn_etcdir }}/scripts/"
+
+# A list of files located on the Ansible controller that the role should upload.
+# The scripts will be uploaded under `openvpn_scripts_dir`.
+openvpn_script_files: []
+
+# A list of inlinde script to upload. Example:
+# openvpn_inline_scripts:
+#   - name: my-up-script.sh
+#     content: |
+#       #!/usr/bin/env
+#       echo 'Up!' >> /var/log/openvpn-script-output/up.log
+openvpn_inline_scripts: []

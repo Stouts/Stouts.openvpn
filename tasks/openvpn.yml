@@ -42,4 +42,6 @@
 
 - include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
 
+- include_tasks: scripts.yml
+
 - include_tasks: service.yml
