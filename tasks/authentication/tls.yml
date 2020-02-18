@@ -1,5 +1,10 @@
 ---
 
+- name: Create client configuration directory
+  file:
+    path: "{{ openvpn_etcdir }}/ovpns"
+    state: directory
+
 - name: Generate tls-auth key
   command:
     openvpn --genkey --secret "{{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }}"
