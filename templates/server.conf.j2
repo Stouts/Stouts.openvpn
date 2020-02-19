@@ -14,6 +14,10 @@ port {{ openvpn_port }}
 # TCP or UDP server?
 proto {{ openvpn_proto }}
 
+% if openvpn_ipv6_enabled %}
+proto {{ openvpn_proto }}6
+{% endif %}
+
 {% if openvpn_portshare is defined %}
 # Port sharing
 port-share 127.0.0.1 {{ openvpn_portshare }}
@@ -31,6 +35,9 @@ cipher {{ openvpn_cipher }}
 # most systems, the VPN will not function unless you partially or fully disable
 # the firewall for the TUN/TAP interface.
 dev {{ openvpn_dev }}
+{% if openvpn_ipv6_enabled %}
+dev {{ openvpn_dev }}-ipv6
+{% endif %}
 
 # SSL/TLS root certificate (ca), certificate (cert), and private key (key).
 # Each client and the server must have their own cert and key file.  The server
@@ -73,6 +80,11 @@ topology {{ openvpn_topology }}
 # 10.8.0.1. Comment this line out if you are ethernet bridging. See the man
 # page for more info.
 server {{ openvpn_server }}
+{% if openvpn_ipv6_enabled and openvpn_ipv6_server is defined %}
+server-ipv6 {{ openvpn_ipv6_server }}
+ifconfig-ipv6 {{ openvpn_ipv6_ifconfig }}
+push "route-ipv6-default {{ openvpn_ipv6_route_default }}"
+{% endif %}
 {% endif %}
 {% if openvpn_bridge %}
 # Configure server mode for ethernet bridging.
@@ -190,3 +202,7 @@ push "dhcp-option DNS {{ dns }}"
 {% for push_route in openvpn_route_ranges %}
 push "route {{ push_route }}"
 {% endfor %}
+
+{% for push_route_ipv6 in openvpn_ipv6_route_ranges %}
+push "route-ipv6 {{ push_route_ipv6 }}"
+{% endfor %} 
