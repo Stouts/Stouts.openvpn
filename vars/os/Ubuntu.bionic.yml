@@ -1,6 +1,7 @@
 ---
 
-openvpn_use_pam_plugin_distribution: /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so
+openvpn_use_pam_plugin_distribution: "/usr/lib/x86_64-linux-gnu/openvpn\
+                                     /plugins/openvpn-plugin-auth-pam.so"
 
 openvpn_use_ldap_plugin_distribution: /usr/lib/x86_64-linux-gnu/openvpn/openvpn-auth-ldap.so
 
