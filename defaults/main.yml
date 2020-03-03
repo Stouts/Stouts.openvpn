@@ -194,7 +194,7 @@ openvpn_simple_auth_password: ""
 openvpn_tls_auth: false
 openvpn_tls_key: "ta.key"
 # }}}
-# Scripting
+# Scripting {{{
 # A list of directories that the role should create and that should be
 # accessible by the OpenVPN server to write into after it has dropped
 # privileges. The OpenVPN server should run with limited privileges, eg with
@@ -236,3 +236,4 @@ openvpn_inline_scripts: []
 # NOTE The role also comes with `up` and `down` scripts that are used if you
 # enable bridge configuration (see `openvpn_bridge`). These are handled by the
 # bridge-specific tasks.
+# }}}

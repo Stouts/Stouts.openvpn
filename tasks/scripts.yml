@@ -4,6 +4,8 @@
   file:
     path: "{{ item }}"
     state: directory
+    # The openvpn user (the 'other') needs to write and execute the script dirs.
+    mode: 0o753
   loop: "{{ openvpn_script_output_directories }}"
 
 - name: Create scripts directory
