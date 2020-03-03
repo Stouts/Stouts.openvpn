@@ -6,14 +6,6 @@
 
 - include_tasks: "core/install/{{ ansible_os_family }}.yml"
 
-- include_tasks: authentication/ldap.yml
-
-- include_tasks: authentication/pam.yml
-
-- include_tasks: authentication/simple.yml
-
-- include_tasks: authentication/tls.yml
-
 - include_tasks: core/management.yml
   when: openvpn_management_enable | bool
 
@@ -37,6 +29,14 @@
   when: openvpn_unified_client_profiles
 
 - import_tasks: core/clients.yml
+
+- include_tasks: authentication/ldap.yml
+
+- include_tasks: authentication/pam.yml
+
+- include_tasks: authentication/simple.yml
+
+- include_tasks: authentication/tls.yml
 
 - include_tasks: scripts.yml
 
