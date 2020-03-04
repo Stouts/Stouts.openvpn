@@ -83,9 +83,14 @@ openvpn_open_firewall: true
 # Listening also for IPv6
 openvpn_ipv6_enabled: false
 
-openvpn_ipv6_server: # 2001:1::/64
-openvpn_ipv6_ifconfig: # 2001:1:1 2001:1::2
-openvpn_ipv6_route_default: # 2001:1::1
+openvpn_ipv6_server: ''
+# 2001:1::/64
+
+openvpn_ipv6_ifconfig: ''
+# 2001:1:1 2001:1::2
+
+openvpn_ipv6_route_default: ''
+# 2001:1::1
 
 openvpn_ipv6_route_ranges: []
 # - 2000:1::/64
