@@ -23,7 +23,7 @@
   loop: "{{ openvpn_script_files }}"
 
 - name: Upload inline scripts
-  template:
+  copy:
     content: "{{ item.content }}"
     dest: "{{ openvpn_scripts_dir }}/{{ item.name }}"
     owner: "{{ openvpn_user }}"
