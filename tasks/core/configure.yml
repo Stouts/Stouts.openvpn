@@ -17,3 +17,11 @@
     src: server.conf.j2
     dest: "{{ openvpn_etcdir }}/server.conf"
   notify: openvpn restart
+
+# Needed by both tls-authentication tasks and client-configuration tasks. Placed
+# here to avoid repeating it twice in both places where the tls and
+# client-config tasks are located.
+- name: Create client configuration directory
+  file:
+    path: "{{ openvpn_etcdir }}/ovpns"
+    state: directory

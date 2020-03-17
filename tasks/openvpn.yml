@@ -28,8 +28,6 @@
 - include_tasks: core/read-client-files.yml
   when: openvpn_unified_client_profiles
 
-- import_tasks: core/clients.yml
-
 - include_tasks: authentication/ldap.yml
 
 - include_tasks: authentication/pam.yml
@@ -37,6 +35,8 @@
 - include_tasks: authentication/simple.yml
 
 - include_tasks: authentication/tls.yml
+
+- import_tasks: core/clients.yml
 
 - include_tasks: scripts.yml
 
