@@ -21,6 +21,19 @@
       - name: client2
         content: '# pass'
 
+    ## scripting
+    openvpn_script_output_directories:
+      - /var/log/openvpn-script-out/
+
+    openvpn_script_files:
+      - scripts/client-disconnect.sh.j2
+
+    openvpn_inline_scripts:
+      - name: my-up-script.sh
+        content: |
+          #!/usr/bin/env
+          echo 'Up!' >> "/var/up.log"
+
     # Enabled them
     openvpn_download_clients: false
     openvpn_open_firewall: false
