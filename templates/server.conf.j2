@@ -4,7 +4,8 @@
 {% if openvpn_local is defined -%}
 local {{ openvpn_local }}
 {% else -%}
-;local a.b.c.d {% endif %}
+;local a.b.c.d 
+{% endif %}
 
 # Which TCP/UDP port should OpenVPN listen on? If you want to run multiple
 # OpenVPN instances on the same machine, use a different port number for each
