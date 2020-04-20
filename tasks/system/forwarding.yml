@@ -16,4 +16,4 @@
     sysctl_set: true
     state: present
     reload: true
-  when: openvpn_ipv6_server is defined
+  when: not lookup('env', 'IN_MOLECULE') | d(true, true) | bool and openvpn_ipv6_server is defined
