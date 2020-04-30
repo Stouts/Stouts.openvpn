@@ -1,0 +1,12 @@
+---
+
+- name: openvpn.date
+  type: date
+- name: openvpn.client_ip
+  type: ip
+- name: openvpn.common_name
+  type: keyword
+- name: openvpn.event
+  type: keyword
+- name: openvpn.port
+  type: long
