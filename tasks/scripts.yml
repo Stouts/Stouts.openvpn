@@ -16,7 +16,7 @@
 - name: Upload script files
   template:
     src: "{{ item }}"
-    dest: "{{ openvpn_scripts_dir }}{{ item | basename | replace('.j2', '') }}"
+    dest: "{{ openvpn_scripts_dir }}/{{ item | basename | replace('.j2', '') }}"
     owner: "{{ openvpn_user }}"
     group: "{{ openvpn_group }}"
     mode: 0o744
