@@ -4,27 +4,28 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint:
-  name: yamllint
-  options:
-    config-file: molecule/default/yamllint.yml
+lint: |
+  set -e
+  yamllint --config-file molecule/default/yamllint.yml .
+  ansible-lint --exclude=meta/beats
 platforms:
   - name: "instance-${MOLECULE_DISTRO:-ubuntu1604}"
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu1604}-ansible:latest"
     command: ${MOLECULE_INIT_CMD-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    sysctls:
+      net.ipv4.ip_forward: 1
     privileged: true
     pre_build_image: true
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
+  options:
+    vvv: true
+  env:
+    IN_MOLECULE: 'true'
 scenario:
   name: default
 verifier:
   name: testinfra
   enabled: false
-  lint:
-    name: flake8
-

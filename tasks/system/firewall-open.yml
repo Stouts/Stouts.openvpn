@@ -1,0 +1,13 @@
+---
+
+- name: Allow connections to the OpenVPN server
+  iptables:
+    chain: INPUT
+    in_interface: "{{ openvpn_out_interface | default(omit, true) }}"
+    ctstate: NEW
+    protocol: "{{ openvpn_proto }}"
+    destination_port: "{{ openvpn_port }}"
+    jump: ACCEPT
+    comment: incoming_openvpn
+  notify: openvpn save iptables
+  when: iptables_rules.stdout.find("incoming_openvpn") == -1

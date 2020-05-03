@@ -1,0 +1,15 @@
+---
+
+- type: log
+  enabled: "{{ openvpn_filebeat_connection_log_enabled | default(True) }}"
+  paths:
+    - "{{ openvpn_log }}"
+  include_lines:
+    - 'Peer Connection Initiated'
+  pipeline: openvpn_connection_log_line
+
+- type: log
+  enabled: "{{ openvpn_filebeat_disconnection_log_enabled | default(True) }}"
+  paths:
+    - "{{ openvpn_client_disconnect_log }}"
+  pipeline: openvpn_disconnection_log_line

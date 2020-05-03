@@ -1,0 +1,33 @@
+# vi: ft=yaml.ansible.jinja2
+# yamllint disable rule:braces
+---
+
+- name: OpenVPN host up
+  id: "{{ openvpn_monitor_icmp_id | d('openvpn_icmp') }}"
+  type: icmp
+  enabled: {{ openvpn_monitor_icmp_enabled | d(false) }}
+  schedule: '@every 5s'
+  hosts:
+    - "{{ openvpn_host | d(inventory_hostname) }}"
+
+# The next two monitors require the management server to be enabled in OpenVPN
+# config.
+- name: OpenVPN service running
+  id: "{{ openvpn_monitor_mgmt_with_pass_id | d('openvpn_mgmt_with_pass') }}"
+  type: tcp
+  enabled: {{ openvpn_monitor_tcp_with_pass_enabled | d(false) }}
+  schedule: '@every 5s'
+  hosts:
+    - "tcp://{{ openvpn_monitor_mgmt_host }}:{{ openvpn_monitor_mgmt_port }}"
+  check:
+    receive: 'ENTER PASSWORD:'
+
+- name: OpenVPN service running
+  id: "{{ openvpn_monitor_mgmt_id | d('openvpn_mgmt') }}"
+  type: tcp
+  enabled: {{ openvpn_monitor_mgmt_enabled | d(false) }}
+  schedule: '@every 5s'
+  hosts:
+    - "tcp://{{ openvpn_monitor_mgmt_host }}:{{ openvpn_monitor_mgmt_port }}"
+  check:
+    receive: '>INFO:OpenVPN Management Interface'

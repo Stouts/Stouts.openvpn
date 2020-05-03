@@ -57,8 +57,8 @@ tls-server
 {% endif %}
 
 # Client configuration directory.
-{% if openvpn_client_config_dir is defined -%}
-client-config-dir {{ openvpn_client_config_dir }}
+{% if openvpn_ccd is defined -%}
+client-config-dir {{ openvpn_ccd }}
 {% endif %}
 
 # Which VPN topology to use? (net30, subnet, p2p)
@@ -104,7 +104,9 @@ ifconfig-pool-persist {{ openvpn_ifconfig_pool_persist }}
 # over the link so that each side knows when the other side has gone down. Ping
 # every 10 seconds, assume that remote peer is down if no ping received during
 # a 120 second time period.
+{%- if openvpn_keepalive != '' %}
 keepalive {{ openvpn_keepalive }}
+{% endif %}
 
 # Enable compression on the VPN link. If you enable it here, you must also
 # enable it in the client config file.

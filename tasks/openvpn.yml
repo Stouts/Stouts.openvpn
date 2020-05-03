@@ -6,6 +6,28 @@
 
 - include_tasks: "core/install/{{ ansible_os_family }}.yml"
 
+- include_tasks: core/management.yml
+  when: openvpn_management_enable | bool
+
+- include_tasks: core/configure.yml
+
+- include_tasks: system/forwarding.yml
+
+- include_tasks: system/firewall-deps.yml
+  when:
+    openvpn_open_firewall | bool
+    or openvpn_route_traffic | bool
+    or openvpn_client_to_client_via_ip | bool
+
+- include_tasks: system/firewall-open.yml
+  when: openvpn_open_firewall | bool
+
+- include_tasks: system/routing.yml
+  when: openvpn_route_traffic | bool
+
+- include_tasks: core/read-client-files.yml
+  when: openvpn_unified_client_profiles
+
 - include_tasks: authentication/ldap.yml
 
 - include_tasks: authentication/pam.yml
@@ -14,20 +36,12 @@
 
 - include_tasks: authentication/tls.yml
 
-- include_tasks: core/configure.yml
-
-- include_tasks: core/read-client-files.yml
-  when: openvpn_unified_client_profiles
-
 - import_tasks: core/clients.yml
 
-- include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
-
-- include_tasks: system/forwarding.yml
+- include_tasks: scripts.yml
 
 - include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
 
-- include_tasks: system/firewall.yml
-  when: openvpn_route_traffic | bool
+- include_tasks: "system/bridge/{{ ansible_os_family }}.yml"
 
 - include_tasks: service.yml

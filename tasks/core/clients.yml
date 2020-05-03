@@ -1,10 +1,5 @@
 ---
 
-- name: Create client configuration directory
-  file:
-    path: "{{ openvpn_etcdir }}/ovpns"
-    state: directory
-
 - name: Generate client configurations
   template:
     src: "{{ openvpn_client_conf_template }}"
@@ -42,9 +37,9 @@
 
 - name: Extract client credentials
   unarchive:
-    src: "{{ item }}"
-    dest: "{{ item | dirname }}"
-  loop: "{{ q('fileglob', openvpn_download_dir ~ '/*.zip') }}"
+    src: "{{ openvpn_download_dir }}/{{ item }}.zip"
+    dest: "{{ openvpn_download_dir }}"
+  loop: "{{ openvpn_clients }}"
   become: false
   when:
     - openvpn_download_clients | bool
@@ -62,3 +57,13 @@
     content: "{{ item.content }}"
     dest: "{{ openvpn_ccd }}/{{ item.name }}"
   loop: "{{ openvpn_ccd_configs }}"
+
+- name: Disable client-to-client at the IP layer
+  iptables:
+    chain: FORWARD
+    in_interface: "{{ openvpn_dev }}+"
+    out_interface: "{{ openvpn_dev }}+"
+    jump: "{{ openvpn_client_to_client_via_ip | ternary('ALLOW', 'DROP') }}"
+    comment: drop-client-to-client
+  notify: openvpn save iptables
+  when: openvpn_client_to_client_via_ip | bool

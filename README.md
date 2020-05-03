@@ -8,84 +8,6 @@ Ansible role that installs an openvpn server
 * Install and setup OpenVPN server
 * Setup authentication
 
-## Updating from 2.x versions of the role
-
-In version 3.0.0, EasyRSA integration has been removed from the role. To
-generate keys and certificates you will need to use a separate role. This role
-will expect the keys and certificates to be placed in an EasyRSA PKI. Updating
-should be straightforward.
-
-For instance, using [this easyrsa
-role](https://github.com/nkakouros-original/ansible-role-easyrsa), the following
-playbook:
-
-
-```yaml
-openvpn_key_country: SE
-openvpn_key_province: Stockholm
-openvpn_key_city: Stockholm
-openvpn_key_org: KTH
-openvpn_key_email: test@email.com
-openvpn_key_size: 1024
-openvpn_keydir: "{{ easyrsa_pki_dir }}"
-openvpn_download_clients: true
-openvpn_download_dir: "/home/vpn-credentials/"
-openvpn_use_pam: false
-openvpn_client_to_client: false
-openvpn_topology: subnet
-openvpn_clients:
-  - client1
-  - client2
-openvpn_client_options:
-  - link-mtu 1460
-openvpn_server_options:
-  - duplicate-cn
-  - management localhost 7505
-openvpn_client_config_dir: /etc/openvpn/client
-```
-
-will need to be translated to:
-
-```yaml
-# EasyRSA
-easyrsa_conf_req_country: SE
-easyrsa_conf_req_province: Stockholm
-easyrsa_conf_req_city: Stockholm
-easyrsa_conf_req_org: KTH
-easyrsa_conf_req_email: test@email.com
-easyrsa_conf_key_size: 1024
-easyrsa_generate_dh: true
-easyrsa_servers:  # note that the server needs to be set explicitly
-  - server
-easyrsa_clients: >-
-  [
-    {%- for i in range(1, world_reuse | int + 2) -%}
-      '{{ inventory_hostname + '-s' + i | string }}',
-    {% endfor -%}
-  ]
-easyrsa_pki_dir: /etc/easyrsa/pki
-
-# OpenVPN
-openvpn_keydir: "{{ easyrsa_pki_dir }}"
-openvpn_download_clients: true
-openvpn_download_dir: "/home/vpn-credentials/"
-openvpn_use_pam: false
-openvpn_client_to_client: false
-openvpn_topology: subnet
-openvpn_clients: "{{ easyrsa_clients }}"
-openvpn_client_options:
-  - link-mtu 1460
-openvpn_server_options:
-  - duplicate-cn
-  - management localhost 7505
-openvpn_ccd: /etc/openvpn/client
-```
-
-Another change that you might need to consider is that the variable
-`openvpn_client_config_dir` has been renamed to `openvpn_ccd`. A new variable
-`openvpn_ccd_configs` allows the creation of client-specific configuration
-files.
-
 ## Requirements
 
 Previous versions of the role supported generating certificates and keys for the
@@ -110,6 +32,41 @@ found [here](https://github.com/nkakouros-original/ansible-role-easyrsa).
 
 See [defaults/main.yml](defaults/main.yml) for a full list of variables together
 with documentation on how to use them to configure this role.
+
+## Elastic Beats from monitoring
+### Heartbeat monitor
+
+The role comes bundled with a [meta/monitors.yml](meta/monitors.yml) template
+that can be used by [Heartbeat](https://www.elastic.co/products/beats/heartbeat)
+to check if the OpenVPN server is up and running.  The template can be
+configured via variables (they should be self-explanatory). To use it, you can
+use some Ansible tasks to upload it to your Heartbeat instance. For example:
+
+```yaml
+- name: Add earth-kibana host
+  add_host:
+    name: heartbeat_instance
+    hostname: "{{ heartbeat.hostname }}"
+    ansible_host: "{{ heartbeat.ansible_host }}"
+    ansible_password: "{{ heartbeat.ansible_password }}"
+    ansible_user: "{{ heartbeat.ansible_user }}"
+
+- name: Upload role monitors
+  template:
+    src: "{{ item.1 + '/' + item.0 }}/meta/monitors.yml"
+    dest: "/etc/heartbeat/monitors.d/{{ inventory_hostname }}.{{ item.0.split('.')[-1] }}.yml"
+  when: (item.1 + '/' + item.0 + '/meta/monitors.yml') is file
+  loop: "{{ roles | product(lookup('config', 'DEFAULT_ROLES_PATH')) | list }}"
+  delegate_to: heartbeat_instance
+```
+
+### Filebeat input
+
+The role also includes a filebeat input file that can be uploaded to a filebeat
+server. The input reads the OpenVPN log and reads the lines that correspond to
+successful connections. The role includes an Elasticsearch ingest pipeline that
+can be imported to Elasticsearch to parse and break the log lines into fields.
+The files can be found under the `meta/` folder.
 
 ## Example playbook
 

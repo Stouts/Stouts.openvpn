@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+{# openvpn_client_disconnect_log is a variable specific to this file and is not
+mentioned in $(defaults/main.yml) #}
+
+{%- if openvpn_client_disconnect_log is not defined -%}
+  {% set openvpn_client_disconnect_log = "{{
+    openvpn_script_output_directories[0] }}/disconnect.log" %}
+{%- endif -%}
+
+if [[ ! -e "{{ openvpn_client_disconnect_log }}" ]]; then
+  echo 'time,common_name,external_ip' >"{{ openvpn_client_disconnect_log }}"
+fi
+
+d="$(date -d "$time_ascii+$time_duration"sec)"
+echo "$d,$common_name,$trusted_ip" >>"{{ openvpn_client_disconnect_log }}"

@@ -1,0 +1,46 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    # EasyRSA
+    easyrsa_generate_dh: true
+    easyrsa_servers:
+      - name: server
+    easyrsa_clients:
+      - name: client1
+      - name: client2
+    easyrsa_pki_dir: /etc/easyrsa/pki
+
+    # OpenVPN
+    openvpn_keydir: "{{ easyrsa_pki_dir }}"
+    openvpn_clients: "{{ easyrsa_clients | map(attribute='name') | list }}"
+    openvpn_download_dir: /tmp/
+    openvpn_ccd_configs:
+      - name: client1
+        content: '# pass'
+      - name: client2
+        content: '# pass'
+
+    ## scripting
+    openvpn_script_output_directories:
+      - /var/log/openvpn-script-out/
+
+    openvpn_script_files:
+      - scripts/client-disconnect.sh.j2
+
+    openvpn_inline_scripts:
+      - name: my-up-script.sh
+        content: |
+          #!/usr/bin/env
+          echo 'Up!' >> "/var/up.log"
+
+    # Enabled them
+    openvpn_download_clients: false
+    openvpn_open_firewall: false
+    openvpn_route_traffic: false
+    openvpn_unified_client_profiles: false
+    openvpn_management_enable: false
+    openvpn_client_to_client_via_ip: false
+  roles:
+    - role: nkakouros.easyrsa
+    - role: Stouts.openvpn

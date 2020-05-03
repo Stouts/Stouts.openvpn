@@ -1,17 +1,18 @@
 ---
 
 language: python
-python: "2.7"
 
 env:
-  - MOLECULE_DISTRO=ubuntu1404
   - MOLECULE_DISTRO=ubuntu1604
   - MOLECULE_DISTRO=ubuntu1804
   - MOLECULE_DISTRO=debian8 MOLECULE_INIT_CMD=/lib/systemd/systemd
   - MOLECULE_DISTRO=debian9 MOLECULE_INIT_CMD=/lib/systemd/systemd
-  - MOLECULE_DISTRO=centos7 MOLECULE_INIT_CMD=/lib/systemd/systemd
+  - MOLECULE_DISTRO=debian10 MOLECULE_INIT_CMD=/lib/systemd/systemd
 install:
-  - pip install docker molecule
+  - pip install docker molecule ansible-lint
 
 script:
   - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

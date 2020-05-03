@@ -1,0 +1,31 @@
+---
+
+- name: Install firewall dependencies (Debian)
+  apt:
+    name: "{{ packages }}"
+  when: ansible_os_family == "Debian"
+  vars:
+    packages:
+      - iptables
+      - iptables-persistent
+
+- name: Install more firewall deps
+  apt:
+    name: module-init-tools
+  when: ansible_distribution_release == 'jessie'
+
+- name: Read existing iptable rules
+  shell: iptables -L
+  tags:
+    # Ansible Lint complains about using shell instead of the iptables_module
+    - skip_ansible_lint
+  register: iptables_rules
+  changed_when: false
+
+- name: Read existing iptable rules (nat table)
+  shell: iptables -L -t nat
+  tags:
+    # Ansible Lint complains about using shell instead of the iptables_module
+    - skip_ansible_lint
+  register: iptables_nat_rules
+  changed_when: false

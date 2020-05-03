@@ -1,6 +1,11 @@
 <LDAP>
   # LDAP server URL
-  URL   ldap://{{ openvpn_ldap_server }}
+  # possible values are:
+  #  - ldapserver.example.org
+  #  - ldap://ldapserver.example.org
+  #  - ldaps://ldapserver.example.org
+  URL   {% if openvpn_ldap_server | regex_search('(^\w+:\/\/.+$)') %}{{ openvpn_ldap_server }}{% else %}ldap://{{ openvpn_ldap_server }}{% endif %}
+  
 
   # Bind DN (If your LDAP server doesn't support anonymous binds)
   # e.g. cn=administrator,cn=users,dc=ctc,dc=local

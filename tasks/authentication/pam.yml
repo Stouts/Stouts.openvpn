@@ -2,7 +2,7 @@
 
 - name: Setup PAM
   template:
-    src: openvpn.pam.j2
+    src: authentication/openvpn.pam.j2
     dest: /etc/pam.d/openvpn
   when: openvpn_use_pam | bool
 

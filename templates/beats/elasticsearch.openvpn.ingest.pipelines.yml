@@ -1,0 +1,55 @@
+---
+
+pipelines:
+  - description: "openvpn-connection-log-line"
+    processors:
+      - set:
+          field: openvpn
+          value: {}
+      - grok:
+          field: message
+          ignore_failure: true
+          patterns:
+            # yamllint disable-line rule:line-length
+            - "%{TIMESTAMP:openvpn.date} %{DATA} \\[%{DATA:openvpn.common_name}\\] Peer Connection Initiated with \\[AF_INET\\]%{IP:openvpn.client_ip}:%{POSINT:openvpn.port}"
+          pattern_definitions:
+            TIMESTAMP: "%{DAY} %{MONTH}  ?%{MONTHDAY} %{TIME} %{YEAR}"
+      - gsub:
+          # the month day is ' 3' or '24'. The space before '3' will break the
+          # date filter that follows, so removing it.
+          field: "openvpn.date"
+          pattern: "  "
+          replacement: ' '
+      - date:
+          field: "openvpn.date"
+          formats:
+            - EEE MMM d HH:mm:ss yyyy
+      - set:
+          field: 'openvpn.event'
+          value: 'client-connected'
+
+  # Parses log lines created with the
+  # `templates/etc/openvpn/scripts/client-disconnect.sh` script.
+  - description: "openvpn-disconnection-log-line"
+    processors:
+      - set:
+          field: openvpn
+          value: {}
+      - grok:
+          field: message
+          ignore_failure: true
+          patterns:
+            - "%{TIMESTAMP:openvpn.date},%{DATA:openvpn.common_name},%{IP:openvpn.client_ip}"
+          pattern_definitions:
+            TIMESTAMP: "%{DAY} %{MONTH}  ?%{MONTHDAY} %{TIME} %{TZ} %{YEAR}"
+      - gsub:
+          field: "openvpn.date"
+          pattern: "  "
+          replacement: ' '
+      - date:
+          field: "openvpn.date"
+          formats:
+            - EEE MMM d HH:mm:ss z yyyy
+      - set:
+          field: 'openvpn.event'
+          value: 'client-disconnected'
