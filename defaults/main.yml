@@ -159,6 +159,11 @@ openvpn_ccd_configs: []
 # The above will create a file named `client` under the ccd folder containing
 # the `ifconfig-push` directive. This will be applied to the `client` when it
 # connects to the openvpn server.
+
+# Use a custom template for client configuration. In that case, you have to 
+# take care of which of the above variables will actually have an effect on
+# the client config.
+openvpn_client_conf_template: client.conf.j2
 # }}}
 # Authentication {{{
 # Use PAM authentication
