@@ -4,7 +4,7 @@
 {% if openvpn_local is defined -%}
 local {{ openvpn_local }}
 {% else -%}
-;local a.b.c.d 
+;local a.b.c.d
 {% endif %}
 
 # Which TCP/UDP port should OpenVPN listen on? If you want to run multiple
@@ -15,7 +15,7 @@ port {{ openvpn_port }}
 # TCP or UDP server?
 proto {{ openvpn_proto }}
 
-{% if openvpn_ipv6_enabled %}
+{% if openvpn_ipv6_enabled | bool %}
 proto {{ openvpn_proto }}6
 {% endif %}
 
@@ -36,7 +36,7 @@ cipher {{ openvpn_cipher }}
 # most systems, the VPN will not function unless you partially or fully disable
 # the firewall for the TUN/TAP interface.
 dev {{ openvpn_dev }}
-{% if openvpn_ipv6_enabled %}
+{% if openvpn_ipv6_enabled | bool %}
 dev {{ openvpn_dev }}-ipv6
 {% endif %}
 
@@ -81,12 +81,12 @@ topology {{ openvpn_topology }}
 # 10.8.0.1. Comment this line out if you are ethernet bridging. See the man
 # page for more info.
 server {{ openvpn_server }}
-{% if openvpn_ipv6_enabled and openvpn_ipv6_server is defined %}
+{% if openvpn_ipv6_enabled | bool and openvpn_ipv6_server | length > 0 %}
 server-ipv6 {{ openvpn_ipv6_server }}
-ifconfig-ipv6 {{ openvpn_ipv6_ifconfig }}
-push "route-ipv6-default {{ openvpn_ipv6_route_default }}"
+{% if openvpn_ipv6_ifconfig | length > 0 %}ifconfig-ipv6 {{ openvpn_ipv6_ifconfig }}{% endif %}
 {% endif %}
 {% endif %}
+
 {% if openvpn_bridge %}
 # Configure server mode for ethernet bridging.
 # You must first use your OS's bridging capability
@@ -117,7 +117,7 @@ ifconfig-pool-persist {{ openvpn_ifconfig_pool_persist }}
 # over the link so that each side knows when the other side has gone down. Ping
 # every 10 seconds, assume that remote peer is down if no ping received during
 # a 120 second time period.
-{%- if openvpn_keepalive != '' %}
+{%- if openvpn_keepalive | length > 0 %}
 keepalive {{ openvpn_keepalive }}
 {% endif %}
 
@@ -136,7 +136,7 @@ persist-tun
 
 # Output a short status file showing current connections, truncated and
 # rewritten every minute.
-status {{openvpn_status}}
+status {{ openvpn_status }}
 
 # By default, log messages will go to the syslog (or on Windows, if running as
 # a service, they will go to the "\Program Files\OpenVPN\log" directory). Use
@@ -144,28 +144,28 @@ status {{openvpn_status}}
 # on OpenVPN startup, while "log-append" will append to it.  Use one or the
 # other (but not both).
 ;log         openvpn.log
-log-append  {{openvpn_log}}
+log-append {{ openvpn_log }}
 
 # Set the appropriate level of log file verbosity.
 #
 # 0 is silent, except for fatal errors 4 is reasonable for general usage 5 and
 # 6 can help to debug connection problems 9 is extremely verbose
-verb {{openvpn_verb}}
+verb {{ openvpn_verb }}
 
 # The maximum number of concurrently connected clients we want to allow.
-max-clients {{openvpn_max_clients}}
+max-clients {{ openvpn_max_clients }}
 
 # It's a good idea to reduce the OpenVPN daemon's privileges after
 # initialization.
 #
 # You can uncomment this out on non-Windows systems.
 {% if openvpn_user -%}
-user {{openvpn_user}}
+user {{ openvpn_user }}
 {% else -%}
 ;user nobody
 {% endif %}
 {% if openvpn_group -%}
-group {{openvpn_group}}
+group {{ openvpn_group }}
 {% else -%}
 group nogroup
 {% endif %}
@@ -176,7 +176,7 @@ client-to-client
 
 {% if openvpn_use_pam %}
 client-cert-not-required
-plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
+plugin {{ openvpn_use_pam_plugin | default(openvpn_use_pam_plugin_distribution) }} openvpn
 {% endif %}
 
 {% if openvpn_use_ldap %}
@@ -189,7 +189,7 @@ script-security 3 execve
 {% endif %}
 
 {% for option in openvpn_server_options %}
-{{option}}
+{{ option }}
 {% endfor %}
 
 {% if crl_pem_file.stat.exists %}
@@ -206,4 +206,4 @@ push "route {{ push_route }}"
 
 {% for push_route_ipv6 in openvpn_ipv6_route_ranges %}
 push "route-ipv6 {{ push_route_ipv6 }}"
-{% endfor %} 
+{% endfor %}
