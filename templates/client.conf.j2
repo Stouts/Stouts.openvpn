@@ -20,7 +20,7 @@ cipher {{ openvpn_cipher }}
 
 # The hostname/IP and port of the server. You can have multiple remote entries
 # to load balance between the servers.
-remote {{openvpn_host}} {{openvpn_port}}
+remote {{ openvpn_host }} {{ openvpn_port }}
 
 # Keep trying indefinitely to resolve the host name of the OpenVPN server.
 # Very useful on machines which are not permanently connected to the internet
@@ -42,10 +42,10 @@ persist-tun
 {{ openvpn_ca_file_contents }}
 </ca>
 <cert>
-{{ openvpn_client_cert_output |default([{'item':client,'stdout':''}])|selectattr('item', 'match', client)|map(attribute='stdout')|list|first }}
+{{ openvpn_client_cert_output | default([{'item':client,'stdout':''}]) | selectattr('item', 'match', client) | map(attribute='stdout') | list | first }}
 </cert>
 <key>
-{{ openvpn_client_keys_output |default([{'item':client,'stdout':''}])|selectattr('item', 'match', client)|map(attribute='stdout')|list|first }}
+{{ openvpn_client_keys_output | default([{'item':client,'stdout':''}]) | selectattr('item', 'match', client) | map(attribute='stdout') | list | first }}
 </key>
 {% if openvpn_tls_auth %}
 key-direction 1
@@ -56,22 +56,24 @@ key-direction 1
 
 {% else %}
 ca ca.crt
-cert {{client}}.crt
-key {{client}}.key
+cert {{ client }}.crt
+key {{ client }}.key
 {% endif %}
 
-# Verify server certificate by checking that the certicate has the nsCertType
-# field set to "server".  This is an important precaution to protect against a
-# potential attack discussed here: http://openvpn.net/howto.html#mitm
+# To avoid a possible Man-in-the-Middle attack where an authorized client tries
+# to connect to another client by impersonating the server, make sure to enforce
+# some kind of server certificate verification by clients.
+# This is an important precaution to protect against a potential attack
+# discussed here: http://openvpn.net/howto.html#mitm
 #
 # To use this feature, you will need to generate your server certificates with
-# the nsCertType field set to "server".  The build-key-server script in the
-# easy-rsa folder will do this.
-ns-cert-type server
+# the nsCertType field set to "server".  The build-key-server script in the easy-rsa
+# folder will do this. See https://openvpn.net/community-resources/rsa-key-management/
+remote-cert-tls server
 
 {% if openvpn_tls_auth and not openvpn_unified_client_profiles -%}
 # Use a static pre-shared key (PSK)
-tls-auth {{openvpn_tls_key}} 1
+tls-auth {{ openvpn_tls_key }} 1
 {% endif %}
 
 # Enable compression on the VPN link. Don't enable this unless it is also
@@ -83,12 +85,12 @@ comp-lzo
 {% endif %}
 
 # Set log file verbosity.
-verb {{openvpn_verb}}
+verb {{ openvpn_verb }}
 
 {% if openvpn_use_pam or openvpn_use_ldap %}
 auth-user-pass
 {% endif %}
 
 {% for option in openvpn_client_options %}
-{{option}}
+{{ option }}
 {% endfor %}
