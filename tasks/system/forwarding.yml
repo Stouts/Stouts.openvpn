@@ -1,10 +1,21 @@
 ---
 
-- name: Set ip forwarding in the sysctl file and reload if necessary
+- name: Set IPv4 forwarding in the sysctl file and reload if necessary
   sysctl:
     name: net.ipv4.ip_forward
     value: '1'
     sysctl_set: true
     state: present
     reload: true
-  when: not lookup('env', 'IN_MOLECULE') | d(true, true) | bool
+  when: not lookup('env', 'IN_MOLECULE') | d(false, true) | bool
+
+- name: Set IPv6 forwarding in the sysctl file and reload if necessary
+  sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+  when:
+    not lookup('env', 'IN_MOLECULE') | d(false, true) | bool
+    and openvpn_ipv6_server | length > 0

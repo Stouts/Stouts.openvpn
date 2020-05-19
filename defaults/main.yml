@@ -80,6 +80,19 @@ openvpn_route_traffic: false
 # Whether to create an iptables rule to allow connections to the openvpn server.
 openvpn_open_firewall: true
 
+# Listening also for IPv6
+openvpn_ipv6_enabled: false
+
+openvpn_ipv6_server: ''
+# 2001:1::/64
+
+openvpn_ipv6_ifconfig: ''
+# 2001:1:1 2001:1::2
+
+openvpn_ipv6_route_ranges: []
+# - 2000:1::/64
+# - 2000:3::/64
+
 # The interface that traffic will come in from. This is used when creating
 # firewall rules to allow the vpn server to successfully forward traffic (see
 # `openvpn_route_traffic`). The interface you specify here will limit these
