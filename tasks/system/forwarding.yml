@@ -18,4 +18,4 @@
     reload: true
   when:
     not lookup('env', 'IN_MOLECULE') | d(false, true) | bool
-    and openvpn_ipv6_server is defined
+    and openvpn_ipv6_server | length > 0
