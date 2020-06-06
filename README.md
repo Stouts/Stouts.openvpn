@@ -70,7 +70,7 @@ The files can be found under the `meta/` folder.
 
 ## Example playbook
 
-See [molecule/default/playbook.yml](molecule/default/playbook.yml) for a working
+See [molecule/default/converge.yml](molecule/default/converge.yml) for a working
 example of how to use this role.
 
 
