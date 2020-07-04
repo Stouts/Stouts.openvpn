@@ -63,11 +63,8 @@ key {{client}}.key
 # Verify server certificate by checking that the certicate has the nsCertType
 # field set to "server".  This is an important precaution to protect against a
 # potential attack discussed here: http://openvpn.net/howto.html#mitm
-#
-# To use this feature, you will need to generate your server certificates with
-# the nsCertType field set to "server".  The build-key-server script in the
-# easy-rsa folder will do this.
-ns-cert-type server
+
+remote-cert-tls server
 
 {% if openvpn_tls_auth and not openvpn_unified_client_profiles -%}
 # Use a static pre-shared key (PSK)
