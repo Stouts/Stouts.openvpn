@@ -96,7 +96,7 @@ openvpn_nat_ranges:
 # The address that will become the source address of outgoing traffic from the
 # OpenVPN server. You would want this to be the address of
 # `openvpn_out_interface`, if you have also set that variable.
-openvpn_nat_address: "{{ ansible_facts.default_ipv4.address }}"
+openvpn_nat_address: "{{ ansible_default_ipv4.address }}"
 
 # Network ranges that the connecting clients should try to reach using the VPN
 # connection. When connecting to the OpenVPN server, it will create routes on

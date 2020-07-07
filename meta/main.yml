@@ -23,3 +23,6 @@ galaxy_info:
     - system
     - networking
 dependencies: []
+collections:
+  - ansible.posix
+  - community.general

@@ -28,7 +28,7 @@
       {{
         openvpn_server
         | regex_replace('^(?P<host>.+)\s+(?P<mask>.+)$', '\g<host>/\g<mask>')
-        | ipaddr('net')
+        | ansible.netcommon.ipaddr('net')
       }}
     destination: "{{ item }}"
     out_interface: "{{ openvpn_out_interface | default(omit, true) }}"
