@@ -24,6 +24,11 @@ pipelines:
           field: "openvpn.date"
           formats:
             - EEE MMM d HH:mm:ss yyyy
+      - date:
+          target_field: "openvpn.date"
+          field: "openvpn.date"
+          formats:
+            - EEE MMM d HH:mm:ss yyyy
       - set:
           field: 'openvpn.event'
           value: 'client-connected'
@@ -47,6 +52,11 @@ pipelines:
           pattern: "  "
           replacement: ' '
       - date:
+          field: "openvpn.date"
+          formats:
+            - EEE MMM d HH:mm:ss z yyyy
+      - date:
+          target_field: "openvpn.date"
           field: "openvpn.date"
           formats:
             - EEE MMM d HH:mm:ss z yyyy
