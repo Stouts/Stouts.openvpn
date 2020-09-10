@@ -9,18 +9,26 @@
   schedule: '@every 5s'
   hosts:
     - "{{ openvpn_host | d(inventory_hostname) }}"
+  processors:
+    - add_observer_metadata:
+        geo:
+          name: "{{ openvpn_monitor_location }}"
 
 # The next two monitors require the management server to be enabled in OpenVPN
 # config.
 - name: OpenVPN service running
   id: "{{ openvpn_monitor_mgmt_with_pass_id | d('openvpn_mgmt_with_pass') }}"
   type: tcp
-  enabled: {{ openvpn_monitor_tcp_with_pass_enabled | d(false) }}
+  enabled: {{ openvpn_monitor_mgmt_with_pass_enabled | d(false) }}
   schedule: '@every 5s'
   hosts:
     - "tcp://{{ openvpn_monitor_mgmt_host }}:{{ openvpn_monitor_mgmt_port }}"
   check:
     receive: 'ENTER PASSWORD:'
+  processors:
+    - add_observer_metadata:
+        geo:
+          name: "{{ openvpn_monitor_location }}"
 
 - name: OpenVPN service running
   id: "{{ openvpn_monitor_mgmt_id | d('openvpn_mgmt') }}"
@@ -31,3 +39,7 @@
     - "tcp://{{ openvpn_monitor_mgmt_host }}:{{ openvpn_monitor_mgmt_port }}"
   check:
     receive: '>INFO:OpenVPN Management Interface'
+  processors:
+    - add_observer_metadata:
+        geo:
+          name: "{{ openvpn_monitor_location }}"
