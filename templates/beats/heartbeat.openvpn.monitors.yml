@@ -6,6 +6,9 @@
   id: "{{ openvpn_monitor_icmp_id | d('openvpn_icmp') }}"
   type: icmp
   enabled: {{ openvpn_monitor_icmp_enabled | d(false) }}
+  tags:
+    - openvpn
+    - vpn
   schedule: '@every 5s'
   hosts:
     - "{{ openvpn_host | d(inventory_hostname) }}"
@@ -18,6 +21,9 @@
 # config.
 - name: OpenVPN service running
   id: "{{ openvpn_monitor_mgmt_with_pass_id | d('openvpn_mgmt_with_pass') }}"
+  tags:
+    - openvpn
+    - vpn
   type: tcp
   enabled: {{ openvpn_monitor_mgmt_with_pass_enabled | d(false) }}
   schedule: '@every 5s'
@@ -32,6 +38,9 @@
 
 - name: OpenVPN service running
   id: "{{ openvpn_monitor_mgmt_id | d('openvpn_mgmt') }}"
+  tags:
+    - openvpn
+    - vpn
   type: tcp
   enabled: {{ openvpn_monitor_mgmt_enabled | d(false) }}
   schedule: '@every 5s'
