@@ -162,7 +162,8 @@ client-to-client
 {% endif %}
 
 {% if openvpn_use_pam %}
-client-cert-not-required
+# client-cert-not-required ## Removed in openvpn 2.5
+verify-client-cert none
 plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
 {% endif %}
 
