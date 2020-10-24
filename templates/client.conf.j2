@@ -67,7 +67,7 @@ key {{client}}.key
 # To use this feature, you will need to generate your server certificates with
 # the nsCertType field set to "server".  The build-key-server script in the
 # easy-rsa folder will do this.
-ns-cert-type server
+remote-cert-tls server
 
 {% if openvpn_tls_auth and not openvpn_unified_client_profiles -%}
 # Use a static pre-shared key (PSK)
@@ -77,9 +77,9 @@ tls-auth {{openvpn_tls_key}} 1
 # Enable compression on the VPN link. Don't enable this unless it is also
 # enabled in the server config file.
 {% if openvpn_comp_lzo -%}
-comp-lzo
+compress lzo
 {% else -%}
-;comp-lzo
+;compress lzo
 {% endif %}
 
 # Set log file verbosity.
