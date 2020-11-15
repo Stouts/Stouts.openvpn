@@ -3,7 +3,7 @@
 - name: Generate client configurations
   template:
     src: "{{ openvpn_client_conf_template }}"
-    dest: "{{ openvpn_etcdir }}/ovpns/{{ item }}.ovpn"
+    dest: "{{ openvpn_client_config_dir }}/{{ item }}.ovpn"
   loop: "{{ openvpn_clients }}"
   register: openvpn_clients_changed
 
@@ -20,12 +20,12 @@
   loop_control:
     index_var: index
   args:
-    chdir: "{{ openvpn_etcdir }}/ovpns/"
+    chdir: "{{ openvpn_client_config_dir }}"
   when: openvpn_clients_changed.results[index] is changed
 
 - name: Download client credentials
   fetch:
-    src: "{{ openvpn_etcdir }}/ovpns/{{ item }}.zip"
+    src: "{{ openvpn_client_config_dir }}/{{ item }}.zip"
     dest: "{{ openvpn_download_dir }}"
     flat: true
     validate_checksum: true

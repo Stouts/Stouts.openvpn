@@ -7,7 +7,7 @@
 
 - name: Read TLS-auth key
   slurp:
-    src: "{{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }}"
+    src: "{{ openvpn_client_config_dir }}/{{ openvpn_tls_key }}"
   no_log: true
   register: openvpn_read_tlsauth_file_results
   changed_when: false

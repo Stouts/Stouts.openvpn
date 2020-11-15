@@ -52,7 +52,7 @@ dh {{ openvpn_keydir }}/dh.pem
 
 {% if openvpn_tls_auth -%}
 # Use a static pre-shared key (PSK)
-tls-auth {{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }} 0
+tls-auth {{ openvpn_client_config_dir }}/{{ openvpn_tls_key }} 0
 tls-server
 {% endif %}
 

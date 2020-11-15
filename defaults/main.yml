@@ -208,6 +208,12 @@ openvpn_script_output_directories: []
 # A path on the OpenVPN server where OpenVPN scripts should be uploaded to.
 openvpn_scripts_dir: "{{ openvpn_etcdir }}/scripts/"
 
+# In some distros, the server with `foobar.conf` config file can be managed
+# using `openvpn@foobar` service
+openvpn_config_file: "{{ openvpn_etcdir }}/server.conf"
+
+openvpn_client_config_dir: "{{ openvpn_etcdir }}/ovpns"
+
 # A list of files located on the Ansible controller that the role should upload.
 # The scripts will be uploaded under `openvpn_scripts_dir`. You can reference
 # them in `openvpn_server_options` for the OpenVPN configuration option you
