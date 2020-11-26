@@ -1,6 +1,6 @@
 ---
 - name: Read CA file
-  command: cat "{{ openvpn_keydir }}/ca.crt"
+  command: cat "{{ openvpn_ca_certs_file }}"
   no_log: true
   register: openvpn_read_ca_file_results
   changed_when: false

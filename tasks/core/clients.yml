@@ -14,7 +14,7 @@
       {{ openvpn_keydir }}/issued/{{ item }}.crt
       {{ openvpn_keydir }}/private/{{ item }}.key
       {{ item }}.ovpn
-      {{ openvpn_keydir }}/ca.crt
+      {{ openvpn_ca_certs_file }}
       {{ openvpn_tls_key if openvpn_tls_auth else '' }}
   loop: "{{ openvpn_clients }}"
   loop_control:

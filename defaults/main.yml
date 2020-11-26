@@ -30,6 +30,11 @@ openvpn_keydir: "{{ openvpn_etcdir }}/keys"
 # README. Then you can simply point this variable to the pki folder of the
 # easyrsa installation and all keys/certificates will be located fine.
 # }}}
+
+openvpn_ca_certs_file: '{{ openvpn_keydir }}/ca.crt'
+openvpn_server_cert_file: '{{ openvpn_keydir }}/issued/server.crt'
+openvpn_server_key_file: '{{ openvpn_keydir }}/private/server.key'
+
 # Server configuration {{{
 # Default settings (See OpenVPN documentation)
 openvpn_host: "{{ inventory_hostname }}"

@@ -42,9 +42,9 @@ dev {{ openvpn_dev }}
 #
 # Any X509 key management system can be used. OpenVPN can also use a PKCS #12
 # formatted key file (see "pkcs12" directive in man page).
-ca {{ openvpn_keydir }}/ca.crt
-cert {{ openvpn_keydir }}/issued/server.crt
-key {{ openvpn_keydir }}/private/server.key  # This file should be kept secret
+ca {{ openvpn_ca_certs_file }}
+cert {{ openvpn_server_cert_file }}
+key {{ openvpn_server_key_file }}  # This file should be kept secret
 
 # Diffie hellman parameters. Generate your own with: openssl dhparam -out
 # dh1024.pem 1024 Substitute 2048 for 1024 if you are using 2048 bit keys.
