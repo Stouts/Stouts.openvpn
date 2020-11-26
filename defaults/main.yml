@@ -218,6 +218,7 @@ openvpn_scripts_dir: "{{ openvpn_etcdir }}/scripts/"
 # In some distros, the server with `foobar.conf` config file can be managed
 # using `openvpn@foobar` service
 openvpn_config_file: "{{ openvpn_etcdir }}/server.conf"
+openvpn_service_name: ''  # use the default os-dependent
 
 openvpn_client_config_dir: "{{ openvpn_etcdir }}/ovpns"
 
