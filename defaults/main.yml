@@ -141,7 +141,7 @@ openvpn_client_to_client: true
 # `openvpn_client_to_client`).
 openvpn_client_to_client_via_ip: false
 
-openvpn_ccd: /etc/openvpn/ccd/
+openvpn_ccd: /etc/openvpn/ccd
 # The ccd (clients configuration directory). This will contain files with
 # configuration directives that the server will apply per connecting client.
 
