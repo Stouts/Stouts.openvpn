@@ -18,6 +18,10 @@ proto {{ openvpn_proto }}
 # Port sharing
 port-share 127.0.0.1 {{ openvpn_portshare }}
 {% endif %}
+{% if openvpn_auth_digest_algorithm is defined -%}
+# Auth Digest
+auth {{ openvpn_auth_digest_algorithm }}
+{% endif %}
 
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
@@ -162,6 +166,12 @@ group {{openvpn_group}}
 {% else -%}
 group nogroup
 {% endif %}
+
+{% if openvpn_mute_replay_warnings %}
+# Silence the output of replay warnings, which are a common false alarm on WiFi networks
+mute-replay-warnings
+{% endif %}
+
 
 {% if openvpn_client_to_client %}
 client-to-client
