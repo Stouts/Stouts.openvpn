@@ -184,6 +184,8 @@ openvpn_simple_auth_password: ""
 # Enable HMAC signature to TLS handshakes
 openvpn_tls_auth: false
 openvpn_tls_key: "ta.key"
+openvpn_tls_version_min: []  #example: 1.2
+openvpn_tls_version_max: []  #example: 1.2 or 1.3
 # }}}
 # Scripting {{{
 # A list of directories that the role should create and that should be
