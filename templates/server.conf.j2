@@ -18,6 +18,10 @@ proto {{ openvpn_proto }}
 # Port sharing
 port-share 127.0.0.1 {{ openvpn_portshare }}
 {% endif %}
+{% if openvpn_auth_digest_algorithm is defined -%}
+# Auth Digest
+auth {{ openvpn_auth_digest_algorithm }}
+{% endif %}
 
 # Encrypt packets with cipher algorithm
 cipher {{ openvpn_cipher }}
@@ -54,15 +58,21 @@ dh {{ openvpn_keydir }}/dh.pem
 # Use a static pre-shared key (PSK)
 tls-auth {{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }} 0
 tls-server
+{% if openvpn_tls_version_min is defined -%}
+tls-version-min {{ openvpn_tls_version_min }}
+{% endif %}
+{% if openvpn_tls_version_max is defined -%}
+tls-version-max {{ openvpn_tls_version_max }}
+{% endif %}
 {% endif %}
 
-# Client configuration directory.
 {% if openvpn_ccd is defined -%}
+# Client configuration directory.
 client-config-dir {{ openvpn_ccd }}
 {% endif %}
 
-# Which VPN topology to use? (net30, subnet, p2p)
 {% if openvpn_topology is defined -%}
+# Which VPN topology to use? (net30, subnet, p2p)
 topology {{ openvpn_topology }}
 {% endif %}
 
@@ -100,20 +110,20 @@ script-security 2
 # the same virtual IP address from the pool that was previously assigned.
 ifconfig-pool-persist {{ openvpn_ifconfig_pool_persist }}
 
+{% if openvpn_keepalive != '' %}
 # The keepalive directive causes ping-like messages to be sent back and forth
 # over the link so that each side knows when the other side has gone down. Ping
 # every 10 seconds, assume that remote peer is down if no ping received during
 # a 120 second time period.
-{% if openvpn_keepalive != '' %}
 keepalive {{ openvpn_keepalive }}
 {% endif %}
 
 # Enable compression on the VPN link. If you enable it here, you must also
 # enable it in the client config file.
 {% if openvpn_comp_lzo -%}
-comp-lzo
+compress lzo
 {% else -%}
-;comp-lzo
+;compress lzo
 {% endif %}
 
 # The persist options will try to avoid accessing certain resources on restart
@@ -157,22 +167,26 @@ group {{openvpn_group}}
 group nogroup
 {% endif %}
 
+{% if openvpn_mute_replay_warnings %}
+# Silence the output of replay warnings, which are a common false alarm on WiFi networks
+mute-replay-warnings
+{% endif %}
+
+
 {% if openvpn_client_to_client %}
 client-to-client
 {% endif %}
-
 {% if openvpn_use_pam %}
-client-cert-not-required
+# client-cert-not-required ## Removed in openvpn 2.5
+verify-client-cert none
 plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
 {% endif %}
-
 {% if openvpn_use_ldap %}
 plugin {{ openvpn_use_ldap_plugin | default(openvpn_use_ldap_plugin_distribution) }} "/etc/openvpn/auth-ldap.conf"
 {% endif %}
-
 {% if openvpn_simple_auth and openvpn_simple_auth_password %}
 auth-user-pass-verify auth-client.sh via-env
-script-security 3 execve
+script-security 3
 {% endif %}
 
 {% for option in openvpn_server_options %}

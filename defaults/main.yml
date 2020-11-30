@@ -141,7 +141,7 @@ openvpn_client_to_client: true
 # `openvpn_client_to_client`).
 openvpn_client_to_client_via_ip: false
 
-openvpn_ccd: /etc/openvpn/ccd/
+openvpn_ccd: /etc/openvpn/ccd
 # The ccd (clients configuration directory). This will contain files with
 # configuration directives that the server will apply per connecting client.
 
@@ -163,6 +163,8 @@ openvpn_ccd_configs: []
 openvpn_client_conf_template: client.conf.j2
 # }}}
 # Authentication {{{
+openvpn_auth_digest_algorithm: SHA1
+
 # Use PAM authentication
 openvpn_use_pam: true
 openvpn_use_pam_users: []
@@ -184,6 +186,11 @@ openvpn_simple_auth_password: ""
 # Enable HMAC signature to TLS handshakes
 openvpn_tls_auth: false
 openvpn_tls_key: "ta.key"
+openvpn_tls_version_min: []  #example: 1.2
+openvpn_tls_version_max: []  #example: 1.2 or 1.3
+
+# Silence the output of replay warnings, which are a common false alarm on WiFi networks
+openvpn_mute_replay_warnings: false
 # }}}
 # Scripting {{{
 # A list of directories that the role should create and that should be

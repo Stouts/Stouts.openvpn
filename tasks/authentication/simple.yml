@@ -5,7 +5,8 @@
     src: authentication/auth-client.sh.j2
     dest: "{{ openvpn_etcdir }}/auth-client.sh"
     mode: 0o755
-  when:
-    - openvpn_simple_auth | bool
-    - openvpn_simple_auth_password | bool
+  #when:
+  #  - openvpn_simple_auth | bool
+  #  - openvpn_simple_auth_password | bool
+  when: openvpn_simple_auth and openvpn_simple_auth_password
   notify: openvpn restart

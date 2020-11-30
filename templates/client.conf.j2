@@ -47,6 +47,7 @@ persist-tun
 <key>
 {{ openvpn_client_keys_output |default([{'item':client,'stdout':''}])|selectattr('item', 'match', client)|map(attribute='stdout')|list|first }}
 </key>
+
 {% if openvpn_tls_auth %}
 key-direction 1
 <tls-auth>
@@ -67,19 +68,25 @@ key {{client}}.key
 # To use this feature, you will need to generate your server certificates with
 # the nsCertType field set to "server".  The build-key-server script in the
 # easy-rsa folder will do this.
-ns-cert-type server
+remote-cert-tls server
 
 {% if openvpn_tls_auth and not openvpn_unified_client_profiles -%}
 # Use a static pre-shared key (PSK)
 tls-auth {{openvpn_tls_key}} 1
+{% if openvpn_tls_version_min is defined -%}
+tls-version-min {{ openvpn_tls_version_min }}
+{% endif %}
+{% if openvpn_tls_version_max is defined -%}
+tls-version-max {{ openvpn_tls_version_max }}
+{% endif %}
 {% endif %}
 
 # Enable compression on the VPN link. Don't enable this unless it is also
 # enabled in the server config file.
 {% if openvpn_comp_lzo -%}
-comp-lzo
+compress lzo
 {% else -%}
-;comp-lzo
+;compress lzo
 {% endif %}
 
 # Set log file verbosity.
