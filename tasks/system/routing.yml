@@ -8,7 +8,7 @@
     jump: ACCEPT
     comment: forward_tun_tap
   notify: openvpn save iptables
-  when: iptables_rules.stdout.find("forward_tun_tap") == -1
+  when: _openvpn_iptables_rules.stdout.find("forward_tun_tap") == -1
 
 - name: Allow forwarding from interface to tun/tap
   iptables:
@@ -18,7 +18,7 @@
     jump: ACCEPT
     comment: forward_reverse
   notify: openvpn save iptables
-  when: iptables_rules.stdout.find("forward_reverse") == -1
+  when: _openvpn_iptables_rules.stdout.find("forward_reverse") == -1
 
 - name: Allow NATing outgoing vpn traffic
   iptables:

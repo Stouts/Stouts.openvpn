@@ -10,4 +10,4 @@
     jump: ACCEPT
     comment: incoming_openvpn
   notify: openvpn save iptables
-  when: iptables_rules.stdout.find("incoming_openvpn") == -1
+  when: _openvpn_iptables_rules.stdout.find("incoming_openvpn") == -1

@@ -19,7 +19,7 @@
   tags:
     # Ansible Lint complains about using shell instead of the iptables_module
     - skip_ansible_lint
-  register: iptables_rules
+  register: _openvpn_iptables_rules
   changed_when: false
 
 - name: Read existing iptable rules (nat table)
