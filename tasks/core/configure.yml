@@ -15,7 +15,7 @@
 - name: Configure server
   template:
     src: server.conf.j2
-    dest: "{{ openvpn_etcdir }}/server.conf"
+    dest: "{{ openvpn_config_file }}"
   notify: openvpn restart
 
 # Needed by both tls-authentication tasks and client-configuration tasks. Placed
@@ -23,5 +23,5 @@
 # client-config tasks are located.
 - name: Create client configuration directory
   file:
-    path: "{{ openvpn_etcdir }}/ovpns"
+    path: "{{ openvpn_client_config_dir }}"
     state: directory

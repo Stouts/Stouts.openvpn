@@ -5,7 +5,7 @@
   #  - ldap://ldapserver.example.org
   #  - ldaps://ldapserver.example.org
   URL   {% if openvpn_ldap_server | regex_search('(^\w+:\/\/.+$)') %}{{ openvpn_ldap_server }}{% else %}ldap://{{ openvpn_ldap_server }}{% endif %}
-  
+
 
   # Bind DN (If your LDAP server doesn't support anonymous binds)
   # e.g. cn=administrator,cn=users,dc=ctc,dc=local
@@ -44,11 +44,14 @@
   BaseDN    {{ openvpn_ldap_base_dn }}
   # e.g. "sAMAccountName=%u"
   SearchFilter  {{ openvpn_ldap_search_filter }}
+  PasswordIsCR  {{ openvpn_ldap_password_is_cr }}
   RequireGroup  true
+  {% if openvpn_ldap_group_search_filter %}
   <Group>
-    BaseDN    {{ openvpn_ldap_base_dn }}
+    BaseDN    {{ openvpn_ldap_group_base_dn | default(openvpn_ldap_base_dn) }}
     # e.g. "cn=OpenVPNUsers"
     SearchFilter  {{ openvpn_ldap_group_search_filter }}
     MemberAttribute Member
   </Group>
+  {% endif %}
 </Authorization>
