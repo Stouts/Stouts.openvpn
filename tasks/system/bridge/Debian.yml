@@ -4,6 +4,7 @@
   template:
     src: bridge/bridge-interface.deb.j2
     dest: "/etc/network/interfaces.d/{{ openvpn_dev }}"
+    mode: 0o0644
   when:
     - openvpn_bridge is defined
     - openvpn_bridge | length > 0

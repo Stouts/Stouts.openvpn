@@ -1,0 +1,35 @@
+---
+
+# .ansible-lint
+exclude_paths:
+  - .cache/
+  - .molecule/
+
+# Enable checking of loop variable prefixes in roles
+loop_var_prefix: "_openvpn__"
+
+use_default_rules: true
+
+skip_list:
+  - yaml  # I will manually run yamllint
+
+warn_list:
+  - no-handler
+
+# Any rule that has the 'opt-in' tag will not be loaded unless its 'id' is
+# mentioned in the enable_list:
+enable_list:
+  - no-same-owner
+
+# Offline mode disables installation of requirements.yml
+offline: false
+
+# List of additional kind:pattern to be added at the top of the default
+# match list, first match determines the file kind.
+kinds:
+  # - playbook: "**/examples/*.{yml,yaml}"
+  # - galaxy: "**/folder/galaxy.yml"
+  # - tasks: "**/tasks/*.yml"
+  # - vars: "**/vars/*.yml"
+  # - meta: "**/meta/main.yml"
+  - yaml: "**/*.yaml-too"

@@ -16,6 +16,7 @@
   template:
     src: server.conf.j2
     dest: "{{ openvpn_etcdir }}/server.conf"
+    mode: 0o644
   notify: openvpn restart
 
 # Needed by both tls-authentication tasks and client-configuration tasks. Placed
@@ -25,3 +26,4 @@
   file:
     path: "{{ openvpn_etcdir }}/ovpns"
     state: directory
+    mode: 0o755
