@@ -20,4 +20,6 @@
     deprecated_vars:
       - name: openvpn_comp_lzo
         replacement: openpvpn_compression
+      - name: openvpn_cipher
+        replacement: openvpn_ncp_ciphers
 

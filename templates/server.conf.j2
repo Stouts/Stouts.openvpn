@@ -19,8 +19,9 @@ proto {{ openvpn_proto }}
 port-share 127.0.0.1 {{ openvpn_portshare }}
 {% endif %}
 
-# Encrypt packets with cipher algorithm
-cipher {{ openvpn_cipher }}
+{% if openvpn_ncp_ciphers | length %}
+ncp-ciphers {{ openvpn_ncp_ciphers }}
+{% endif %}
 
 # "dev tun" will create a routed IP tunnel, "dev tap" will create an ethernet
 # tunnel. Use "dev tap0" if you are ethernet bridging and have precreated a
