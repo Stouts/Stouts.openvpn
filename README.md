@@ -33,7 +33,7 @@ found [here](https://github.com/nkakouros-original/ansible-role-easyrsa).
 See [defaults/main.yml](defaults/main.yml) for a full list of variables together
 with documentation on how to use them to configure this role.
 
-## Elastic Beats from monitoring
+## Elastic Beats monitoring
 ### Heartbeat monitor
 
 The role comes bundled with a [meta/monitors.yml](meta/monitors.yml) template
