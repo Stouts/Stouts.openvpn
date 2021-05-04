@@ -46,7 +46,9 @@ pipelines:
           patterns:
             - "%{TIMESTAMP:openvpn.date},%{DATA:openvpn.common_name},%{IP:openvpn.client_ip}"
           pattern_definitions:
-            TIMESTAMP: "%{DAY} %{MONTH}  ?%{MONTHDAY} %{TIME} %{TZ} %{YEAR}"
+            TIMESTAMP: "%{DAY} %{MONTH}  ?%{MONTHDAY} %{TIME} %{DATA} %{YEAR}"
+            # %{DATA} is for the timezone that may be e.g. `CEST` that is not
+            # supported by any default GROK pattern.
       - gsub:
           field: "openvpn.date"
           pattern: "  "
