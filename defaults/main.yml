@@ -186,8 +186,8 @@ openvpn_simple_auth_password: ""
 # Enable HMAC signature to TLS handshakes
 openvpn_tls_auth: false
 openvpn_tls_key: "ta.key"
-openvpn_tls_version_min: []  #example: 1.2
-openvpn_tls_version_max: []  #example: 1.2 or 1.3
+openvpn_tls_version_min: "1.2"  #example: 1.2
+openvpn_tls_version_max: "1.3"  #example: 1.2 or 1.3
 
 # Silence the output of replay warnings, which are a common false alarm on WiFi networks
 openvpn_mute_replay_warnings: false
