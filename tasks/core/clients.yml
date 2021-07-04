@@ -74,7 +74,7 @@
     chain: FORWARD
     in_interface: "{{ openvpn_dev }}+"
     out_interface: "{{ openvpn_dev }}+"
-    jump: "{{ openvpn_client_to_client_via_ip | ternary('ALLOW', 'DROP') }}"
+    jump: "{{ openvpn_client_to_client_via_ip | ternary('ACCEPT', 'DROP') }}"
     comment: drop-client-to-client
   notify: openvpn save iptables
   when: openvpn_client_to_client_via_ip | bool
