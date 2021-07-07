@@ -23,14 +23,14 @@
       command: /etc/init.d/iptables-persistent save
       when:
         - ansible_os_family == "Debian"
-        - ansible_lsb.codename == "trusty"
+        - ansible_distribution_release == "trusty"
       listen: openvpn save iptables
 
     - name: Save the rules (Ubuntu)
       command: netfilter-persistent save
       when:
         - ansible_os_family == "Debian"
-        - ansible_lsb.codename != "trusty"
+        - ansible_distribution_release != "trusty"
       listen: openvpn save iptables
 
 - name: Restart OpenVPN service
