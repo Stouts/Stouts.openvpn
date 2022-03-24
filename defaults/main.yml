@@ -113,6 +113,9 @@ openvpn_clients:
   - client
 # Make clients certificate
 
+openvpn_client_dev: "{{ openvpn_dev }}"
+# The name of the device to use on the client side.
+
 openvpn_clients_revoke: []
 # Revoke clients certificates
 
