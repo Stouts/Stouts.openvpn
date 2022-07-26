@@ -46,7 +46,7 @@
   SearchFilter  {{ openvpn_ldap_search_filter }}
   RequireGroup  true
   <Group>
-    BaseDN    {{ openvpn_ldap_base_dn }}
+    BaseDN    {{ openvpn_ldap_group_base_dn | default(openvpn_ldap_base_dn) }}
     # e.g. "cn=OpenVPNUsers"
     SearchFilter  {{ openvpn_ldap_group_search_filter }}
     MemberAttribute Member
