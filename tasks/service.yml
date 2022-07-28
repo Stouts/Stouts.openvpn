@@ -1,7 +1,7 @@
 ---
 
-- name: Ensure OpenVPN is started
+- name: Ensure OpenVPN is started ({{ openvpn_service_name or penvpn_service }})
   service:
-    name: "{{ openvpn_service }}"
+    name: "{{ openvpn_service_name or penvpn_service }}"
     state: started
     enabled: true

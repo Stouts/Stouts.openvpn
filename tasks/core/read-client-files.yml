@@ -1,13 +1,13 @@
 ---
 - name: Read CA file
-  command: cat "{{ openvpn_keydir }}/ca.crt"
+  command: cat "{{ openvpn_ca_certs_file }}"
   no_log: true
   register: openvpn_read_ca_file_results
   changed_when: false
 
 - name: Read TLS-auth key
   slurp:
-    src: "{{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }}"
+    src: "{{ openvpn_client_config_dir }}/{{ openvpn_tls_key }}"
   no_log: true
   register: openvpn_read_tlsauth_file_results
   changed_when: false
