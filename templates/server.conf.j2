@@ -19,8 +19,9 @@ proto {{ openvpn_proto }}
 port-share 127.0.0.1 {{ openvpn_portshare }}
 {% endif %}
 
-# Encrypt packets with cipher algorithm
-cipher {{ openvpn_cipher }}
+{% if openvpn_ncp_ciphers | length %}
+ncp-ciphers {{ openvpn_ncp_ciphers }}
+{% endif %}
 
 # "dev tun" will create a routed IP tunnel, "dev tap" will create an ethernet
 # tunnel. Use "dev tap0" if you are ethernet bridging and have precreated a
@@ -110,10 +111,8 @@ keepalive {{ openvpn_keepalive }}
 
 # Enable compression on the VPN link. If you enable it here, you must also
 # enable it in the client config file.
-{% if openvpn_comp_lzo -%}
-comp-lzo
-{% else -%}
-;comp-lzo
+{% if openvpn_compression -%}
+{{ openvpn_compression }}
 {% endif %}
 
 # The persist options will try to avoid accessing certain resources on restart
@@ -162,7 +161,7 @@ client-to-client
 {% endif %}
 
 {% if openvpn_use_pam %}
-client-cert-not-required
+verify-client-cert none
 plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
 {% endif %}
 

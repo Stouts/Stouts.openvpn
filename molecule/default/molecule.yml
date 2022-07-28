@@ -7,7 +7,7 @@ driver:
 lint: |
   set -e
   yamllint --config-file molecule/default/yamllint.yml .
-  ansible-lint --exclude=meta/beats
+  ansible-lint -c molecule/default/ansible-lint.yml --exclude=templates/beats .
 platforms:
   - name: "instance-${MOLECULE_DISTRO:-ubuntu1604}"
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu1604}-ansible:latest"

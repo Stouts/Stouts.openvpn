@@ -48,8 +48,8 @@ openvpn_max_clients: 100
 openvpn_log: /var/log/openvpn.log
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
-openvpn_comp_lzo: true
-openvpn_cipher: BF-CBC
+openvpn_compression: false
+openvpn_ncp_ciphers: 'AES-256-GCM:AES-128-GCM'
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_user: nobody
@@ -117,6 +117,9 @@ openvpn_route_ranges: []
 openvpn_clients:
   - client
 # Make clients certificate
+
+openvpn_client_dev: "{{ openvpn_dev }}"
+# The name of the device to use on the client side.
 
 openvpn_clients_revoke: []
 # Revoke clients certificates
@@ -190,7 +193,6 @@ openvpn_ldap_base_dn:  # dc=ctc,dc=local
 openvpn_ldap_search_filter: # sAMAccountName=%u
 openvpn_ldap_group_base_dn:  # ou=groups,dc=ctc,dc=local if empty fallback to openvpn_ldap_base_dn
 openvpn_ldap_group_search_filter:  # cn=OpenVPNUsers
-
 # Use simple authentication (default is disabled)
 openvpn_simple_auth: false
 openvpn_simple_auth_password: ""

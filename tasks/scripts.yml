@@ -2,31 +2,38 @@
 
 - name: Create directories for the scripts to write into
   file:
-    path: "{{ item }}"
+    path: "{{ _openvpn__output_dir }}"
     state: directory
+    mode: '753'
     # The openvpn user (the 'other') needs to write and execute the script dirs.
-    mode: 0o753
   loop: "{{ openvpn_script_output_directories }}"
+  loop_control:
+    loop_var: _openvpn__output_dir
 
 - name: Create scripts directory
   file:
     path: "{{ openvpn_scripts_dir }}"
     state: directory
+    mode: 0o755
 
 - name: Upload script files
   template:
-    src: "{{ item }}"
-    dest: "{{ openvpn_scripts_dir }}/{{ item | basename | replace('.j2', '') }}"
+    src: "{{ _openvpn__script }}"
+    dest: "{{ openvpn_scripts_dir }}/{{ _openvpn__script | basename | replace('.j2', '') }}"
     owner: "{{ openvpn_user }}"
     group: "{{ openvpn_group }}"
     mode: 0o744
   loop: "{{ openvpn_script_files }}"
+  loop_control:
+    loop_var: _openvpn__script
 
 - name: Upload inline scripts
   copy:
-    content: "{{ item.content }}"
-    dest: "{{ openvpn_scripts_dir }}/{{ item.name }}"
+    content: "{{ _openvpn__script.content }}"
+    dest: "{{ openvpn_scripts_dir }}/{{ _openvpn__script.name }}"
     owner: "{{ openvpn_user }}"
     group: "{{ openvpn_group }}"
     mode: 0o744
   loop: "{{ openvpn_inline_scripts }}"
+  loop_control:
+    loop_var: _openvpn__script

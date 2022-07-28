@@ -17,20 +17,24 @@
   command: >-
     sed -n
     '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p'
-    {{ openvpn_keydir }}/issued/{{ item }}.crt
+    {{ openvpn_keydir }}/issued/{{ _openvpn__client }}.crt
   args:
     warn: false
   no_log: true
   changed_when: false
   register: openvpn_read_client_cert_files_results
   loop: "{{ openvpn_clients }}"
+  loop_control:
+    loop_var: _openvpn__client
 
 - name: Read client key files
-  command: cat {{ openvpn_keydir }}/private/{{ item }}.key
+  command: cat {{ openvpn_keydir }}/private/{{ _openvpn__client }}.key
   no_log: true
   changed_when: false
   register: openvpn_read_client_key_files_results
   loop: "{{ openvpn_clients }}"
+  loop_control:
+    loop_var: _openvpn__client
 
 - name: Set client cert and CA info as fact
   set_fact:

@@ -15,6 +15,7 @@
 - name: Configure server
   template:
     src: server.conf.j2
+    mode: 0o644
     dest: "{{ openvpn_config_file }}"
   notify: openvpn restart
 
@@ -25,3 +26,4 @@
   file:
     path: "{{ openvpn_client_config_dir }}"
     state: directory
+    mode: 0o755

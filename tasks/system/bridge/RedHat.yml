@@ -17,6 +17,7 @@
       template:
         src: bridge/bridge-interface.rh.j2
         dest: "/etc/sysconfig/network-scripts/ifcfg-br-{{ openvpn_dev }}"
+        mode: 0o0644
   when:
     - openvpn_bridge is defined
     - openvpn_bridge | length > 0

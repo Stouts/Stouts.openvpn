@@ -5,3 +5,21 @@
     that:
       - "ansible_os_family in ['Debian', 'RedHat']"
     msg: "{{ ansible_os_family }} is not supported"
+
+- name: Check use of deprecated variables
+  assert:
+    that:
+      - "not lookup('vars', _openvpn__deprecated_var.name, default='')"
+    fail_msg: >-
+      {{ _openvpn__deprecated_var.name }} is deprecated;
+      use {{ _openvpn__deprecated_var.replacement }} instead
+  loop: "{{ deprecated_vars }}"
+  loop_control:
+    loop_var: _openvpn__deprecated_var
+  vars:
+    deprecated_vars:
+      - name: openvpn_comp_lzo
+        replacement: openpvpn_compression
+      - name: openvpn_cipher
+        replacement: openvpn_ncp_ciphers
+

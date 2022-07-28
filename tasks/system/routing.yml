@@ -8,7 +8,7 @@
     jump: ACCEPT
     comment: forward_tun_tap
   notify: openvpn save iptables
-  when: iptables_rules.stdout.find("forward_tun_tap") == -1
+  when: _openvpn_iptables_rules.stdout.find("forward_tun_tap") == -1
 
 - name: Allow forwarding from interface to tun/tap
   iptables:
@@ -18,7 +18,7 @@
     jump: ACCEPT
     comment: forward_reverse
   notify: openvpn save iptables
-  when: iptables_rules.stdout.find("forward_reverse") == -1
+  when: _openvpn_iptables_rules.stdout.find("forward_reverse") == -1
 
 - name: Allow NATing outgoing vpn traffic
   iptables:
@@ -30,11 +30,13 @@
         | regex_replace('^(?P<host>.+)\s+(?P<mask>.+)$', '\g<host>/\g<mask>')
         | ansible.netcommon.ipaddr('net')
       }}
-    destination: "{{ item }}"
+    destination: "{{ _openvpn__range }}"
     out_interface: "{{ openvpn_out_interface | default(omit, true) }}"
     jump: SNAT
     to_source: "{{ openvpn_nat_address }}"
     comment: vpn_masquerade
   loop: "{{ openvpn_nat_ranges }}"
+  loop_control:
+    loop_var: _openvpn__range
   when: iptables_nat_rules.stdout.find("vpn_masquerade") == -1
   notify: openvpn save iptables

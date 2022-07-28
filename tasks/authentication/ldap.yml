@@ -4,4 +4,5 @@
   template:
     src: authentication/auth-ldap.conf.j2
     dest: '{{ openvpn_ldap_config }}'
-  when: openvpn_use_ldap | bool
+    mode: 0o644
+    when: openvpn_use_ldap | bool

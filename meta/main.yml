@@ -1,6 +1,8 @@
 ---
 
 galaxy_info:
+  role_name: openvpn
+  namespace: stouts
   author: klen
   company: Stouts
   description: Manage OpenVPN server
