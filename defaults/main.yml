@@ -49,7 +49,7 @@ openvpn_log: /var/log/openvpn.log
 openvpn_keepalive: "10 120"
 openvpn_ifconfig_pool_persist: ipp.txt
 openvpn_compression: false
-openvpn_ncp_ciphers: 'AES-256-GCM:AES-128-GCM'
+openvpn_data_ciphers: 'AES-256-GCM:AES-128-GCM'
 openvpn_status: openvpn-status.log
 openvpn_verb: 3
 openvpn_user: nobody
