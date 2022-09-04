@@ -10,8 +10,10 @@ pipelines:
           field: message
           ignore_failure: true
           patterns:
+            # TODO combine these two in one pattern
             # yamllint disable-line rule:line-length
             - "%{TIMESTAMP:openvpn.date} %{DATA} \\[%{DATA:openvpn.common_name}\\] Peer Connection Initiated with \\[AF_INET\\]%{IP:openvpn.client_ip}:%{POSINT:openvpn.port}"
+            - "%{TIMESTAMP:openvpn.date} \\[%{DATA:openvpn.common_name}\\] Peer Connection Initiated with \\[AF_INET\\]%{IP:openvpn.client_ip}:%{POSINT:openvpn.port}"  # yamllint disable-line rule:line-length
           pattern_definitions:
             TIMESTAMP: "%{DAY} %{MONTH}  ?%{MONTHDAY} %{TIME} %{YEAR}"
       - gsub:
@@ -24,11 +26,13 @@ pipelines:
           field: "openvpn.date"
           formats:
             - EEE MMM d HH:mm:ss yyyy
+          timezone: "{{ elasticsearch_ingest_pipeline_timezone | d('UTC') }}"
       - date:
           target_field: "openvpn.date"
           field: "openvpn.date"
           formats:
             - EEE MMM d HH:mm:ss yyyy
+          timezone: "{{ elasticsearch_ingest_pipeline_timezone | d('UTC') }}"
       - set:
           field: 'openvpn.event'
           value: 'client-connected'

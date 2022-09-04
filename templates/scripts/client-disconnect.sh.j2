@@ -12,5 +12,7 @@ if [[ ! -e "{{ openvpn_client_disconnect_log }}" ]]; then
   echo 'time,common_name,external_ip' >"{{ openvpn_client_disconnect_log }}"
 fi
 
+# time_ascii: Client connection timestamp, formatted as a human-readable time string
+# time_duration: The duration (in seconds) of the client session which is now disconnecting
 d="$(date -d "$time_ascii+$time_duration"sec)"
 echo "$d,$common_name,$trusted_ip" >>"{{ openvpn_client_disconnect_log }}"
