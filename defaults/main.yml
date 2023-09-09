@@ -14,6 +14,10 @@ openvpn_etcdir: /etc/openvpn
 # The OpenVPN configuration directory
 
 openvpn_keydir: "{{ openvpn_etcdir }}/keys"
+openvpn_certfile: "{{ openvpn_keydir }}/issued/server.crt"
+openvpn_keyfile: "{{ openvpn_keydir }}/private/server.key"
+openvpn_dh_enable: true
+openvpn_dhfile: "{{ openvpn_keydir }}/dh.pem"
 # The directory where the keys will be found. This should be a pki folder from
 # easyrsa. Under this folder, the role will expect to find the pem keys and
 # certificates for:
