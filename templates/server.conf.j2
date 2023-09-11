@@ -1,4 +1,4 @@
-# {{ ansible_managed }}
+{{ ansible_managed | comment }}
 
 # Which local IP address should OpenVPN listen on? (optional)
 {% if openvpn_local is defined -%}
