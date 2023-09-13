@@ -19,8 +19,8 @@ proto {{ openvpn_proto }}
 port-share 127.0.0.1 {{ openvpn_portshare }}
 {% endif %}
 
-{% if openvpn_ncp_ciphers | length %}
-ncp-ciphers {{ openvpn_ncp_ciphers }}
+{% if openvpn_data_ciphers | length %}
+data-ciphers {{ openvpn_data_ciphers }}
 {% endif %}
 
 # "dev tun" will create a routed IP tunnel, "dev tap" will create an ethernet
@@ -43,9 +43,9 @@ dev {{ openvpn_dev }}
 #
 # Any X509 key management system can be used. OpenVPN can also use a PKCS #12
 # formatted key file (see "pkcs12" directive in man page).
-ca {{ openvpn_keydir }}/ca.crt
-cert {{ openvpn_keydir }}/issued/server.crt
-key {{ openvpn_keydir }}/private/server.key  # This file should be kept secret
+ca {{ openvpn_ca_certs_file }}
+cert {{ openvpn_server_cert_file }}
+key {{ openvpn_server_key_file }}  # This file should be kept secret
 
 # Diffie hellman parameters. Generate your own with: openssl dhparam -out
 # dh1024.pem 1024 Substitute 2048 for 1024 if you are using 2048 bit keys.
@@ -53,7 +53,7 @@ dh {{ openvpn_keydir }}/dh.pem
 
 {% if openvpn_tls_auth -%}
 # Use a static pre-shared key (PSK)
-tls-auth {{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }} 0
+tls-auth {{ openvpn_client_config_dir }}/{{ openvpn_tls_key }} 0
 tls-server
 {% endif %}
 
@@ -161,12 +161,12 @@ client-to-client
 {% endif %}
 
 {% if openvpn_use_pam %}
-client-cert-not-required
+verify-client-cert none
 plugin {{openvpn_use_pam_plugin|default(openvpn_use_pam_plugin_distribution)}} openvpn
 {% endif %}
 
 {% if openvpn_use_ldap %}
-plugin {{ openvpn_use_ldap_plugin | default(openvpn_use_ldap_plugin_distribution) }} "/etc/openvpn/auth-ldap.conf"
+plugin {{ openvpn_use_ldap_plugin | default(openvpn_use_ldap_plugin_distribution) }} "{{ openvpn_ldap_config }}"
 {% endif %}
 
 {% if openvpn_simple_auth and openvpn_simple_auth_password %}

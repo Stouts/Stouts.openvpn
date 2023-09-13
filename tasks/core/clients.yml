@@ -3,8 +3,8 @@
 - name: Generate client configurations
   template:
     src: "{{ openvpn_client_conf_template }}"
-    dest: "{{ openvpn_etcdir }}/ovpns/{{ _openvpn__client }}.ovpn"
     mode: 0o644
+    dest: "{{ openvpn_client_config_dir }}/{{ item }}.ovpn"
   loop: "{{ openvpn_clients }}"
   loop_control:
     loop_var: _openvpn__client
@@ -17,14 +17,14 @@
       {{ openvpn_keydir }}/issued/{{ _openvpn__client }}.crt
       {{ openvpn_keydir }}/private/{{ _openvpn__client }}.key
       {{ _openvpn__client }}.ovpn
-      {{ openvpn_keydir }}/ca.crt
+      {{ openvpn_ca_certs_file }}
       {{ openvpn_tls_key if openvpn_tls_auth else '' }}
   loop: "{{ openvpn_clients }}"
   loop_control:
     loop_var: _openvpn__client
     index_var: index
   args:
-    chdir: "{{ openvpn_etcdir }}/ovpns/"
+    chdir: "{{ openvpn_client_config_dir }}"
   when: openvpn_clients_changed.results[index] is changed
 
 - name: Download client credentials

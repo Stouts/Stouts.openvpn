@@ -32,7 +32,7 @@
   vars:
     dependencies:
       - libpam-pwdfile
-      - python-passlib
+      - python3-passlib
 
 - name: Install LDAP dependencies
   apt:
