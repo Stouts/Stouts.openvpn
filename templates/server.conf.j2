@@ -50,7 +50,7 @@ key {{ openvpn_keyfile }}  # This file should be kept secret
 # Diffie hellman parameters. Generate your own with: openssl dhparam -out
 # dh1024.pem 1024 Substitute 2048 for 1024 if you are using 2048 bit keys.
 {% if openvpn_dh_enable | bool %}
-dh {{ openvpn_dhfile }}
+dh {{ openvpn_dh_file }}
 {% else %}
 dh none
 {% endif %}
