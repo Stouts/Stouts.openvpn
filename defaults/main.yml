@@ -181,8 +181,15 @@ openvpn_use_pam_users: []
 
 # LDAP authentication and configuration (optional)
 openvpn_use_ldap: false
+openvpn_ldap_server:  # ldapserver.example.org or ldap://ldapserver.example.org
 openvpn_ldap_tlsenable: 'false'
 openvpn_ldap_follow_referrals: 'false'
+openvpn_ldap_bind_dn:  # cn=administrator,cn=users,dc=ctc,dc=local
+openvpn_ldap_bind_password:
+openvpn_ldap_base_dn:  # dc=ctc,dc=local
+openvpn_ldap_search_filter: # sAMAccountName=%u
+openvpn_ldap_group_base_dn:  # ou=groups,dc=ctc,dc=local if empty fallback to openvpn_ldap_base_dn
+openvpn_ldap_group_search_filter:  # cn=OpenVPNUsers
 
 # Use simple authentication (default is disabled)
 openvpn_simple_auth: false
