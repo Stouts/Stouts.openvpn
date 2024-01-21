@@ -1,7 +1,7 @@
 ---
 
 - name: Allow connections to the OpenVPN server
-  iptables:
+  ansible.builtin.iptables:
     chain: INPUT
     in_interface: "{{ openvpn_out_interface | default(omit, true) }}"
     ctstate: NEW

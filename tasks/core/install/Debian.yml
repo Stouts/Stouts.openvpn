@@ -1,19 +1,19 @@
 ---
 
 - name: Add OpenVPN repo GPG key
-  apt_key:
+  ansible.builtin.apt_key:
     id: E158C569
     url: https://swupdate.openvpn.net/repos/repo-public.gpg
   when: openvpn_use_external_repo | bool
 
 - name: Add OpenVPN repo sources
-  apt_repository:
+  ansible.builtin.apt_repository:
     filename: openvpn
     repo: deb http://swupdate.openvpn.net/apt "{{ ansible_lsb.codename }}" main
   when: openvpn_use_external_repo | bool
 
 - name: Install requirements
-  apt:
+  ansible.builtin.apt:
     name: "{{ requirements }}"
     update_cache: true
     force: true
@@ -25,7 +25,7 @@
       - zip
 
 - name: Install PAM dependencies
-  apt:
+  ansible.builtin.apt:
     name: "{{ dependencies }}"
     force: true
   when: openvpn_use_pam_users | length > 0
@@ -35,12 +35,12 @@
       - python-passlib
 
 - name: Install LDAP dependencies
-  apt:
+  ansible.builtin.apt:
     name: openvpn-auth-ldap
     force: true
   when: openvpn_use_ldap | bool
 
 - name: Install bridge dependencies
-  apt:
+  ansible.builtin.apt:
     name: bridge-utils
   when: openvpn_bridge | bool
