@@ -1,7 +1,7 @@
 ---
 
 - name: Generate tls-auth key
-  command:
+  ansible.builtin.command:
     openvpn --genkey --secret "{{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }}"
   args:
     creates: "{{ openvpn_etcdir }}/ovpns/{{ openvpn_tls_key }}"

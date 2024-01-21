@@ -1,7 +1,7 @@
 ---
 
 - name: Install firewall dependencies (Debian)
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
   when: ansible_os_family == "Debian"
   vars:
@@ -10,7 +10,7 @@
       - iptables-persistent
 
 - name: Install more firewall deps
-  apt:
+  ansible.builtin.apt:
     name: module-init-tools
   when: ansible_distribution_release == 'jessie'
 

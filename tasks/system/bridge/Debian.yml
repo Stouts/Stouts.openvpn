@@ -1,7 +1,7 @@
 ---
 
 - name: Setup bridge
-  template:
+  ansible.builtin.template:
     src: bridge/bridge-interface.deb.j2
     dest: "/etc/network/interfaces.d/{{ openvpn_dev }}"
     mode: 0o0644
@@ -11,7 +11,7 @@
   notify: restart networking debian
 
 - name: Remove interface configuration for "{{ openvpn_dev }}"
-  file:
+  ansible.builtin.file:
     path: "/etc/network/interfaces.d/{{ openvpn_dev }}"
     state: absent
   when: openvpn_bridge is not defined or openvpn_bridge | length == 0
