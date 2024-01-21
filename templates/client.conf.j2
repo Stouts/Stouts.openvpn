@@ -43,11 +43,16 @@ persist-tun
 {{ openvpn_ca_file_contents }}
 </ca>
 <cert>
-{{ openvpn_client_cert_output |default([{'item':client,'stdout':''}])|selectattr('item', 'match', client)|map(attribute='stdout')|list|first }}
+{% for cert in openvpn_client_cert_output |default([]) if cert[cert.ansible_loop_var | default('no_loop_var')] == client %}
+{{ cert.stdout }}
+{% endfor %}
 </cert>
 <key>
-{{ openvpn_client_keys_output |default([{'item':client,'stdout':''}])|selectattr('item', 'match', client)|map(attribute='stdout')|list|first }}
+{% for key in openvpn_client_keys_output |default([]) if key[key.ansible_loop_var | default('no_loop_var')] == client %}
+{{ key.stdout }}
+{% endfor %}
 </key>
+
 {% if openvpn_tls_auth %}
 key-direction 1
 <tls-auth>
