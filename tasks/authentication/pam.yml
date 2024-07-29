@@ -1,14 +1,14 @@
 ---
 
 - name: Setup PAM
-  template:
+  ansible.builtin.template:
     src: authentication/openvpn.pam.j2
     dest: /etc/pam.d/openvpn
     mode: 0o644
   when: openvpn_use_pam | bool
 
 - name: Configure users
-  htpasswd:
+  community.general.htpasswd:
     path: "{{ openvpn_etcdir }}/users"
     name: "{{ _openvpn__pam_user.name }}"
     password: "{{ _openvpn__pam_user.password }}"

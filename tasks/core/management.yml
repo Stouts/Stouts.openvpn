@@ -1,7 +1,7 @@
 ---
 
 - name: Create management password file
-  copy:
+  ansible.builtin.copy:
     content: "{{ openvpn_management_pass }}"
     dest: "{{ openvpn_etcdir }}/mgmt.pw"
     owner: "{{ openvpn_user }}"
@@ -16,7 +16,7 @@
     }}
 
 - name: Add management directive to OpenVPN config
-  set_fact:
+  ansible.builtin.set_fact:
     openvpn_server_options:
       "{{ openvpn_server_options + _mgmt_option }}"
   vars:

@@ -1,13 +1,13 @@
 ---
 
 - name: Check OS is supported
-  assert:
+  ansible.builtin.assert:
     that:
       - "ansible_os_family in ['Debian', 'RedHat']"
     msg: "{{ ansible_os_family }} is not supported"
 
 - name: Check use of deprecated variables
-  assert:
+  ansible.builtin.assert:
     that:
       - "not lookup('vars', _openvpn__deprecated_var.name, default='')"
     fail_msg: >-
@@ -22,4 +22,3 @@
         replacement: openpvpn_compression
       - name: openvpn_cipher
         replacement: openvpn_ncp_ciphers
-

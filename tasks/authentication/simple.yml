@@ -1,7 +1,7 @@
 ---
 
 - name: Setup simple authentication
-  template:
+  ansible.builtin.template:
     src: authentication/auth-client.sh.j2
     dest: "{{ openvpn_etcdir }}/auth-client.sh"
     mode: 0o755

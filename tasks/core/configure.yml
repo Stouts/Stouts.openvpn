@@ -1,19 +1,19 @@
 ---
 
 - name: Ensure openvpn key dir has the right permission
-  file:
+  ansible.builtin.file:
     path: "{{ openvpn_keydir }}"
     state: directory
     mode: 0o700
     owner: "{{ openvpn_user }}"
 
 - name: Check if crl.pem exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ openvpn_keydir }}/crl.pem"
   register: crl_pem_file
 
 - name: Configure server
-  template:
+  ansible.builtin.template:
     src: server.conf.j2
     dest: "{{ openvpn_etcdir }}/server.conf"
     mode: 0o644
@@ -23,7 +23,7 @@
 # here to avoid repeating it twice in both places where the tls and
 # client-config tasks are located.
 - name: Create client configuration directory
-  file:
+  ansible.builtin.file:
     path: "{{ openvpn_etcdir }}/ovpns"
     state: directory
     mode: 0o755

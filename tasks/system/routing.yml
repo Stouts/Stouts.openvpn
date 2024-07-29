@@ -1,7 +1,7 @@
 ---
 
 - name: Allow forwarding from tun/tap to interface
-  iptables:
+  ansible.builtin.iptables:
     chain: FORWARD
     in_interface: "{{ openvpn_dev }}+"
     out_interface: "{{ openvpn_out_interface | default(omit, true) }}"
@@ -11,7 +11,7 @@
   when: _openvpn_iptables_rules.stdout.find("forward_tun_tap") == -1
 
 - name: Allow forwarding from interface to tun/tap
-  iptables:
+  ansible.builtin.iptables:
     chain: FORWARD
     in_interface: "{{ openvpn_out_interface | default(omit, true) }}"
     out_interface: "{{ openvpn_dev }}+"
@@ -21,7 +21,7 @@
   when: _openvpn_iptables_rules.stdout.find("forward_reverse") == -1
 
 - name: Allow NATing outgoing vpn traffic
-  iptables:
+  ansible.builtin.iptables:
     table: nat
     chain: POSTROUTING
     source: >-

@@ -1,7 +1,7 @@
 ---
 
 - name: Install requirements
-  yum:
+  ansible.builtin.yum:
     name: "{{ requirements }}"
     update_cache: true
   vars:
@@ -11,16 +11,16 @@
       - zip
 
 - name: Install PAM dependencies
-  yum:
+  ansible.builtin.yum:
     name: python-passlib
   when: openvpn_use_pam_users | length > 0
 
 - name: Install LDAP dependencies
-  yum:
+  ansible.builtin.yum:
     name: openvpn-auth-ldap
   when: openvpn_use_ldap | bool
 
 - name: Install bridge dependencies
-  yum:
+  ansible.builtin.yum:
     name: bridge-utils
   when: openvpn_bridge| bool

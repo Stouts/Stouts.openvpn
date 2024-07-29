@@ -1,30 +1,31 @@
 ---
 
-- block:
+- name: Configure network bridge for OpenVPN on RedHat
+  when:
+    - openvpn_bridge is defined
+    - openvpn_bridge | length > 0
+  notify: restart networking redhat
+  block:
     - name: Setup up script
-      template:
+      ansible.builtin.template:
         src: bridge/up.sh.j2
         dest: "{{ openvpn_scripts_dir }}/up.sh"
         mode: o+x
 
     - name: Setup down script
-      template:
+      ansible.builtin.template:
         src: bridge/down.sh.j2
         dest: "{{ openvpn_scripts_dir }}/down.sh"
         mode: o+x
 
     - name: Setup bridge
-      template:
+      ansible.builtin.template:
         src: bridge/bridge-interface.rh.j2
         dest: "/etc/sysconfig/network-scripts/ifcfg-br-{{ openvpn_dev }}"
         mode: 0o0644
-  when:
-    - openvpn_bridge is defined
-    - openvpn_bridge | length > 0
-  notify: restart networking redhat
 
 - name: Remove interface configuration for "{{ openvpn_dev }}"
-  file:
+  ansible.builtin.file:
     path: "/etc/sysconfig/network-scripts/ifcfg-br-{{ openvpn_dev }}"
     state: absent
   when: openvpn_bridge is not defined or openvpn_bridge | length == 0
